@@ -1,6 +1,6 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>Cloudinary 上傳（已預填）＋ JSON 產生器</title>
+<title>Cloudinary 上傳（拼貼照）＋ JSON 產生器</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
@@ -15,8 +15,8 @@
   .note{background:#f1f5f9;border-left:4px solid #2563eb;padding:.75rem 1rem;border-radius:.5rem;margin:.5rem 0 1rem}
 </style>
 
-<h1>Cloudinary 上傳（已預填）＋ JSON 產生器</h1>
-<p class="note">Cloud name = <b>nu-unsigned</b>、Unsigned preset = <b>nu-unsigned</b>、Folder = <b>natural-uncle</b>。直接按「上傳：清洗前／清洗後」，最後點「產生 JSON」。</p>
+<h1>Cloudinary 上傳（拼貼照）＋ JSON 產生器</h1>
+<p class="note">Cloud name = <b>dijzndzw2</b>、Unsigned preset = <b>nu-unsigned</b>、Folder = <b>natural-uncle</b>。直接按「上傳拼貼照」，最後點「產生 JSON」。</p>
 
 <div class="row">
   <div>
@@ -28,10 +28,8 @@
     <input id="folder" value="natural-uncle">
 
     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn" id="btnBefore">上傳：清洗前</button>
-      <span id="pidBefore" class="badge">尚未上傳</span>
-      <button class="btn" id="btnAfter">上傳：清洗後</button>
-      <span id="pidAfter" class="badge">尚未上傳</span>
+      <button class="btn" id="btnUpload">上傳拼貼照</button>
+      <span id="pidImage" class="badge">尚未上傳</span>
     </div>
 
     <label style="margin-top:16px">日期（YYYY-MM-DD）</label>
@@ -51,7 +49,7 @@
 </div>
 
 <script>
-function createWidget(which){
+function createWidget(){
   const cloudName = document.getElementById('cloudName').value.trim();
   const preset = document.getElementById('preset').value.trim();
   const folder = document.getElementById('folder').value.trim();
@@ -67,21 +65,22 @@ function createWidget(which){
   }, (error, result) => {
     if (!error && result && result.event === "success") {
       const pid = result.info.public_id;
-      const target = which === 'before' ? 'pidBefore' : 'pidAfter';
-      document.getElementById(target).textContent = pid;
-      document.getElementById(target).style.background = '#bbf7d0';
+      document.getElementById('pidImage').textContent = pid;
+      document.getElementById('pidImage').style.background = '#bbf7d0';
     }
   });
   widget.open();
 }
 
-document.getElementById('btnBefore').onclick = ()=>createWidget('before');
-document.getElementById('btnAfter').onclick = ()=>createWidget('after');
+document.getElementById('btnUpload').onclick = ()=>createWidget();
 
 document.getElementById('gen').onclick = ()=>{
   const pad = n => n<10? '0'+n : ''+n;
   const today = new Date(); const y=today.getFullYear(), m=pad(today.getMonth()+1), d=pad(today.getDate());
   const id = `${y}-${m}-${d}-${Math.floor(Math.random()*90+10)}`;
+  const pid = document.getElementById('pidImage').textContent;
+  if(pid.includes('尚未')){ alert('請先上傳拼貼照'); return; }
+
   const obj = {
     id,
     date: document.getElementById('date').value || `${y}-${m}-${d}`,
@@ -90,10 +89,8 @@ document.getElementById('gen').onclick = ()=>{
     area: document.getElementById('area').value || '',
     note: document.getElementById('note').value || '',
     provider: 'cloudinary',
-    before: document.getElementById('pidBefore').textContent.includes('尚未') ? '' : document.getElementById('pidBefore').textContent,
-    after:  document.getElementById('pidAfter').textContent.includes('尚未')  ? '' : document.getElementById('pidAfter').textContent
+    image: pid
   };
-  if(!obj.before || !obj.after){ alert('請先上傳清洗前與清洗後兩張圖'); return; }
   document.getElementById('out').value = JSON.stringify(obj, null, 2);
 };
 </script>
