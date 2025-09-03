@@ -18,14 +18,15 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://yourdomain.com/">
 
-  <!-- （可選）SaaS 圖片預連線 -->
+  <!-- 圖片 CDN 預連線（按需保留） -->
   <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
   <link rel="preconnect" href="https://ik.imagekit.io" crossorigin>
   <link rel="preconnect" href="https://ucarecdn.com" crossorigin>
   <link rel="preconnect" href="https://imagedelivery.net" crossorigin>
 
   <!-- 結構化資料 -->
-  <script type="application/ld+json">{
+  <script type="application/ld+json">
+  {
     "@context":"https://schema.org",
     "@type":"CleaningService",
     "name":"自然大叔",
@@ -37,12 +38,25 @@
     "openingHours":"Mo-Sa 09:00-20:00",
     "sameAs":["https://line.me/R/ti/p/@uncle888"],
     "serviceType":["冷氣清洗","直立式洗衣機清洗","水塔清洗","自來水管清洗"],
-    "address":{"@type":"PostalAddress","addressLocality":"台北市","addressRegion":"台北市","postalCode":"100","addressCountry":"TW"},
-    "potentialAction":{"@type":"ReserveAction","target":"https://yourdomain.com/booking","result":{"@type":"Reservation","name":"家電清洗預約"}}
-  }</script>
+    "address": {
+      "@type":"PostalAddress",
+      "addressLocality":"台北市",
+      "addressRegion":"台北市",
+      "postalCode":"100",
+      "addressCountry":"TW"
+    },
+    "potentialAction":{
+      "@type":"ReserveAction",
+      "target":"https://yourdomain.com/booking",
+      "result":{"@type":"Reservation","name":"家電清洗預約"}
+    }
+  }
+  </script>
 
   <style>
     html{scroll-behavior:smooth}
+
+    /* ---- 主題色（升級版） ---- */
     :root{
       --bg:#f3f5f9; --text:#0b1220; --muted:#5b6b7f;
       --card-bg:#ffffff; --border:#d7deea;
@@ -52,34 +66,282 @@
       --accent:#2563eb; --text-strong:#0a0f1a;
     }
     @media (prefers-color-scheme: dark){
-      :root{--bg:#0b1220; --text:#e7edf6; --muted:#afbbce;
+      :root{
+        --bg:#0b1220; --text:#e7edf6; --muted:#afbbce;
         --card-bg:#0f172a; --border:#233046;
         --ghost-bg:#0f172a; --ghost-border:#2a3a53;
-        --accent:#60a5fa; --text-strong:#ffffff;}
+        --accent:#60a5fa; --text-strong:#ffffff;
+      }
     }
-    body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",Arial}
-    .muted{color:var(--muted)}
-    h1,h2,h3{color:var(--text-strong);font-weight:800}
-    .card{background:var(--card-bg);border:1px solid var(--border);border-radius:1rem;padding:1.25rem}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.25rem;border-radius:.75rem;font-weight:600}
-    .btn-primary{background:var(--accent);color:#fff}
-    .btn-ghost{background:var(--ghost-bg);border:1px solid var(--ghost-border);color:var(--text)}
+    body.dark{
+      --bg:#0b1220; --text:#e7edf6; --muted:#afbbce;
+      --card-bg:#0f172a; --border:#233046;
+      --ghost-bg:#0f172a; --ghost-border:#2a3a53;
+      --accent:#60a5fa; --text-strong:#ffffff;
+    }
+    body.light{
+      --bg:#f3f5f9; --text:#0b1220; --muted:#5b6b7f;
+      --card-bg:#ffffff; --border:#d7deea;
+      --ghost-bg:#ffffff; --ghost-border:#c9d3e3;
+      --accent:#2563eb; --text-strong:#0a0f1a;
+    }
+    body[data-theme]{
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(37,99,235,.12), transparent 60%),
+        radial-gradient(1000px 500px at 90% -20%, rgba(6,199,85,.12), transparent 55%),
+        linear-gradient(#f6f8fc, #eef2f8);
+      color:var(--text);
+    }
 
-    /* 工作日誌縮圖 */
-    .diary-thumb{aspect-ratio:4/3;width:100%;object-fit:cover;border-radius:.5rem;border:1px solid var(--border)}
+    .muted{color:var(--muted)}
+    h1,h2,h3{ color:var(--text-strong); letter-spacing:.2px }
+    h1{ font-weight:800 } h2{ font-weight:800 } h3{ font-weight:700 }
+    .card{background:var(--card-bg);border:1px solid var(--border);border-radius:1rem;padding:1.25rem; box-shadow:0 6px 20px rgba(15,23,42,.06) }
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.25rem;border-radius:.75rem;font-weight:600; box-shadow:0 3px 10px rgba(2,6,23,.06) }
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-primary:hover{background:#1d4ed8}
+    .btn-success{ background:var(--primary); color:#fff }
+    .btn-success:hover{ background:var(--primary-hover) }
+    .btn-ghost{background:var(--ghost-bg);border:1px solid var(--ghost-border);color:var(--text)}
+    .btn:hover{transform:scale(1.03); transition:transform .15s ease}
+
+    header{
+      background:rgba(255,255,255,.88);
+      backdrop-filter:saturate(1.1) blur(8px);
+      border-color:var(--border) !important;
+      box-shadow:0 2px 12px rgba(2,6,23,.04);
+    }
+    body.dark header{ background:rgba(15,23,42,.88); }
+
+    /* 導覽列 Logo */
+    .brand-logo{ height:clamp(40px, 8vw, 72px); width:auto }
+
+    /* FAQ 折疊 */
+    details.faq{background:var(--card-bg);border:1px solid var(--border);border-radius:.75rem;padding:1rem;margin-bottom:.75rem}
+    details.faq summary{cursor:pointer;font-weight:600;position:relative;padding-left:1.5rem}
+    details.faq summary::-webkit-details-marker{display:none} details.faq summary::marker{content:""}
+    details.faq summary::before{content:"➕";position:absolute;left:0;top:.1rem;font-size:1.1rem;color:var(--muted)}
+    details.faq[open] summary::before{content:"➖";color:var(--accent)}
+    details.faq .faq-content{max-height:0;opacity:0;overflow:hidden;transition:max-height .4s ease,opacity .3s ease}
+    details.faq[open] .faq-content{max-height:1000px;opacity:1}
+
+    /* 時間軸 */
+    .timeline{position:relative;margin-left:1rem}
+    .timeline:before{content:"";position:absolute;left:12px;top:0;bottom:0;width:2px;background:var(--border)}
+    .timeline-item{position:relative;padding-left:2.5rem;margin-bottom:1rem}
+    .timeline-item:before{content:"";position:absolute;left:3px;top:.35rem;width:18px;height:18px;border-radius:9999px;background:linear-gradient(135deg, var(--accent), var(--primary)); box-shadow:0 0 0 3px rgba(37,99,235,.08);}
+
+    /* 浮動按鈕 */
+    .fab{
+      position:fixed;right:1rem;z-index:60;display:flex;align-items:center;justify-content:center;border-radius:9999px;
+      box-shadow:0 8px 24px rgba(0,0,0,.22);cursor:pointer;transition:transform .2s ease,opacity .3s ease,box-shadow .2s ease
+    }
+    .fab:hover{transform:translateY(-1px) scale(1.05);box-shadow:0 12px 28px rgba(0,0,0,.28)}
+    .fab.is-hidden{opacity:0;pointer-events:none}
+    .fab-top{bottom:calc(9rem + env(safe-area-inset-bottom,0px));width:48px;height:48px;background:var(--accent);color:#fff;font-size:1.25rem}
+    .fab-book{bottom:calc(1rem + env(safe-area-inset-bottom,0px));min-width:48px;height:48px;padding:0 1.1rem;background:var(--primary);color:#fff;font-weight:800;border-radius:9999px;}
+
+    /* 行動版快速按鈕 */
+    @media (max-width: 767.98px){
+      .mobile-fab a{
+        display:flex;align-items:center;justify-content:center;height:48px;padding:0 1.1rem;border-radius:9999px;font-weight:800;border:0;
+        box-shadow:0 8px 24px rgba(0,0,0,.22);-webkit-appearance:none;background-clip:padding-box;-webkit-mask-image:-webkit-radial-gradient(white, black);
+      }
+      .mobile-fab .btn-ghost{ background:var(--accent); color:#fff; }
+      .mobile-fab .btn-primary{ background:var(--primary); color:#fff; }
+    }
+
+    /* 工作日誌縮圖（小卡、統一比例） */
+    .diary-thumb{aspect-ratio:4/3;width:100%;height:auto;object-fit:cover;border-radius:.5rem;border:1px solid var(--border)}
 
     /* Lightbox */
-    #lightbox{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:100}
+    #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:100}
     #lightbox img{max-width:90%;max-height:85%;border-radius:.5rem;box-shadow:0 8px 30px rgba(0,0,0,.6)}
     #lightbox .close{position:absolute;top:20px;right:24px;font-size:2rem;color:#fff;cursor:pointer}
   </style>
 </head>
 
-<body id="top">
-  <!-- Header / Hero / Services / Pricing / Process / SOP ... (保持不變，這裡略) -->
+<body id="top" data-theme>
+  <!-- Header -->
+  <header class="bg-white/90 sticky top-0 backdrop-blur z-50 border-b">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="logo-horizontal.png" srcset="logo-horizontal.png 1x, logo-horizontal.png 2x" alt="自然大叔 Natural Uncle" class="brand-logo block dark:hidden" width="320" height="80">
+        <img src="logo-horizontal.png" srcset="logo-horizontal.png 1x, logo-horizontal.png 2x" alt="" aria-hidden="true" class="brand-logo hidden dark:block drop-shadow-[0_0_8px_rgba(0,0,0,.35)]" width="320" height="80">
+        <span class="sr-only">自然大叔 Natural Uncle</span>
+      </a>
 
-  <!-- ★ 工作照片日誌 -->
-  <section id="cases" class="max-w-6xl mx-auto px-4 py-12">
+      <nav class="hidden md:flex gap-6 text-sm">
+        <a href="#services">服務項目</a>
+        <a href="#pricing">價格方案</a>
+        <a href="pricing.html">價格細項</a>
+        <a href="#process">施工流程</a>
+        <a href="#ac-sop">冷氣SOP</a>
+        <a href="#cases">工作日誌</a>
+        <a href="#faq">常見問題</a>
+        <a href="#contact">聯絡預約</a>
+      </nav>
+
+      <a href="https://line.me/R/ti/p/@uncle888" class="hidden md:inline-flex btn btn-primary">LINE 諮詢</a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="relative bg-gradient-to-b from-sky-50 to-white">
+    <div class="max-w-6xl mx-auto px-4 py-14 text-center">
+      <h1 class="text-3xl md:text-5xl font-extrabold">冷氣・洗衣機・水塔・自來水管 到府專業清洗</h1>
+      <p class="mt-4 text-lg muted">透明價格｜完工保固｜環保清潔劑｜可開立發票</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="tel:+886912356331" class="btn btn-ghost">一鍵撥打</a>
+        <a href="https://line.me/R/ti/p/@uncle888" class="btn btn-primary">LINE 立即預約</a>
+      </div>
+      <ul class="mt-6 flex flex-wrap gap-3 justify-center text-sm muted">
+        <li>累積服務 2,000+ 戶</li><li>到府 2–3 小時完工</li><li>設備保護與現場防護處理</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 服務項目 -->
+  <section id="services" class="max-w-6xl mx-auto px-4 py-12 reveal">
+    <h2 class="text-2xl md:text-3xl font-bold mb-6">服務項目</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="card">
+        <h3 class="card-title">冷氣清洗</h3>
+        <p class="card-desc">清洗蒸發器、風鼓、濾網，防水防護處理。</p>
+        <a href="#ac-sop" class="btn btn-ghost mt-3">查看完整 SOP →</a>
+      </div>
+      <div class="card">
+        <h3 class="card-title">直立式洗衣機清洗</h3>
+        <p class="card-desc">全機拆洗除黴與水垢，還原洗淨力。</p>
+      </div>
+      <div class="card">
+        <h3 class="card-title">水塔清洗</h3>
+        <p class="card-desc">排空、刷洗，附清洗照片存證。</p>
+      </div>
+      <div class="card">
+        <h3 class="card-title">自來水管清洗</h3>
+        <p class="card-desc">脈衝清洗去除鏽垢，改善黃水/水壓不穩。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 透明價格 -->
+  <section id="pricing" class="bg-slate-50 reveal">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold">透明價格</h2>
+        <a href="pricing.html" class="text-sm underline text-sky-700">查看完整價格細項</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead><tr class="border-b">
+            <th class="py-3">項目</th><th>基本價格</th><th>加購/加價</th><th>備註</th><th class="sr-only">細項</th></tr></thead>
+          <tbody>
+            <tr class="border-b"><td class="py-3">冷氣（分離式/台）</td><td>$1,800 起</td><td>加大加長款、特殊機款</td><td>含防護與清潔劑</td><td><a href="pricing.html#ac" class="btn btn-ghost py-2 px-3 text-xs" aria-label="查看冷氣清洗價格細項">細項</a></td></tr>
+            <tr class="border-b"><td class="py-3">洗衣機（直立式）</td><td>$2,000 起</td><td>無</td><td>全機拆洗殺菌</td><td><a href="pricing.html#wm" class="btn btn-ghost py-2 px-3 text-xs" aria-label="查看洗衣機清洗價格細項">細項</a></td></tr>
+            <tr class="border-b"><td class="py-3">家用水塔</td><td>$1,000 起</td><td>大容量另計</td><td>附清洗照片</td><td><a href="pricing.html#tank" class="btn btn-ghost py-2 px-3 text-xs" aria-label="查看水塔清洗價格細項">細項</a></td></tr>
+            <tr><td class="py-3">自來水管</td><td>$3,200 起</td><td>多重管線</td><td>改善黃水/水壓</td><td><a href="pricing.html#pipe" class="btn btn-ghost py-2 px-3 text-xs" aria-label="查看自來水管清洗價格細項">細項</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-sm muted">＊可先 LINE 傳照片快速報價，實際費用以現場與機型為準。</p>
+    </div>
+  </section>
+
+  <!-- 施工流程 + 到府前準備 -->
+  <section id="process" class="max-w-6xl mx-auto px-4 py-12 reveal">
+    <h2 class="text-2xl md:text-3xl font-bold mb-6">施工流程</h2>
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="p-5 rounded-2xl border">
+        <div class="timeline">
+          <div class="timeline-item"><h3 class="font-semibold">步驟 1｜線上估價與預約</h3><p class="muted text-sm mt-1">LINE 洽詢清洗事宜、設備照片，安排時段並確認費用區間。</p></div>
+          <div class="timeline-item"><h3 class="font-semibold">步驟 2｜到府前防護與檢查</h3><p class="muted text-sm mt-1">鋪設養生膠帶保護；實機測試功能、觀察機況、風量與溫差。</p></div>
+          <div class="timeline-item"><h3 class="font-semibold">步驟 3｜拆機與深度清洗</h3><p class="muted text-sm mt-1">清洗熱交換器、風鼓、導風坡道、濾網與集水盤、疏通排水管；環保藥劑不傷材。</p></div>
+          <div class="timeline-item"><h3 class="font-semibold">步驟 4｜組裝回測與漏水檢查</h3><p class="muted text-sm mt-1">恢復裝機、運轉測試、檢查機況/滴水，確認運作穩定。</p></div>
+          <div class="timeline-item"><h3 class="font-semibold">步驟 5｜收尾清場與保固說明</h3><p class="muted text-sm mt-1">現場清潔、提供對比照片（拼貼）、說明 14 天保固內容。</p></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card-title">到府前準備</h3>
+        <details class="faq" open>
+          <summary>冷氣施工</summary>
+          <div class="faq-content">
+            <p class="card-desc">可提前清出室內機下方空間以便擺放 A 字梯；若為大型衣櫃/床/沙發等，師傅將視情況協助判斷是否可移動。</p>
+          </div>
+        </details>
+        <details class="faq"><summary>直立式洗衣機施工</summary><div class="faq-content"><ul class="card-list"><li>可先清空內桶與上蓋置物，避免震動掉落。</li><li>狹窄陽台/浴室可先拍照提供，加快評估。</li></ul></div></details>
+        <details class="faq"><summary>水塔清洗</summary><div class="faq-content"><ul class="card-list"><li>確認屋頂/機房通道可進出，提供容量。</li><li>如需停水公告請提前申請；清洗期間建議事先儲水。</li></ul></div></details>
+        <details class="faq"><summary>自來水管清洗</summary><div class="faq-content"><ul class="card-list"><li>施工期間接入脈衝設備，請保留廚房/浴室可作業區。</li><li>若有淨水器/熱水器/軟水機，屆時將關閉相關電源與進水口。</li></ul></div></details>
+        <details class="faq"><summary>通用提醒</summary><div class="faq-content"><ul class="card-list"><li>若需停車證或車位費，請事先告知。</li><li>請確保施工用電與水源可用；如需搬運請協助預留電梯。</li><li>幼童/長者/寵物施工時建議暫時隔離。</li></ul></div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 冷氣清洗 SOP -->
+  <section id="ac-sop" class="max-w-6xl mx-auto px-4 py-12 reveal">
+    <h2 class="text-2xl md:text-3xl font-bold mb-6">冷氣清洗｜完整 SOP 與保固</h2>
+    <details class="faq" open>
+      <summary>🧾 前置檢查流程（功能／冷媒／運轉／溝通）</summary>
+      <div class="faq-content">
+        <ul class="card-list">
+          <li><strong>功能檢測：</strong>啟動冷氣運轉，確認出風、溫控、遙控反應。</li>
+          <li><strong>冷媒狀態：</strong>檢查是否結霜，初步評估溫差（異常建議由冷凍專業處理）。</li>
+          <li><strong>機件運轉：</strong>觀察風輪聲音、面板/擺風葉片是否順暢，排水是否正常。</li>
+          <li><strong>異常處理：</strong>若發現異常，先與屋主溝通風險與可能後果，再共同決定是否繼續清洗。</li>
+        </ul>
+      </div>
+    </details>
+    <details class="faq">
+      <summary>🛡 環境防護作業（膠帶保護／圍水區）</summary>
+      <div class="faq-content">
+        <p class="card-desc"><em>「清洗前什麼樣，清洗後就維持那樣」</em> 是我們的基本態度。</p>
+        <ul class="card-list">
+          <li>使用低黏性養生膠帶保護牆面、插座、櫃體（實際仍視漆面狀況而定）。</li>
+          <li>以養生膠帶延伸固定防水墊，形塑「圍水區」避免濺濕地面。</li>
+        </ul>
+        <p class="card-desc">📌 以上流程為清洗前必要準備，為了安全與品質，絕不省略。</p>
+      </div>
+    </details>
+    <details class="faq">
+      <summary>🧼 拆機與清洗作業流程（現場掛洗／部位／藥劑）</summary>
+      <div class="faq-content">
+        <ul class="card-list">
+          <li><strong>作業方式：</strong>現場掛壁式清洗，不移機不拆室內管線。</li>
+          <li><strong>拆卸部件：</strong>外殼、濾網、集水盤等可拆零件。</li>
+          <li><strong>清洗部位：</strong>熱交換器（鋁鰭片）、鼓風扇、導風坡道、濾網、集水盤與外殼、疏通排水孔。</li>
+          <li><strong>工具技巧：</strong>高壓清洗搭配可調噴嘴，依材質調整水壓避免損傷與潑濺。</li>
+          <li><strong>環保藥劑：</strong>弱性環保清潔劑，不傷塑料金屬、不易殘留、無異味。</li>
+          <li><strong>紀錄回報：</strong>清洗前後拍照存證，提供客戶留存。</li>
+          <li><strong>時間估算：</strong>每台約 60 分鐘（含檢測與整理），視機型/位置/髒污調整。</li>
+        </ul>
+      </div>
+    </details>
+    <details class="faq" open>
+      <summary>🧹 收尾整理與環境恢復</summary>
+      <div class="faq-content">
+        <ul class="card-list">
+          <li>零件復原組裝：外殼、濾網、集水盤擦乾並鎖回；卡扣/螺絲逐一確認。</li>
+          <li>功能回測確認：再次運轉檢查異音、水滴、出風，確保穩定。</li>
+          <li>清潔作業區域：移除養生膠帶與防水布，現場清理無水漬/髒污/垃圾。</li>
+          <li>注意事項：清洗後建議開機 30 分鐘通風；若短暫有藥劑味，可開窗加強通風。</li>
+        </ul>
+      </div>
+    </details>
+    <details class="faq" id="ac-sop-warranty">
+      <summary>🛠️ 售後保固說明（14 天）</summary>
+      <div class="faq-content">
+        <ul class="card-list">
+          <li><strong>保固期間：</strong>清洗完成起 14 天。</li>
+          <li><strong>保固內容：</strong>漏水、使用異常等清洗關聯問題，專人到府處理至正常。</li>
+          <li><strong>排除條件：</strong>原本安裝不良、機件老舊/破裂/鏽蝕/耗損等非清洗因素不在範圍。</li>
+        </ul>
+        <p class="card-desc">📞 有狀況請立即聯繫（電話 / LINE），我們負責到底。</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ★ 工作照片日誌（單張拼貼照 + Lightbox） -->
+  <section id="cases" class="max-w-6xl mx-auto px-4 py-12 reveal">
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
       <div>
         <h2 class="text-2xl md:text-3xl font-bold">工作照片日誌</h2>
@@ -103,7 +365,7 @@
       </div>
     </div>
 
-    <!-- 4 欄縮圖 -->
+    <!-- 4 欄縮圖（更小更清爽） -->
     <div id="workGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
 
     <div class="mt-6 text-center">
@@ -111,41 +373,176 @@
     </div>
   </section>
 
+  <!-- FAQ -->
+  <section id="faq" class="bg-slate-50 reveal">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+      <h2 class="text-2xl md:text-3xl font-bold mb-6">常見問題</h2>
+      <details class="faq"><summary>清洗會不會弄髒室內？</summary><div class="faq-content"><p>作業前會做防護與遮蔽，完工會收拾乾淨。</p></div></details>
+      <details class="faq"><summary>多久清一次比較好？</summary><div class="faq-content"><p>一般家用建議 1–2 年清洗一次；若有過敏或寵物，建議頻率更高。</p></div></details>
+      <details class="faq"><summary>檢測到異常還會清洗嗎？</summary><div class="faq-content"><p>會先與您溝通風險與可能後果，再共同決定是否繼續；若為冷媒/安裝問題，建議由冷凍專業處理。</p></div></details>
+      <details class="faq"><summary>清洗後若有問題怎麼處理？有保固嗎？</summary><div class="faq-content"><p>提供 14 天售後保固，若出現漏水、使用異常等清洗關聯問題，將由專人到府處理；安裝不良或機件老化等非清洗因素不在範圍。</p></div></details>
+    </div>
+  </section>
+
+  <!-- 聯絡 / 預約 -->
+  <section id="contact" class="max-w-6xl mx-auto px-4 py-12 reveal">
+    <h2 class="text-2xl md:text-3xl font-bold mb-6">聯絡 / 預約</h2>
+    <div class="grid md:grid-cols-2 gap-6 items-start">
+      <div class="p-5 rounded-2xl border">
+        <h3 class="card-title">快速通道</h3>
+        <ul class="mt-3 text-sm">
+          <li>電話：<a href="tel:+886912356331" class="text-sky-700 underline">+886 912-356-331</a></li>
+          <li>LINE：<a href="https://line.me/R/ti/p/@uncle888" class="text-sky-700 underline">@uncle888</a></li>
+          <li>服務時間：週一至週六 09:00–20:00</li>
+        </ul>
+        <a href="https://yourdomain.com/booking" class="btn btn-success btn-booking mt-4 w-full sm:w-auto">立即線上預約</a>
+      </div>
+      <div class="p-5 rounded-2xl border">
+        <h3 class="font-bold">服務資訊</h3>
+        <ul class="mt-3 text-sm">
+          <li>服務範圍：皆可服務（除宜、花、東、屏）</li>
+          <li>可附照片估價／可開立發票／14 天售後保固</li>
+          <li>施工前請確保水電正常供應，並協助保留必要空間</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t">
+    <div class="max-w-6xl mx-auto px-4 py-8 text-sm muted flex items-center gap-3">
+      <img src="logo-mark.jpg" alt="" class="h-10 md:h-12 w-auto opacity-80 dark:opacity-90" loading="lazy" width="96" height="96">
+      <span>© <span id="year"></span> 自然大叔 Natural Uncle｜統編：88537528</span>
+    </div>
+  </footer>
+
+  <!-- 行動版浮動快速按鈕 -->
+  <div class="fixed bottom-4 right-4 flex flex-col gap-2 md:hidden mobile-fab">
+    <a href="tel:+886912356331" class="btn btn-ghost">撥打電話</a>
+    <a href="https://line.me/R/ti/p/@uncle888" class="btn btn-primary">LINE 諮詢</a>
+  </div>
+
+  <!-- 主題切換（可拖曳） -->
+  <button id="themeToggle" class="fab theme-toggle" aria-label="切換深淺色" aria-pressed="false" title="切換深淺色">🌙</button>
+
+  <!-- 返回頂部 + LINE 預約 -->
+  <a href="#top" id="backTop" class="fab fab-top is-hidden" aria-label="返回頂部" title="返回頂部">↑</a>
+  <a href="https://line.me/R/ti/p/@uncle888" class="fab fab-book" aria-label="LINE 預約" title="LINE 預約">LINE 預約</a>
+
   <!-- Lightbox -->
   <div id="lightbox">
-    <span class="close">&times;</span>
+    <span class="close" aria-label="關閉">×</span>
     <img src="" alt="放大圖片">
   </div>
 
+  <!-- 功能腳本：年份、主題、滾動動畫、拖曳、返回頂部、工作日誌 + Lightbox -->
   <script>
+    /* 年份自動更新 */
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    /* 主題（深/淺色） */
+    const root=document.body, toggleBtn=document.getElementById('themeToggle'); const KEY='theme-pref';
+    function setIcon(){ const isDark=root.classList.contains('dark'); toggleBtn.textContent=isDark?'🌞':'🌙'; toggleBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false'); }
+    function applyInitialTheme(){
+      const saved=localStorage.getItem(KEY);
+      if(saved==='dark'||saved==='light'){ root.classList.toggle('dark',saved==='dark'); root.classList.toggle('light',saved==='light'); setIcon(); return; }
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.classList.toggle('dark',prefersDark); root.classList.toggle('light',!prefersDark); setIcon();
+    }
+    applyInitialTheme();
+    const mq=window.matchMedia('(prefers-color-scheme: dark)');
+    if(mq.addEventListener){
+      mq.addEventListener('change', e=>{ if(localStorage.getItem(KEY)) return; root.classList.toggle('dark',e.matches); root.classList.toggle('light',!e.matches); setIcon(); });
+    }
+    function toggleTheme(){ const nowDark=root.classList.contains('dark'); root.classList.toggle('dark',!nowDark); root.classList.toggle('light',nowDark); localStorage.setItem(KEY, nowDark ? 'light' : 'dark'); setIcon(); }
+
+    /* 滾動進場動畫 */
+    const observer = new IntersectionObserver((entries)=>{ entries.forEach(entry=>{ if(entry.isIntersecting){ entry.target.classList.add('visible'); observer.unobserve(entry.target); } }) }, {threshold:0.12});
+    document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+    /* 主題切換按鈕：可拖曳 + 點擊 */
+    (()=>{
+      const btn = document.getElementById('themeToggle'); const KEY_POS = 'theme-toggle-pos'; const THRESHOLD = 6;
+      function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
+      function defPos(){ const m = window.matchMedia('(max-width: 767.98px)').matches; return m ? {x:16, y: window.innerHeight - 140} : {x: window.innerWidth - 64, y: window.innerHeight - 120}; }
+      function applyPos(p){ btn.style.left=p.x+'px'; btn.style.top=p.y+'px'; btn.style.right='auto'; btn.style.bottom='auto'; }
+      function loadPos(){ try{const s=localStorage.getItem(KEY_POS); if(s){const p=JSON.parse(s); return {x:clamp(p.x,8,window.innerWidth-56), y:clamp(p.y,8,window.innerHeight-56)};}}catch(e){} return defPos(); }
+      function savePos(p){ localStorage.setItem(KEY_POS, JSON.stringify(p)); }
+      let pos = loadPos(); applyPos(pos);
+      let dragging=false, moved=false, startX=0, startY=0, origin={x:0,y:0};
+      btn.addEventListener('pointerdown', (e)=>{ btn.setPointerCapture(e.pointerId); dragging=true; moved=false; startX=e.clientX; startY=e.clientY; const r=btn.getBoundingClientRect(); origin={x:r.left,y:r.top}; e.preventDefault(); });
+      btn.addEventListener('pointermove', (e)=>{ if(!dragging) return; const dx=e.clientX-startX, dy=e.clientY-startY; if(Math.abs(dx)>THRESHOLD || Math.abs(dy)>THRESHOLD) moved=true; if(!moved) return; const nx=clamp(origin.x+dx,8,window.innerWidth-56); const ny=clamp(origin.y+dy,8,window.innerHeight-56); applyPos({x:nx,y:ny}); });
+      btn.addEventListener('pointerup', (e)=>{ if(!dragging) return; dragging=false; btn.releasePointerCapture(e.pointerId); if(moved){ const r=btn.getBoundingClientRect(); savePos({x:r.left,y:r.top}); }else{ toggleTheme(); } });
+      window.addEventListener('resize', ()=>{ const r=btn.getBoundingClientRect(); const p={x:clamp(r.left,8,window.innerWidth-56), y:clamp(r.top,8,window.innerHeight-56)}; applyPos(p); savePos(p); });
+    })();
+
+    /* 返回頂部顯示控制 */
+    (()=>{
+      const backTop = document.getElementById('backTop');
+      const THRESHOLD = 360;
+      function onScroll(){
+        if (window.scrollY > THRESHOLD) backTop.classList.remove('is-hidden');
+        else backTop.classList.add('is-hidden');
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
+
+  <!-- ★ 工作日誌（單張拼貼照 manifest）整合 + Lightbox -->
+  <script>
+  /* ========= 單張拼貼照（Cloudinary / ImageKit / Uploadcare / Cloudflare Images）=========
+     - 從 /works/manifest.json 讀取案例，每筆只有一張 image
+     - 列表顯示 600px 縮圖，點擊以 Lightbox 顯示 1600px 大圖
+  ====================================================================================== */
+
   const CONFIG = {
-    manifestPath:'/works/manifest.json',
-    cloudinary:{cloudName:'dijzndzw2'},
-    imagekit:{baseUrl:'https://ik.imagekit.io/YOUR_IMAGEKIT_ID'},
-    uploadcare:{baseCdn:'https://ucarecdn.com'},
-    cloudflare:{accountHash:'YOUR_ACCOUNT_HASH',variant:'public'}
+    manifestPath: '/works/manifest.json',
+    cloudinary: { cloudName: 'dijzndzw2' },                                // ← Cloudinary
+    imagekit:   { baseUrl: 'https://ik.imagekit.io/YOUR_IMAGEKIT_ID' },    // ← 如不用可忽略
+    uploadcare: { baseCdn: 'https://ucarecdn.com' },
+    cloudflare: { accountHash: 'YOUR_ACCOUNT_HASH', variant: 'public' }
   };
-  const $=s=>document.querySelector(s);
-  function daysBetween(d){const ms=(new Date())-new Date(d+'T00:00:00');return Math.floor(ms/86400000)}
-  function matchKeyword(w,kw){if(!kw)return true;kw=kw.trim();return[w.city,w.area,w.service,w.note].some(x=>(x||'').includes(kw))}
-  function buildUrl(provider,idOrUrl,width=1600){
-    if(!idOrUrl)return'';if(/^https?:\/\//i.test(idOrUrl))return idOrUrl;
+
+  const $ = s => document.querySelector(s);
+  function daysBetween(d){ const ms=(new Date())-new Date(d+'T00:00:00'); return Math.floor(ms/86400000); }
+  function matchKeyword(w,kw){ if(!kw) return true; kw=kw.trim(); return [w.city,w.area,w.service,w.note].some(x=>(x||'').includes(kw)); }
+
+  // 分段編碼：避免 public_id 中的 / 被整串 encode 壞掉
+  function buildUrl(provider, idOrUrl, width=1600){
+    if(!idOrUrl) return '';
+    if(/^https?:\/\//i.test(idOrUrl)) return idOrUrl;
     switch((provider||'').toLowerCase()){
-      case 'cloudinary':{const c=CONFIG.cloudinary.cloudName;const path=String(idOrUrl).split('/').map(encodeURIComponent).join('/');return`https://res.cloudinary.com/${c}/image/upload/f_auto,q_auto,w_${width}/${path}`;}
-      case 'imagekit':{const base=CONFIG.imagekit.baseUrl.replace(/\/$/,'');return`${base}/${idOrUrl}?tr=f-auto,q-85,w-${width}`;}
-      case 'uploadcare':{const cdn=CONFIG.uploadcare.baseCdn.replace(/\/$/,'');return`${cdn}/${idOrUrl}/-/format/auto/-/quality/smart/-/resize/${width}/`;}
-      case 'cloudflare':{const{accountHash,variant}=CONFIG.cloudflare;return`https://imagedelivery.net/${accountHash}/${encodeURIComponent(idOrUrl)}/${encodeURIComponent(variant)}`;}
-      default:return idOrUrl;
+      case 'cloudinary': {
+        const c = CONFIG.cloudinary.cloudName;
+        const path = String(idOrUrl).split('/').map(encodeURIComponent).join('/');
+        return `https://res.cloudinary.com/${c}/image/upload/f_auto,q_auto,w_${width}/${path}`;
+      }
+      case 'imagekit': {
+        const base = CONFIG.imagekit.baseUrl.replace(/\/$/,'');
+        return `${base}/${idOrUrl}?tr=f-auto,q-85,w-${width}`;
+      }
+      case 'uploadcare': {
+        const cdn = CONFIG.uploadcare.baseCdn.replace(/\/$/,'');
+        return `${cdn}/${idOrUrl}/-/format/auto/-/quality/smart/-/resize/${width}/`;
+      }
+      case 'cloudflare': {
+        const { accountHash, variant } = CONFIG.cloudflare;
+        return `https://imagedelivery.net/${accountHash}/${encodeURIComponent(idOrUrl)}/${encodeURIComponent(variant)}`;
+      }
+      default: return idOrUrl;
     }
   }
+
   function workCard(w){
-    const when=daysBetween(w.date)===0?'（本日）':'';
-    const title=`${w.date}${when}・${w.city||''}${w.area||''}・${w.service||''}`;
-    const prov=(w.provider||'url').toLowerCase();
-    const thumb=buildUrl(prov,w.image,600);
-    const full=buildUrl(prov,w.image,1600);
-    const alt=`${w.city||''}${w.area||''}${w.service||''} 清洗拼貼`;
-    return`
+    const when = daysBetween(w.date)===0 ? '（本日）' : '';
+    const title = `${w.date}${when}・${w.city||''}${w.area||''}・${w.service||''}`;
+    const prov  = (w.provider || 'url').toLowerCase();
+    const thumb = buildUrl(prov, w.image, 600);    // 列表縮圖
+    const full  = buildUrl(prov, w.image, 1600);   // Lightbox 大圖
+    const alt   = `${w.city||''}${w.area||''}${w.service||''} 清洗拼貼`;
+
+    return `
       <article class="card p-0 overflow-hidden">
         <div class="p-4 border-b flex items-center justify-between">
           <div class="text-sm font-semibold">${title}</div>
@@ -153,51 +550,113 @@
         </div>
         <div class="p-4">
           <img class="diary-thumb cursor-pointer" src="${thumb}" data-full="${full}" alt="${alt}" loading="lazy" width="600" height="450">
-          ${w.note?`<p class="mt-3 text-sm muted">${w.note}</p>`:''}
+          ${w.note ? `<p class="mt-3 text-sm muted">${w.note}</p>` : ''}
         </div>
-      </article>`;
+      </article>
+    `;
   }
-  let ALL_WORKS=[],currentFiltered=[],pageSize=8,page=1;
+
+  let ALL_WORKS = [], currentFiltered = [];
+  let pageSize = 8, page = 1;
+
   async function loadWorks(){
-    try{const res=await fetch(CONFIG.manifestPath+'?v='+Date.now(),{cache:'no-store'});
-      if(!res.ok)throw new Error('manifest 載入失敗');
-      const data=await res.json();
-      if(!Array.isArray(data))throw new Error('manifest 格式應為陣列');
-      ALL_WORKS=data.map(x=>({id:x.id||crypto.randomUUID(),date:x.date||new Date().toISOString().slice(0,10),service:x.service||'',city:x.city||'',area:x.area||'',note:x.note||'',provider:(x.provider||'url').toLowerCase(),image:x.image}));
-    }catch(e){console.error(e);ALL_WORKS=[]}
+    try{
+      const res = await fetch(CONFIG.manifestPath + '?v=' + Date.now(), { cache:'no-store' });
+      if(!res.ok) throw new Error('manifest 載入失敗');
+      const data = await res.json();
+      if(!Array.isArray(data)) throw new Error('manifest 格式應為陣列');
+
+      ALL_WORKS = data.map(x => ({
+        id: x.id || crypto.randomUUID(),
+        date: x.date || new Date().toISOString().slice(0,10),
+        service: x.service || '',
+        city: x.city || '',
+        area: x.area || '',
+        note: x.note || '',
+        provider: (x.provider || 'url').toLowerCase(),
+        image: x.image
+      }));
+    }catch(e){
+      console.error(e);
+      ALL_WORKS = [];
+    }
   }
+
   function applyFilters(){
-    const svc=$('#filterService')?.value||'all';const range=$('#filterDate')?.value||'7';const kw=$('#filterKeyword')?.value||'';
-    const filtered=ALL_WORKS.filter(w=>svc==='all'?true:w.service===svc).filter(w=>{
-      if(range==='all')return true;if(range==='1')return daysBetween(w.date)<=0;if(range==='7')return daysBetween(w.date)<=7;if(range==='30')return daysBetween(w.date)<=30;return true;
-    }).filter(w=>matchKeyword(w,kw)).sort((a,b)=>b.date.localeCompare(a.date));
-    currentFiltered=filtered;const cnt=$('#workCount');if(cnt)cnt.textContent=filtered.length;page=1;renderPage();
+    const svc = $('#filterService')?.value || 'all';
+    const range = $('#filterDate')?.value || '7';
+    const kw = $('#filterKeyword')?.value || '';
+
+    const filtered = ALL_WORKS
+      .filter(w => svc==='all' ? true : w.service===svc)
+      .filter(w => {
+        if(range==='all') return true;
+        if(range==='1')  return daysBetween(w.date) <= 0;
+        if(range==='7')  return daysBetween(w.date) <= 7;
+        if(range==='30') return daysBetween(w.date) <= 30;
+        return true;
+      })
+      .filter(w => matchKeyword(w, kw))
+      .sort((a,b) => b.date.localeCompare(a.date));
+
+    currentFiltered = filtered;
+    const cnt = $('#workCount'); if(cnt) cnt.textContent = filtered.length;
+    page = 1;
+    renderPage();
   }
+
   function renderPage(){
-    const grid=$('#workGrid');if(!grid)return;
-    if(currentFiltered.length===0){grid.innerHTML=`<div class="muted text-sm">目前尚無工作日誌</div>`;$('#btnMore')?.classList.add('is-hidden');return}
-    const slice=currentFiltered.slice(0,page*pageSize);
-    grid.innerHTML=slice.map(workCard).join('');
-    $('#btnMore')?.classList.toggle('is-hidden',slice.length>=currentFiltered.length);
-    bindLightbox();
+    const grid = $('#workGrid');
+    if(!grid) return;
+
+    if(currentFiltered.length===0){
+      grid.innerHTML = `<div class="muted text-sm">目前尚無工作日誌，歡迎稍後再來看看。</div>`;
+      document.getElementById('btnMore')?.classList.add('is-hidden');
+      return;
+    }
+
+    const slice = currentFiltered.slice(0, page*pageSize);
+    grid.innerHTML = slice.map(workCard).join('');
+
+    const more = document.getElementById('btnMore');
+    if(more){
+      if(slice.length >= currentFiltered.length){ more.classList.add('is-hidden'); }
+      else { more.classList.remove('is-hidden'); }
+    }
+
+    bindLightbox(); // 綁定當前頁面的縮圖
   }
+
   function bindLightbox(){
+    const lb = document.getElementById('lightbox');
+    const lbImg = lb.querySelector('img');
     document.querySelectorAll('.diary-thumb').forEach(img=>{
-      img.onclick=()=>{const full=img.dataset.full;const lb=$('#lightbox');const lbImg=$('#lightbox img');lbImg.src=full;lb.style.display='flex'}
+      img.onclick = ()=>{
+        lbImg.src = img.dataset.full;
+        lb.style.display = 'flex';
+      };
     });
   }
+
   async function initDiary(){
     await loadWorks();
-    $('#filterService')?.addEventListener('change',applyFilters);
-    $('#filterDate')?.addEventListener('change',applyFilters);
-    $('#filterKeyword')?.addEventListener('input',()=>applyFilters());
-    $('#btnMore')?.addEventListener('click',()=>{page+=1;renderPage()});
+    document.getElementById('filterService')?.addEventListener('change', applyFilters);
+    document.getElementById('filterDate')?.addEventListener('change', applyFilters);
+    document.getElementById('filterKeyword')?.addEventListener('input', ()=>{ applyFilters(); });
+    document.getElementById('btnMore')?.addEventListener('click', ()=>{ page += 1; renderPage(); });
     applyFilters();
   }
+
   initDiary();
-  // Lightbox 關閉
-  $('#lightbox .close').onclick=()=>{$('#lightbox').style.display='none';$('#lightbox img').src=''}
-  $('#lightbox').onclick=e=>{if(e.target.id==='lightbox'){$('#lightbox').style.display='none';$('#lightbox img').src=''}}
+
+  /* Lightbox 關閉 */
+  document.querySelector('#lightbox .close').onclick = ()=>{
+    const lb = document.getElementById('lightbox'); const img = lb.querySelector('img');
+    img.src=''; lb.style.display='none';
+  };
+  document.getElementById('lightbox').onclick = (e)=>{
+    if(e.target.id === 'lightbox'){ const lbImg = e.currentTarget.querySelector('img'); lbImg.src=''; e.currentTarget.style.display='none';}
+  };
   </script>
 </body>
 </html>
