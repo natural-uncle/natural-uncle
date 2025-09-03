@@ -611,171 +611,226 @@
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
     })();
-  </script>
-
-  <!-- ★ 工作日誌（SaaS 圖片 / manifest.json）整合腳本：單張拼貼照 + Lightbox -->
   <script>
-  /* ========= 從 /works/manifest.json 讀取，每筆只有一張 image =========
-     支援 Cloudinary / ImageKit / Uploadcare / Cloudflare Images
-  ====================================================================== */
+/* ========= 工作日誌（相容 before/after + image，預設顯示全部） ========= */
+const CONFIG = {
+  // 若你的檔案在相對路徑，改成 'works/manifest.json'
+  manifestPath: '/works/manifest.json',
+  cloudinary: { cloudName: 'dijzndzw2' },
+  imagekit:   { baseUrl: 'https://ik.imagekit.io/YOUR_IMAGEKIT_ID' },
+  uploadcare: { baseCdn: 'https://ucarecdn.com' },
+  cloudflare: { accountHash: 'YOUR_ACCOUNT_HASH', variant: 'public' }
+};
 
-  const CONFIG = {
-    manifestPath: '/works/manifest.json',
-    cloudinary: { cloudName: 'dijzndzw2' },                                   // ← 依你實際 Cloudinary 帳號
-    imagekit:   { baseUrl: 'https://ik.imagekit.io/YOUR_IMAGEKIT_ID' },       // ← 如未用可忽略
-    uploadcare: { baseCdn: 'https://ucarecdn.com' },                           // ← 固定
-    cloudflare: { accountHash: 'YOUR_ACCOUNT_HASH', variant: 'public' }        // ← 如未用可忽略
-  };
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
 
-  const $ = s => document.querySelector(s);
-  const $$ = s => Array.from(document.querySelectorAll(s));
-  function daysBetween(d){ const ms=(new Date())-new Date(d+'T00:00:00'); return Math.floor(ms/86400000); }
-  function matchKeyword(w,kw){ if(!kw) return true; kw=kw.trim(); return [w.city,w.area,w.service,w.note].some(x=>(x||'').includes(kw)); }
+/* 👉 預設把日期 filter 改成「全部」 */
+document.addEventListener('DOMContentLoaded', () => {
+  const fd = $('#filterDate');
+  if (fd) fd.value = 'all';
+});
 
-  function buildUrl(provider, idOrUrl, width=1600){
-    if(!idOrUrl) return '';
-    if(/^https?:\/\//i.test(idOrUrl)) return idOrUrl;
-    switch((provider||'cloudinary').toLowerCase()){
-      case 'cloudinary': {
-        const c = CONFIG.cloudinary.cloudName;
-        return `https://res.cloudinary.com/${c}/image/upload/f_auto,q_auto,w_${width}/${encodeURIComponent(idOrUrl)}`;
-      }
-      case 'imagekit': {
-        const base = CONFIG.imagekit.baseUrl.replace(/\/$/,'');
-        return `${base}/${idOrUrl}?tr=f-auto,q-85,w-${width}`;
-      }
-      case 'uploadcare': {
-        const cdn = CONFIG.uploadcare.baseCdn.replace(/\/$/,'');
-        return `${cdn}/${idOrUrl}/-/format/auto/-/quality/smart/-/resize/${width}/`;
-      }
-      case 'cloudflare': {
-        const { accountHash, variant } = CONFIG.cloudflare;
-        return `https://imagedelivery.net/${accountHash}/${encodeURIComponent(idOrUrl)}/${encodeURIComponent(variant)}`;
-      }
-      default: return idOrUrl;
+function daysBetween(d){
+  // 支援 "YYYY-MM-DD"；無法解析就視為今日，避免被日期篩掉
+  const t = Date.parse(d + 'T00:00:00');
+  if (isNaN(t)) return 0;
+  return Math.floor((new Date() - new Date(t)) / 86400000);
+}
+
+function matchKeyword(w,kw){
+  if(!kw) return true;
+  kw = kw.trim();
+  return [w.city,w.area,w.service,w.note]
+    .some(x => (x||'').includes(kw));
+}
+
+function isFullUrl(s){ return /^https?:\/\//i.test(s||''); }
+
+/* 依 provider 產最佳化 URL；若已是完整 URL 直接回傳 */
+function buildUrl(provider, idOrUrl, width=1600){
+  if(!idOrUrl) return '';
+  if (isFullUrl(idOrUrl)) return idOrUrl;
+
+  switch((provider||'cloudinary').toLowerCase()){
+    case 'cloudinary': {
+      const c = CONFIG.cloudinary.cloudName;
+      return `https://res.cloudinary.com/${c}/image/upload/f_auto,q_auto,w_${width}/${encodeURIComponent(idOrUrl)}`;
     }
+    case 'imagekit': {
+      const base = CONFIG.imagekit.baseUrl.replace(/\/$/,'');
+      return `${base}/${idOrUrl}?tr=f-auto,q-85,w-${width}`;
+    }
+    case 'uploadcare': {
+      const cdn = CONFIG.uploadcare.baseCdn.replace(/\/$/,'');
+      return `${cdn}/${idOrUrl}/-/format/auto/-/quality/smart/-/resize/${width}/`;
+    }
+    case 'cloudflare': {
+      const { accountHash, variant } = CONFIG.cloudflare;
+      return `https://imagedelivery.net/${accountHash}/${encodeURIComponent(idOrUrl)}/${encodeURIComponent(variant)}`;
+    }
+    default: return idOrUrl;
   }
+}
 
-  function workCard(w){
-    const when = daysBetween(w.date)===0 ? '（本日）' : '';
-    const title = `${w.date}${when}・${w.city||''}${w.area||''}・${w.service||''}`;
-    const prov  = (w.provider || 'cloudinary').toLowerCase();
-    const thumb = buildUrl(prov, w.image, 600);
-    const full  = buildUrl(prov, w.image, 1600);
-    const alt   = `${w.city||''}${w.area||''}${w.service||''}${w.note ? '｜'+w.note : ''}`;
+/* 單張拼貼照卡片（新版） */
+function workCardImage(w){
+  const when = daysBetween(w.date)===0 ? '（本日）' : '';
+  const title = `${w.date||''}${when}・${w.city||''}${w.area||''}・${w.service||''}`;
+  const prov  = (w.provider || 'cloudinary').toLowerCase();
+  const thumb = buildUrl(prov, w.image, 600);
+  const full  = buildUrl(prov, w.image, 1600);
+  const alt   = `${w.city||''}${w.area||''}${w.service||''}${w.note ? '｜'+w.note : ''}`;
 
-    return `
-      <article class="card p-0 overflow-hidden">
-        <div class="p-4 border-b flex items-center justify-between">
-          <div class="text-sm font-semibold">${title}</div>
-          <span class="text-xs muted">${w.id||''}</span>
-        </div>
-        <div class="p-4">
-          <a href="#" class="open-lightbox" data-full="${full}">
-            <img class="diary-thumb" src="${thumb}" alt="${alt}" loading="lazy" width="600" height="450">
+  return `
+    <article class="card p-0 overflow-hidden">
+      <div class="p-4 border-b flex items-center justify-between">
+        <div class="text-sm font-semibold">${title}</div>
+        <span class="text-xs muted">${w.id||''}</span>
+      </div>
+      <div class="p-4">
+        <a href="#" class="open-lightbox" data-full="${full}">
+          <img class="diary-thumb" src="${thumb}" alt="${alt}" loading="lazy" width="600" height="450">
+        </a>
+        ${w.note ? `<p class="mt-3 text-sm muted">${w.note}</p>` : ''}
+      </div>
+    </article>
+  `;
+}
+
+/* 前後對比卡片（相容舊版） */
+function workCardBeforeAfter(w){
+  const when = daysBetween(w.date)===0 ? '（本日）' : '';
+  const title = `${w.date||''}${when}・${w.city||''}${w.area||''}・${w.service||''}`;
+  const prov = (w.provider || 'cloudinary').toLowerCase();
+  const beT  = buildUrl(prov, w.before, 600);
+  const afT  = buildUrl(prov, w.after, 600);
+  const beF  = buildUrl(prov, w.before, 1600);
+  const afF  = buildUrl(prov, w.after, 1600);
+  const altB = `${w.city||''}${w.area||''}${w.service||''} 清洗前`;
+  const altA = `${w.city||''}${w.area||''}${w.service||''} 清洗後`;
+
+  return `
+    <article class="card p-0 overflow-hidden">
+      <div class="p-4 border-b flex items-center justify-between">
+        <div class="text-sm font-semibold">${title}</div>
+        <span class="text-xs muted">${w.id||''}</span>
+      </div>
+      <div class="p-4">
+        <div class="grid grid-cols-2 gap-3">
+          <a href="#" class="open-lightbox" data-full="${beF}">
+            <img class="diary-thumb" src="${beT}" alt="${altB}" loading="lazy">
           </a>
-          ${w.note ? `<p class="mt-3 text-sm muted">${w.note}</p>` : ''}
+          <a href="#" class="open-lightbox" data-full="${afF}">
+            <img class="diary-thumb" src="${afT}" alt="${altA}" loading="lazy">
+          </a>
         </div>
-      </article>
-    `;
-  }
+        ${w.note ? `<p class="mt-3 text-sm muted">${w.note}</p>` : ''}
+      </div>
+    </article>
+  `;
+}
 
-  let ALL_WORKS = [], currentFiltered = [];
-  let pageSize = 8, page = 1;
+let ALL_WORKS = [], currentFiltered = [];
+let pageSize = 8, page = 1;
 
-  async function loadWorks(){
-    try{
-      const res = await fetch(CONFIG.manifestPath + '?v=' + Date.now(), { cache:'no-store' });
-      if(!res.ok) throw new Error('manifest 載入失敗');
-      const data = await res.json();
-      if(!Array.isArray(data)) throw new Error('manifest 格式應為陣列');
+async function loadWorks(){
+  try{
+    const url = CONFIG.manifestPath;
+    const res = await fetch(url + (url.includes('?') ? '&' : '?') + 'v=' + Date.now(), { cache:'no-store' });
+    if(!res.ok) throw new Error('manifest 載入失敗：' + res.status);
+    const data = await res.json();
+    if(!Array.isArray(data)) throw new Error('manifest 格式應為陣列');
 
-      ALL_WORKS = data.map(x => ({
-        id: x.id || crypto.randomUUID(),
+    ALL_WORKS = data.map(x => {
+      // 相容兩種 schema：image 或 before/after
+      const hasImage = !!x.image;
+      const hasBA    = (!!x.before && !!x.after);
+      return {
+        id: x.id || (crypto?.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2)),
         date: x.date || new Date().toISOString().slice(0,10),
         service: x.service || '',
         city: x.city || '',
         area: x.area || '',
         note: x.note || '',
         provider: (x.provider || 'cloudinary').toLowerCase(),
-        image: x.image
-      }));
-    }catch(e){
-      console.error(e);
-      ALL_WORKS = [];
-    }
+        image: hasImage ? x.image : null,
+        before: hasBA  ? x.before : null,
+        after:  hasBA  ? x.after  : null,
+      };
+    });
+  }catch(e){
+    console.error('[Diary] 讀取失敗：', e);
+    ALL_WORKS = [];
+  }
+}
+
+function applyFilters(){
+  const svc = $('#filterService')?.value || 'all';
+  const range = $('#filterDate')?.value || 'all'; // 預設改為 all
+  const kw = $('#filterKeyword')?.value || '';
+
+  const filtered = ALL_WORKS
+    .filter(w => svc==='all' ? true : w.service===svc)
+    .filter(w => {
+      if(range==='all') return true;
+      if(range==='1')  return daysBetween(w.date) <= 0;
+      if(range==='7')  return daysBetween(w.date) <= 7;
+      if(range==='30') return daysBetween(w.date) <= 30;
+      return true;
+    })
+    .filter(w => matchKeyword(w, kw))
+    .sort((a,b) => b.date.localeCompare(a.date));
+
+  currentFiltered = filtered;
+  const cnt = $('#workCount'); if(cnt) cnt.textContent = filtered.length;
+  page = 1;
+  renderPage();
+}
+
+function renderPage(){
+  const grid = $('#workGrid');
+  if(!grid) return;
+
+  if(currentFiltered.length===0){
+    grid.innerHTML = `<div class="muted text-sm">目前尚無工作日誌，請確認 /works/manifest.json 已存在且有資料。</div>`;
+    $('#btnMore')?.classList.add('is-hidden');
+    return;
   }
 
-  function applyFilters(){
-    const svc = $('#filterService')?.value || 'all';
-    const range = $('#filterDate')?.value || '7';
-    const kw = $('#filterKeyword')?.value || '';
+  const slice = currentFiltered.slice(0, page*pageSize);
+  grid.innerHTML = slice.map(w => w.image ? workCardImage(w) : workCardBeforeAfter(w)).join('');
+  $('#btnMore')?.classList.toggle('is-hidden', slice.length >= currentFiltered.length);
+}
 
-    const filtered = ALL_WORKS
-      .filter(w => svc==='all' ? true : w.service===svc)
-      .filter(w => {
-        if(range==='all') return true;
-        if(range==='1')  return daysBetween(w.date) <= 0;
-        if(range==='7')  return daysBetween(w.date) <= 7;
-        if(range==='30') return daysBetween(w.date) <= 30;
-        return true;
-      })
-      .filter(w => matchKeyword(w, kw))
-      .sort((a,b) => b.date.localeCompare(a.date));
+/* Lightbox（點背景、×、ESC 關閉） */
+const lightbox = document.createElement('div');
+lightbox.id = 'lightbox';
+lightbox.innerHTML = `<img src="" alt=""><span class="close" aria-label="關閉">×</span>`;
+document.body.appendChild(lightbox);
 
-    currentFiltered = filtered;
-    const cnt = $('#workCount'); if(cnt) cnt.textContent = filtered.length;
-    page = 1;
-    renderPage();
+document.body.addEventListener('click', e=>{
+  const a=e.target.closest('.open-lightbox'); if(a){ e.preventDefault();
+    const full=a.getAttribute('data-full');
+    const img=lightbox.querySelector('img');
+    img.src=full; img.alt=a.querySelector('img')?.alt || '';
+    lightbox.classList.add('active');
   }
+  if(e.target.classList.contains('close')) lightbox.classList.remove('active');
+  if(e.target.id==='lightbox' && e.target===lightbox) lightbox.classList.remove('active');
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') lightbox.classList.remove('active'); });
 
-  function renderPage(){
-    const grid = $('#workGrid');
-    if(!grid) return;
+/* 綁定事件 & 初始化 */
+$('#btnMore')?.addEventListener('click', ()=>{ page += 1; renderPage(); });
+$('#filterService')?.addEventListener('change', applyFilters);
+$('#filterDate')?.addEventListener('change', applyFilters);
+$('#filterKeyword')?.addEventListener('input', ()=>{ applyFilters(); });
 
-    if(currentFiltered.length===0){
-      grid.innerHTML = `<div class="muted text-sm">目前尚無工作日誌，歡迎稍後再來看看。</div>`;
-      $('#btnMore')?.classList.add('is-hidden');
-      return;
-    }
-
-    const slice = currentFiltered.slice(0, page*pageSize);
-    grid.innerHTML = slice.map(workCard).join('');
-
-    const more = $('#btnMore');
-    if(more){
-      more.classList.toggle('is-hidden', slice.length >= currentFiltered.length);
-    }
-  }
-
-  // Lightbox
-  const lightbox = document.createElement('div');
-  lightbox.id = 'lightbox';
-  lightbox.innerHTML = `<img src="" alt=""><span class="close" aria-label="關閉">×</span>`;
-  document.body.appendChild(lightbox);
-
-  document.body.addEventListener('click', e=>{
-    const a=e.target.closest('.open-lightbox'); if(a){ e.preventDefault();
-      const full=a.getAttribute('data-full');
-      const img=lightbox.querySelector('img');
-      img.src=full; img.alt=a.querySelector('img')?.alt || '';
-      lightbox.classList.add('active');
-    }
-    if(e.target.classList.contains('close')) lightbox.classList.remove('active');
-    if(e.target.id==='lightbox' && e.target===lightbox) lightbox.classList.remove('active');
-  });
-
-  document.addEventListener('keydown', e=>{
-    if(e.key==='Escape') lightbox.classList.remove('active');
-  });
-
-  // 綁定事件 & 初始化
-  document.getElementById('btnMore')?.addEventListener('click', ()=>{ page += 1; renderPage(); });
-  document.getElementById('filterService')?.addEventListener('change', applyFilters);
-  document.getElementById('filterDate')?.addEventListener('change', applyFilters);
-  document.getElementById('filterKeyword')?.addEventListener('input', ()=>{ applyFilters(); });
-
-  (async function initDiary(){ await loadWorks(); applyFilters(); })();
-  </script>
+(async function initDiary(){
+  await loadWorks();
+  applyFilters();
+})();
+</script>
 </body>
 </html>
