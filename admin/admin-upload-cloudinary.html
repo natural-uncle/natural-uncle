@@ -5,18 +5,23 @@
 <meta name="robots" content="noindex,nofollow">
 <script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
 <style>
-  body{font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Noto Sans TC,Arial;margin:24px;color:#0b1220}
+  :root{--blue:#2563eb;--bg:#0f172a;--panel:#111827;--text:#e5e7eb;--muted:#9ca3af;--ok:#16a34a}
+  body{font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans TC",Arial;margin:24px;color:#0b1220}
   .row{display:grid;gap:12px;grid-template-columns:1fr 1fr}
-  .btn{display:inline-block;padding:.7rem 1rem;border-radius:.6rem;background:#2563eb;color:#fff;border:0;cursor:pointer;font-weight:700}
-  .gray{background:#0f172a;color:#e5e7eb;padding:12px;border-radius:.6rem;white-space:pre;overflow:auto}
+  .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.7rem 1rem;border-radius:.6rem;background:var(--blue);color:#fff;border:0;cursor:pointer;font-weight:700}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .gray{background:#0f172a;color:#e5e7eb;padding:12px;border-radius:.6rem;white-space:pre;overflow:auto;border:1px solid #1f2937}
   input,select{width:100%;padding:.6rem .7rem;border:1px solid #cbd5e1;border-radius:.5rem}
   label{display:block;margin:.5rem 0 .25rem;font-weight:600}
-  .badge{display:inline-block;padding:.2rem .5rem;border-radius:.5rem;background:#e2e8f0;margin-left:.5rem;font-size:.8rem}
-  .note{background:#f1f5f9;border-left:4px solid #2563eb;padding:.75rem 1rem;border-radius:.5rem;margin:.5rem 0 1rem}
+  .badge{display:inline-block;padding:.25rem .55rem;border-radius:.5rem;background:#e2e8f0;margin-left:.5rem;font-size:.8rem}
+  .note{background:#f1f5f9;border-left:4px solid var(--blue);padding:.75rem 1rem;border-radius:.5rem;margin:.5rem 0 1rem}
+  .muted{color:#64748b}
+  .preview{margin-top:10px;border:1px dashed #cbd5e1;border-radius:.6rem;min-height:160px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .preview img{max-width:100%;height:auto;display:block}
 </style>
 
 <h1>Cloudinary 上傳（拼貼照）＋ JSON 產生器</h1>
-<p class="note">Cloud name = <b>dijzndzw2</b>、Unsigned preset = <b>nu-unsigned</b>、Folder = <b>natural-uncle</b>。直接按「上傳拼貼照」，最後點「產生 JSON」。</p>
+<p class="note">Cloud name = <b>dijzndzw2</b>、Unsigned preset = <b>nu-unsigned</b>、Folder = <b>natural-uncle</b>。步驟：<b>上傳拼貼照 → 產生 JSON → 一鍵複製</b>，再貼回 <code>/works/manifest.json</code> 陣列中。</p>
 
 <div class="row">
   <div>
@@ -30,34 +35,45 @@
     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn" id="btnUpload">上傳拼貼照</button>
       <span id="pidImage" class="badge">尚未上傳</span>
+      <button class="btn" id="btnReupload" type="button" disabled>重新上傳</button>
     </div>
 
+    <div class="preview" id="preview"><span class="muted">上傳完成後會顯示預覽</span></div>
+
     <label style="margin-top:16px">日期（YYYY-MM-DD）</label>
-    <input id="date" placeholder="例如：2025-09-03" value="">
+    <input id="date" placeholder="例如：2025-09-03">
     <label>服務</label>
-    <select id="service"><option>冷氣</option><option>洗衣機</option><option>水塔</option><option>水管</option></select>
+    <select id="service">
+      <option>冷氣</option><option>洗衣機</option><option>水塔</option><option>水管</option>
+    </select>
     <label>城市</label><input id="city" placeholder="例如：台北市">
     <label>行政區</label><input id="area" placeholder="例如：大安區">
     <label>備註</label><input id="note" placeholder="選填：現場狀況 / 成果重點">
 
-    <button class="btn" id="gen" style="margin-top:12px">產生 JSON 片段</button>
+    <button class="btn" id="gen" style="margin-top:12px" disabled>產生 JSON 片段</button>
   </div>
+
   <div>
     <label>結果（複製貼回 works/manifest.json 陣列中）</label>
+    <div style="display:flex;align-items:center;gap:8px;margin:8px 0">
+      <button class="btn" id="copyBtn" disabled>📋 一鍵複製</button>
+      <span id="copyStatus" class="muted"></span>
+    </div>
     <textarea id="out" class="gray" rows="18" readonly></textarea>
   </div>
 </div>
 
 <script>
-function createWidget(){
+/* 預設日期 = 今天 */
+(function(){ const t=new Date(); const pad=n=>n<10?'0'+n:n; document.getElementById('date').value = `${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}`; })();
+
+function openWidget(){
   const cloudName = document.getElementById('cloudName').value.trim();
   const preset = document.getElementById('preset').value.trim();
   const folder = document.getElementById('folder').value.trim();
 
   const widget = cloudinary.createUploadWidget({
-    cloudName,
-    uploadPreset: preset,
-    folder: folder || undefined,
+    cloudName, uploadPreset: preset, folder: folder || undefined,
     multiple: false,
     sources: ['local','camera','url','google_drive'],
     clientAllowedFormats: ['jpg','jpeg','png','webp','heic'],
@@ -65,32 +81,55 @@ function createWidget(){
   }, (error, result) => {
     if (!error && result && result.event === "success") {
       const pid = result.info.public_id;
+      const cdn = `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto,w_1600/${pid.split('/').map(encodeURIComponent).join('/')}`;
       document.getElementById('pidImage').textContent = pid;
       document.getElementById('pidImage').style.background = '#bbf7d0';
+      document.getElementById('preview').innerHTML = `<img src="${cdn}" alt="預覽">`;
+      document.getElementById('gen').disabled = false;
+      document.getElementById('btnReupload').disabled = false;
     }
   });
   widget.open();
 }
 
-document.getElementById('btnUpload').onclick = ()=>createWidget();
+document.getElementById('btnUpload').onclick = openWidget;
+document.getElementById('btnReupload').onclick = openWidget;
 
 document.getElementById('gen').onclick = ()=>{
-  const pad = n => n<10? '0'+n : ''+n;
-  const today = new Date(); const y=today.getFullYear(), m=pad(today.getMonth()+1), d=pad(today.getDate());
-  const id = `${y}-${m}-${d}-${Math.floor(Math.random()*90+10)}`;
   const pid = document.getElementById('pidImage').textContent;
-  if(pid.includes('尚未')){ alert('請先上傳拼貼照'); return; }
+  if(!pid || pid.includes('尚未')){ alert('請先上傳拼貼照'); return; }
+  const out = buildEntry(pid);
+  document.getElementById('out').value = JSON.stringify(out, null, 2);
+  document.getElementById('copyBtn').disabled = false;
+  document.getElementById('copyStatus').textContent = '';
+};
 
-  const obj = {
+document.getElementById('copyBtn').onclick = async ()=>{
+  const text = document.getElementById('out').value.trim();
+  if(!text){ alert('沒有可複製的內容'); return; }
+  try{
+    await navigator.clipboard.writeText(text);
+    document.getElementById('copyStatus').textContent = '✅ 已複製到剪貼簿';
+    setTimeout(()=>document.getElementById('copyStatus').textContent='', 1800);
+  }catch{
+    document.getElementById('copyStatus').textContent = '❌ 複製失敗（瀏覽器限制）';
+  }
+};
+
+function buildEntry(publicId){
+  const pad = n => n<10? '0'+n : ''+n;
+  const t = new Date(); const today = `${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}`;
+  // 簡單 id：日期 + 亂碼
+  const id = `${today}-${Math.random().toString(36).slice(2,6).toUpperCase()}`;
+  return {
     id,
-    date: document.getElementById('date').value || `${y}-${m}-${d}`,
+    date: document.getElementById('date').value || today,
     service: document.getElementById('service').value,
     city: document.getElementById('city').value || '',
     area: document.getElementById('area').value || '',
     note: document.getElementById('note').value || '',
     provider: 'cloudinary',
-    image: pid
+    image: publicId
   };
-  document.getElementById('out').value = JSON.stringify(obj, null, 2);
-};
+}
 </script>
