@@ -1,11 +1,20 @@
-[{
-  "id": "2025-09-03-83",
-  "date": "2025-09-01",
-  "service": "冷氣",
-  "city": "台中市",
-  "area": "",
-  "note": "髒",
-  "provider": "cloudinary",
-  "before": "natural-uncle/1000000677_mkpzoc",
-  "after": "natural-uncle/1000000680_lmczvo"
-}]
+[
+  {
+    "id": "ac-2025-09-03-01",
+    "date": "2025-09-03",
+    "service": "冷氣",
+    "city": "台中市",
+    "note": "主臥室",
+    "provider": "cloudinary",
+    "collage": "natural-uncle/2025-09-03/ac-case-01-collage.jpg"
+  },
+  {
+    "id": "ac-2025-09-01-01",
+    "date": "2025-09-01",
+    "service": "冷氣",
+    "city": "台中市",
+    "provider": "cloudinary",
+    "before": "natural-uncle/2025-09-01/before.jpg",
+    "after":  "natural-uncle/2025-09-01/after.jpg"
+  }
+]
