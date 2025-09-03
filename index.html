@@ -469,463 +469,178 @@
         <p class="card-desc">📞 有狀況請立即聯繫（電話 / LINE），我們負責到底。</p>
       </div>
     </details>
-  </section>
+  </script>
 
-  <!-- ★ 工作照片日誌（單張拼貼照 + Lightbox） -->
-  <section id="cases" class="max-w-6xl mx-auto px-4 py-12 reveal">
-    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
-      <div>
-        <h2 class="text-2xl md:text-3xl font-bold">工作照片日誌｜每日更新</h2>
-        <p class="muted text-sm mt-1">顯示每次清洗的拼貼照片（<span id="workCount">0</span> 筆）</p>
-      </div>
-      <div class="flex flex-col sm:flex-row gap-2">
-        <select id="filterService" class="btn btn-ghost py-2 px-3">
-          <option value="all">全部服務</option>
-          <option value="冷氣">冷氣清洗</option>
-          <option value="洗衣機">直立式洗衣機清洗</option>
-          <option value="水塔">水塔清洗</option>
-          <option value="水管">自來水管清洗</option>
-        </select>
-        <select id="filterDate" class="btn btn-ghost py-2 px-3">
-          <option value="7">近 7 天</option>
-          <option value="30">近 30 天</option>
-          <option value="1">本日</option>
-          <option value="all">全部</option>
-        </select>
-        <input id="filterKeyword" class="btn btn-ghost py-2 px-3" placeholder="關鍵字（區域/備註）" />
-      </div>
-    </div>
-
-    <div id="workGrid" class="grid md:grid-cols-2 gap-6"></div>
-
-    <div class="mt-6 text-center">
-      <button id="btnMore" class="btn btn-primary px-6">載入更多</button>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section id="faq" class="bg-slate-50 reveal">
-    <div class="max-w-6xl mx-auto px-4 py-12">
-      <h2 class="text-2xl md:text-3xl font-bold mb-6">常見問題</h2>
-      <details class="faq"><summary>清洗會不會弄髒室內？</summary><div class="faq-content"><p>作業前會做防護與遮蔽，完工會收拾乾淨。</p></div></details>
-      <details class="faq"><summary>多久清一次比較好？</summary><div class="faq-content"><p>一般家用建議 1–2 年清洗一次；若有過敏或寵物，建議頻率更高。</p></div></details>
-      <details class="faq"><summary>檢測到異常還會清洗嗎？</summary><div class="faq-content"><p>會先與您溝通風險與可能後果，再共同決定是否繼續；若為冷媒/安裝問題，建議由冷凍專業處理。</p></div></details>
-      <details class="faq"><summary>清洗後若有問題怎麼處理？有保固嗎？</summary><div class="faq-content"><p>提供 14 天售後保固，若出現漏水、使用異常等清洗關聯問題，將由專人到府處理；安裝不良或機件老化等非清洗因素不在範圍。</p></div></details>
-    </div>
-  </section>
-
-  <!-- 聯絡 / 預約 -->
-  <section id="contact" class="max-w-6xl mx-auto px-4 py-12 reveal">
-    <h2 class="text-2xl md:text-3xl font-bold mb-6">聯絡 / 預約</h2>
-    <div class="grid md:grid-cols-2 gap-6 items-start">
-      <div class="p-5 rounded-2xl border">
-        <h3 class="card-title">快速通道</h3>
-        <ul class="mt-3 text-sm">
-          <li>電話：<a href="tel:+886912356331" class="text-sky-700 underline">+886 912-356-331</a></li>
-          <li>LINE：<a href="https://line.me/R/ti/p/@uncle888" class="text-sky-700 underline">@uncle888</a></li>
-          <li>服務時間：週一至週六 09:00–20:00</li>
-        </ul>
-        <a href="https://yourdomain.com/booking" class="btn btn-success btn-booking mt-4 w-full sm:w-auto">立即線上預約</a>
-      </div>
-      <div class="p-5 rounded-2xl border">
-        <h3 class="font-bold">服務資訊</h3>
-        <ul class="mt-3 text-sm">
-          <li>服務範圍：皆可服務（除宜、花、東、屏）</li>
-          <li>可附照片估價／可開立發票／14 天售後保固</li>
-          <li>施工前請確保水電正常供應，並協助保留必要空間</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="bg-white border-t">
-    <div class="max-w-6xl mx-auto px-4 py-8 text-sm muted flex items-center gap-3">
-      <img src="logo-mark.jpg" alt="" class="h-10 md:h-12 w-auto opacity-80 dark:opacity-90" loading="lazy" width="96" height="96">
-      <span>© <span id="year"></span> 自然大叔 Natural Uncle｜統編：88537528</span>
-    </div>
-  </footer>
-
-  <!-- 行動版浮動快速按鈕 -->
-  <div class="fixed bottom-4 right-4 flex flex-col gap-2 md:hidden mobile-fab">
-    <a href="tel:+886912356331" class="btn btn-ghost">撥打電話</a>
-    <a href="https://line.me/R/ti/p/@uncle888" class="btn btn-primary">LINE 諮詢</a>
-  </div>
-
-  <!-- 深/淺色切換（可拖曳） -->
-  <button id="themeToggle" class="theme-toggle" aria-label="切換深淺色" aria-pressed="false">🌙</button>
-
-  <!-- 浮動按鈕（返回頂部 + LINE 預約） -->
-  <a href="#top" id="backTop" class="fab fab-top is-hidden" aria-label="返回頂部" title="返回頂部">↑</a>
-  <a href="https://line.me/R/ti/p/@uncle888" class="fab fab-book" aria-label="LINE 預約" title="LINE 預約">LINE 預約</a>
-
-  <!-- 既有的功能腳本：主題、滾動動畫、拖曳等 -->
+  <!-- ★ 工作日誌（單張拼貼照 manifest）整合 + Lightbox -->
   <script>
-    /* 年份自動更新 */
-    document.getElementById('year').textContent = new Date().getFullYear();
+  /* ========= 單張拼貼照（Cloudinary / ImageKit / Uploadcare / Cloudflare Images）=========
+     - 從 /works/manifest.json 讀取案例，每筆只有一張 image
+     - 列表顯示 600px 縮圖，點擊以 Lightbox 顯示 1600px 大圖
+  ====================================================================================== */
 
-    /* 主題（深/淺色） */
-    const root=document.body, toggleBtn=document.getElementById('themeToggle'); const KEY='theme-pref';
-    function setIcon(){ const isDark=root.classList.contains('dark'); toggleBtn.textContent=isDark?'🌞':'🌙'; toggleBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false'); }
-    function applyInitialTheme(){
-      const saved=localStorage.getItem(KEY);
-      if(saved==='dark'||saved==='light'){ root.classList.toggle('dark',saved==='dark'); root.classList.toggle('light',saved==='light'); setIcon(); return; }
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      root.classList.toggle('dark',prefersDark); root.classList.toggle('light',!prefersDark); setIcon();
-    }
-    applyInitialTheme();
-    const mq=window.matchMedia('(prefers-color-scheme: dark)');
-    if(mq.addEventListener){
-      mq.addEventListener('change', e=>{ if(localStorage.getItem(KEY)) return; root.classList.toggle('dark',e.matches); root.classList.toggle('light',!e.matches); setIcon(); });
-    }
-    function toggleTheme(){ const nowDark=root.classList.contains('dark'); root.classList.toggle('dark',!nowDark); root.classList.toggle('light',nowDark); localStorage.setItem(KEY, nowDark ? 'light' : 'dark'); setIcon(); }
-
-    /* 滾動進場動畫 */
-    const observer = new IntersectionObserver((entries)=>{ entries.forEach(entry=>{ if(entry.isIntersecting){ entry.target.classList.add('visible'); observer.unobserve(entry.target); } }) }, {threshold:0.12});
-    document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
-
-    /* 主題切換按鈕：可拖曳 + 點擊 */
-    (()=>{
-      const btn = document.getElementById('themeToggle'); const KEY_POS = 'theme-toggle-pos'; const THRESHOLD = 6;
-      function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
-      function defPos(){ const m = window.matchMedia('(max-width: 767.98px)').matches; return m ? {x:16, y: window.innerHeight - 140} : {x: window.innerWidth - 64, y: window.innerHeight - 120}; }
-      function applyPos(p){ btn.style.left=p.x+'px'; btn.style.top=p.y+'px'; btn.style.right='auto'; btn.style.bottom='auto'; }
-      function loadPos(){ try{const s=localStorage.getItem(KEY_POS); if(s){const p=JSON.parse(s); return {x:clamp(p.x,8,window.innerWidth-56), y:clamp(p.y,8,window.innerHeight-56)};}}catch(e){} return defPos(); }
-      function savePos(p){ localStorage.setItem(KEY_POS, JSON.stringify(p)); }
-      let pos = loadPos(); applyPos(pos);
-      let dragging=false, moved=false, startX=0, startY=0, origin={x:0,y:0};
-      btn.addEventListener('pointerdown', (e)=>{ btn.setPointerCapture(e.pointerId); dragging=true; moved=false; startX=e.clientX; startY=e.clientY; const r=btn.getBoundingClientRect(); origin={x:r.left,y:r.top}; e.preventDefault(); });
-      btn.addEventListener('pointermove', (e)=>{ if(!dragging) return; const dx=e.clientX-startX, dy=e.clientY-startY; if(Math.abs(dx)>THRESHOLD || Math.abs(dy)>THRESHOLD) moved=true; if(!moved) return; const nx=clamp(origin.x+dx,8,window.innerWidth-56); const ny=clamp(origin.y+dy,8,window.innerHeight-56); applyPos({x:nx,y:ny}); });
-      btn.addEventListener('pointerup', (e)=>{ if(!dragging) return; dragging=false; btn.releasePointerCapture(e.pointerId); if(moved){ const r=btn.getBoundingClientRect(); savePos({x:r.left,y:r.top}); }else{ toggleTheme(); } });
-      window.addEventListener('resize', ()=>{ const r=btn.getBoundingClientRect(); const p={x:clamp(r.left,8,window.innerWidth-56), y:clamp(r.top,8,window.innerHeight-56)}; applyPos(p); savePos(p); });
-    })();
-
-    /* 返回頂部顯示控制 */
-    (()=>{
-      const backTop = document.getElementById('backTop');
-      const THRESHOLD = 360;
-      function onScroll(){
-        if (window.scrollY > THRESHOLD) backTop.classList.remove('is-hidden');
-        else backTop.classList.add('is-hidden');
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-    })();
-    
-  <!-- ★ 工作日誌（相容 images / image / before&after，含 Lightbox；保守相容版） -->
-<script>
-(function(){
-  'use strict';
-
-  // ---- Polyfill：crypto.randomUUID（舊版 iOS/Safari 需要）
-  (function(){
-    if (!('crypto' in window)) window.crypto = {};
-    if (!('randomUUID' in window.crypto)) {
-      window.crypto.randomUUID = function () {
-        // 簡單 RFC4122 v4 近似
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c){
-          var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
-          return v.toString(16);
-        });
-      };
-    }
-  })();
-
-  // ---- 這份腳本自己的設定（放在閉包中，避免與全域 CONFIG 衝突）
-  var CFG = {
+  const CONFIG = {
     manifestPath: '/works/manifest.json',
-    cloudinary: { cloudName: 'dijzndzw2' }, // ← 換成你的 Cloudinary cloud name
-    imagekit:   { baseUrl: 'https://ik.imagekit.io/YOUR_IMAGEKIT_ID' },
+    cloudinary: { cloudName: 'dijzndzw2' },                                // ← Cloudinary
+    imagekit:   { baseUrl: 'https://ik.imagekit.io/YOUR_IMAGEKIT_ID' },    // ← 如不用可忽略
     uploadcare: { baseCdn: 'https://ucarecdn.com' },
     cloudflare: { accountHash: 'YOUR_ACCOUNT_HASH', variant: 'public' }
   };
 
-  // ---- 小工具
-  function $ (sel) { return document.querySelector(sel); }
-  function $$ (sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); }
-  function daysBetween(d){ var ms=(new Date())-new Date(d+'T00:00:00'); return Math.floor(ms/86400000); }
-  function matchKeyword(w,kw){
-    if(!kw) return true;
-    kw = String(kw).trim();
-    var arr = [w.city, w.area, w.service, w.note];
-    for (var i=0;i<arr.length;i++){ if((arr[i]||'').indexOf(kw) >= 0) return true; }
-    return false;
-  }
+  const $ = s => document.querySelector(s);
+  function daysBetween(d){ const ms=(new Date())-new Date(d+'T00:00:00'); return Math.floor(ms/86400000); }
+  function matchKeyword(w,kw){ if(!kw) return true; kw=kw.trim(); return [w.city,w.area,w.service,w.note].some(x=>(x||'').includes(kw)); }
 
-  // 產縮圖（卡片/縮圖列用）
-  function buildUrl(provider, idOrUrl, width){
-    if(!idOrUrl) return '';
-    if(typeof width!=='number') width = 900; // 約原圖 1/3
-    if(/^https?:\/\//i.test(idOrUrl)) return idOrUrl;
-    provider = String(provider||'').toLowerCase();
-    if(provider==='cloudinary'){
-      var c = CFG.cloudinary.cloudName;
-      return 'https://res.cloudinary.com/'+c+'/image/upload/f_auto,q_auto,w_'+width+'/'+encodeURIComponent(idOrUrl);
-    }
-    if(provider==='imagekit'){
-      var base = (CFG.imagekit.baseUrl||'').replace(/\/$/,'');
-      return base+'/'+idOrUrl+'?tr=f-auto,q-85,w-'+width;
-    }
-    if(provider==='uploadcare'){
-      var cdn = (CFG.uploadcare.baseCdn||'').replace(/\/$/,'');
-      return cdn+'/'+idOrUrl+'/-/format/auto/-/quality/smart/-/resize/'+width+'/';
-    }
-    if(provider==='cloudflare'){
-      var ah = CFG.cloudflare.accountHash, v = CFG.cloudflare.variant||'public';
-      return 'https://imagedelivery.net/'+ah+'/'+encodeURIComponent(idOrUrl)+'/'+encodeURIComponent(v);
-    }
-    return idOrUrl;
-  }
-  // 產大圖（Lightbox 用）
-  function fullUrl(provider, idOrUrl){
+  // 分段編碼：避免 public_id 中的 / 被整串 encode 壞掉
+  function buildUrl(provider, idOrUrl, width=1600){
     if(!idOrUrl) return '';
     if(/^https?:\/\//i.test(idOrUrl)) return idOrUrl;
-    provider = String(provider||'').toLowerCase();
-    if(provider==='cloudinary'){
-      var c = CFG.cloudinary.cloudName;
-      return 'https://res.cloudinary.com/'+c+'/image/upload/f_auto,q_auto/'+encodeURIComponent(idOrUrl);
+    switch((provider||'').toLowerCase()){
+      case 'cloudinary': {
+        const c = CONFIG.cloudinary.cloudName;
+        const path = String(idOrUrl).split('/').map(encodeURIComponent).join('/');
+        return `https://res.cloudinary.com/${c}/image/upload/f_auto,q_auto,w_${width}/${path}`;
+      }
+      case 'imagekit': {
+        const base = CONFIG.imagekit.baseUrl.replace(/\/$/,'');
+        return `${base}/${idOrUrl}?tr=f-auto,q-85,w-${width}`;
+      }
+      case 'uploadcare': {
+        const cdn = CONFIG.uploadcare.baseCdn.replace(/\/$/,'');
+        return `${cdn}/${idOrUrl}/-/format/auto/-/quality/smart/-/resize/${width}/`;
+      }
+      case 'cloudflare': {
+        const { accountHash, variant } = CONFIG.cloudflare;
+        return `https://imagedelivery.net/${accountHash}/${encodeURIComponent(idOrUrl)}/${encodeURIComponent(variant)}`;
+      }
+      default: return idOrUrl;
     }
-    if(provider==='imagekit'){
-      var base = (CFG.imagekit.baseUrl||'').replace(/\/$/,'');
-      return base+'/'+idOrUrl+'?tr=f-auto,q-90';
-    }
-    if(provider==='uploadcare'){
-      var cdn = (CFG.uploadcare.baseCdn||'').replace(/\/$/,'');
-      return cdn+'/'+idOrUrl+'/-/format/auto/-/quality/smart/';
-    }
-    if(provider==='cloudflare'){
-      var ah = CFG.cloudflare.accountHash;
-      return 'https://imagedelivery.net/'+ah+'/'+encodeURIComponent(idOrUrl)+'/public';
-    }
-    return idOrUrl;
   }
 
-  // 正規化 → 統一成 images[]
-  function normalizeWork(x){
-    var provider = String(x.provider||'url').toLowerCase();
-    var images = [];
-    if (Array.isArray(x.images) && x.images.length) {
-      images = x.images.slice();
-    } else if (x.image) {
-      images = [x.image];
-    } else {
-      if (x.before) images.push(x.before);
-      if (x.after)  images.push(x.after);
-    }
-    return {
-      id: x.id || window.crypto.randomUUID(),
-      date: x.date || new Date().toISOString().slice(0,10),
-      service: x.service || '',
-      city: x.city || '',
-      area: x.area || '',
-      note: x.note || '',
-      provider: provider,
-      images: images
-    };
-  }
-
-  // 卡片 HTML
   function workCard(w){
-    var when = daysBetween(w.date)===0 ? '（本日）' : '';
-    var title = (w.date||'')+when+'・'+(w.city||'')+(w.area||'')+'・'+(w.service||'');
-    var cover = w.images[0] ? buildUrl(w.provider, w.images[0], 900) : '';
-    var alt0  = (w.city||'')+(w.area||'')+(w.service||'')+' 第 1 張';
+    const when = daysBetween(w.date)===0 ? '（本日）' : '';
+    const title = `${w.date}${when}・${w.city||''}${w.area||''}・${w.service||''}`;
+    const prov  = (w.provider || 'url').toLowerCase();
+    const thumb = buildUrl(prov, w.image, 600);    // 列表縮圖
+    const full  = buildUrl(prov, w.image, 1600);   // Lightbox 大圖
+    const alt   = `${w.city||''}${w.area||''}${w.service||''} 清洗拼貼`;
 
-    var thumbs = '';
-    if (w.images.length>1){
-      for (var i=0;i<w.images.length;i++){
-        var id = w.images[i];
-        var thumb = buildUrl(w.provider, id, 900);
-        var alt = (w.city||'')+(w.area||'')+(w.service||'')+' 第 '+(i+1)+' 張';
-        thumbs += '<button class="thumb" data-work="'+w.id+'" data-idx="'+i+'" aria-label="預覽第 '+(i+1)+' 張">'
-                + '<img src="'+thumb+'" alt="'+alt+'" loading="lazy" width="900" height="600"></button>';
-      }
-    }
-
-    return ''
-    + '<article class="card p-0 overflow-hidden">'
-      + '<div class="p-4 border-b flex items-center justify-between">'
-        + '<div class="text-sm font-semibold">'+title+'</div>'
-        + '<span class="text-xs muted">'+(w.id||'')+'</span>'
-      + '</div>'
-      + '<div class="p-4">'
-        + '<a href="#" class="cover" data-work="'+w.id+'" data-idx="0" aria-label="打開燈箱檢視">'
-          + '<img class="w-full h-auto rounded-lg border" src="'+cover+'" alt="'+alt0+'" loading="lazy" width="900" height="600">'
-        + '</a>'
-        + (w.images.length>1 ? '<div class="thumbs" role="list" aria-label="此案例的縮圖列表">'+thumbs+'</div>' : '')
-        + (w.note ? '<p class="mt-3 text-sm muted">'+w.note+'</p>' : '')
-      + '</div>'
-    + '</article>';
+    return `
+      <article class="card p-0 overflow-hidden">
+        <div class="p-4 border-b flex items-center justify-between">
+          <div class="text-sm font-semibold">${title}</div>
+          <span class="text-xs muted">${w.id||''}</span>
+        </div>
+        <div class="p-4">
+          <img class="diary-thumb cursor-pointer" src="${thumb}" data-full="${full}" alt="${alt}" loading="lazy" width="600" height="450">
+          ${w.note ? `<p class="mt-3 text-sm muted">${w.note}</p>` : ''}
+        </div>
+      </article>
+    `;
   }
 
-  // 燈箱
-  var Lightbox = (function(){
-    var state = null, keyHandler = null;
-    function open(work){
-      state = { id: work.id, provider: work.provider, images: work.images.slice(), idx: work.idx||0, title: work.title||'' };
-      render();
-    }
-    function close(){
-      var lb = document.getElementById('lb'); if(lb && lb.parentNode){ lb.parentNode.removeChild(lb); }
-      if(keyHandler){ document.removeEventListener('keydown', keyHandler); keyHandler = null; }
-      state = null;
-    }
-    function next(){ if(!state) return; state.idx = (state.idx+1) % state.images.length; updateImage(); }
-    function prev(){ if(!state) return; state.idx = (state.idx-1+state.images.length) % state.images.length; updateImage(); }
-    function updateImage(){
-      var img = document.querySelector('#lb img');
-      var cap = document.querySelector('#lb .lb-cap');
-      if(!img || !cap || !state) return;
-      img.src = fullUrl(state.provider, state.images[state.idx]);
-      cap.textContent = state.title+'（'+(state.idx+1)+'/'+state.images.length+'）';
-    }
-    function render(){
-      var wrap = document.createElement('div');
-      wrap.id = 'lb';
-      wrap.innerHTML =
-        '<div class="lb-backdrop" data-close></div>'
-      + '<div class="lb-dialog" role="dialog" aria-modal="true" aria-label="圖片檢視">'
-        + '<button class="lb-btn lb-prev" aria-label="上一張">‹</button>'
-        + '<img alt="">'
-        + '<button class="lb-btn lb-next" aria-label="下一張">›</button>'
-        + '<div class="lb-cap"></div>'
-        + '<button class="lb-btn lb-close" data-close aria-label="關閉">×</button>'
-      + '</div>'
-      + '<style>'
-        + '#lb{position:fixed;inset:0;z-index:70}'
-        + '#lb .lb-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.7)}'
-        + '#lb .lb-dialog{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:2rem}'
-        + '#lb img{max-width:96vw;max-height:86vh;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.5)}'
-        + '#lb .lb-cap{position:absolute;left:0;right:0;bottom:1.2rem;text-align:center;color:#fff;font-size:.95rem;text-shadow:0 2px 10px rgba(0,0,0,.7)}'
-        + '#lb .lb-btn{position:absolute;top:50%;transform:translateY(-50%);font-size:2rem;line-height:1;width:44px;height:44px;border-radius:9999px;border:0;background:rgba(255,255,255,.2);color:#fff;cursor:pointer}'
-        + '#lb .lb-prev{left:1rem}'
-        + '#lb .lb-next{right:1rem}'
-        + '#lb .lb-close{top:1rem;right:1rem;transform:none;font-size:1.5rem}'
-        + '#lb .lb-btn:hover{background:rgba(255,255,255,.32)}'
-      + '</style>';
-      document.body.appendChild(wrap);
-      var closeEls = $$('#lb [data-close]');
-      for (var i=0;i<closeEls.length;i++){
-        closeEls[i].addEventListener('click', close);
-      }
-      var prevBtn = document.querySelector('#lb .lb-prev');
-      var nextBtn = document.querySelector('#lb .lb-next');
-      if(prevBtn) prevBtn.addEventListener('click', prev);
-      if(nextBtn) nextBtn.addEventListener('click', next);
-      keyHandler = function(e){
-        if(e.key==='Escape') close();
-        if(e.key==='ArrowRight') next();
-        if(e.key==='ArrowLeft') prev();
-      };
-      document.addEventListener('keydown', keyHandler);
-      updateImage();
-    }
-    return { open: open, close: close, next: next, prev: prev };
-  })();
+  let ALL_WORKS = [], currentFiltered = [];
+  let pageSize = 8, page = 1;
 
-  // ---- 狀態
-  var ALL_WORKS = [], currentFiltered = [];
-  var pageSize = 8, page = 1;
+  async function loadWorks(){
+    try{
+      const res = await fetch(CONFIG.manifestPath + '?v=' + Date.now(), { cache:'no-store' });
+      if(!res.ok) throw new Error('manifest 載入失敗');
+      const data = await res.json();
+      if(!Array.isArray(data)) throw new Error('manifest 格式應為陣列');
 
-  function loadWorks(){
-    return fetch(CFG.manifestPath + '?v=' + Date.now(), { cache: 'no-store' })
-      .then(function(res){
-        if(!res.ok) throw new Error('manifest 載入失敗');
-        return res.json();
-      })
-      .then(function(data){
-        if(!Array.isArray(data)) throw new Error('manifest 格式應為陣列');
-        ALL_WORKS = data.map(normalizeWork).filter(function(w){ return (w.images||[]).length>0; });
-      })
-      .catch(function(err){
-        console.error(err);
-        ALL_WORKS = [];
-      });
+      ALL_WORKS = data.map(x => ({
+        id: x.id || crypto.randomUUID(),
+        date: x.date || new Date().toISOString().slice(0,10),
+        service: x.service || '',
+        city: x.city || '',
+        area: x.area || '',
+        note: x.note || '',
+        provider: (x.provider || 'url').toLowerCase(),
+        image: x.image
+      }));
+    }catch(e){
+      console.error(e);
+      ALL_WORKS = [];
+    }
   }
 
   function applyFilters(){
-    var svc   = $('#filterService') ? $('#filterService').value : 'all';
-    var range = $('#filterDate') ? $('#filterDate').value : '7';
-    var kwEl  = $('#filterKeyword');
-    var kw    = kwEl ? kwEl.value : '';
+    const svc = $('#filterService')?.value || 'all';
+    const range = $('#filterDate')?.value || '7';
+    const kw = $('#filterKeyword')?.value || '';
 
-    var filtered = ALL_WORKS
-      .filter(function(w){ return svc==='all' ? true : w.service===svc; })
-      .filter(function(w){
+    const filtered = ALL_WORKS
+      .filter(w => svc==='all' ? true : w.service===svc)
+      .filter(w => {
         if(range==='all') return true;
         if(range==='1')  return daysBetween(w.date) <= 0;
         if(range==='7')  return daysBetween(w.date) <= 7;
         if(range==='30') return daysBetween(w.date) <= 30;
         return true;
       })
-      .filter(function(w){ return matchKeyword(w, kw); })
-      .sort(function(a,b){ return b.date.localeCompare(a.date); });
+      .filter(w => matchKeyword(w, kw))
+      .sort((a,b) => b.date.localeCompare(a.date));
 
     currentFiltered = filtered;
-    var cnt = $('#workCount'); if(cnt) cnt.textContent = String(filtered.length);
+    const cnt = $('#workCount'); if(cnt) cnt.textContent = filtered.length;
     page = 1;
     renderPage();
   }
 
   function renderPage(){
-    var grid = $('#workGrid');
+    const grid = $('#workGrid');
     if(!grid) return;
 
     if(currentFiltered.length===0){
-      grid.innerHTML = '<div class="muted text-sm">目前尚無工作日誌，歡迎稍後再來看看。</div>';
-      var more0 = document.getElementById('btnMore');
-      if(more0) more0.classList.add('is-hidden');
+      grid.innerHTML = `<div class="muted text-sm">目前尚無工作日誌，歡迎稍後再來看看。</div>`;
+      document.getElementById('btnMore')?.classList.add('is-hidden');
       return;
     }
 
-    var slice = currentFiltered.slice(0, page*pageSize);
+    const slice = currentFiltered.slice(0, page*pageSize);
     grid.innerHTML = slice.map(workCard).join('');
 
-    // 綁定卡片點擊（封面與縮圖）
-    var tappables = $$('#workGrid .cover, #workGrid .thumb');
-    tappables.forEach(function(el){
-      el.addEventListener('click', function(e){
-        e.preventDefault();
-        var workId = el.getAttribute('data-work');
-        var idxStr = el.getAttribute('data-idx')||'0';
-        var idx = parseInt(idxStr, 10) || 0;
-        var w = currentFiltered.find(function(x){ return x.id === workId; });
-        if(!w) return;
-        var title = (w.date||'')+'・'+(w.city||'')+(w.area||'')+'・'+(w.service||'');
-        Lightbox.open({ id:w.id, provider:w.provider, images:w.images, idx:idx, title:title });
-      });
-    });
-
-    var more = document.getElementById('btnMore');
+    const more = document.getElementById('btnMore');
     if(more){
       if(slice.length >= currentFiltered.length){ more.classList.add('is-hidden'); }
       else { more.classList.remove('is-hidden'); }
     }
+
+    bindLightbox(); // 綁定當前頁面的縮圖
   }
 
-  function initDiary(){
-    loadWorks().then(function(){
-      var svc = document.getElementById('filterService');
-      var date = document.getElementById('filterDate');
-      var kw = document.getElementById('filterKeyword');
-      var more = document.getElementById('btnMore');
-
-      if(svc)  svc.addEventListener('change', applyFilters);
-      if(date) date.addEventListener('change', applyFilters);
-      if(kw)   kw.addEventListener('input', function(){ applyFilters(); });
-      if(more) more.addEventListener('click', function(){ page += 1; renderPage(); });
-
-      applyFilters();
+  function bindLightbox(){
+    const lb = document.getElementById('lightbox');
+    const lbImg = lb.querySelector('img');
+    document.querySelectorAll('.diary-thumb').forEach(img=>{
+      img.onclick = ()=>{
+        lbImg.src = img.dataset.full;
+        lb.style.display = 'flex';
+      };
     });
   }
 
-  // 等 DOM 解析完成再啟動，避免早期取不到節點
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', initDiary);
-  }else{
-    initDiary();
+  async function initDiary(){
+    await loadWorks();
+    document.getElementById('filterService')?.addEventListener('change', applyFilters);
+    document.getElementById('filterDate')?.addEventListener('change', applyFilters);
+    document.getElementById('filterKeyword')?.addEventListener('input', ()=>{ applyFilters(); });
+    document.getElementById('btnMore')?.addEventListener('click', ()=>{ page += 1; renderPage(); });
+    applyFilters();
   }
-})();
-</script>
+
+  initDiary();
+
+  /* Lightbox 關閉 */
+  document.querySelector('#lightbox .close').onclick = ()=>{
+    const lb = document.getElementById('lightbox'); const img = lb.querySelector('img');
+    img.src=''; lb.style.display='none';
+  };
+  document.getElementById('lightbox').onclick = (e)=>{
+    if(e.target.id === 'lightbox'){ const lbImg = e.currentTarget.querySelector('img'); lbImg.src=''; e.currentTarget.style.display='none';}
+  };
+  </script>
+</body>
+</html>
 </body>
 </html>
