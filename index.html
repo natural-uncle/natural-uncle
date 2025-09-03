@@ -134,30 +134,6 @@
     .timeline-item{position:relative;padding-left:2.5rem;margin-bottom:1rem}
     .timeline-item:before{content:"";position:absolute;left:3px;top:.35rem;width:18px;height:18px;border-radius:9999px;background:var(--accent)}
 
-    /* ---- 深色對比修正 ---- */
-    body.dark header{ background: rgba(15,23,42,.92); border-color: #334155 !important; }
-    body.dark header nav a{ color:#e5e7eb }
-    body.dark footer{ background:#0f172a; border-color:#334155 !important; }
-    body.dark footer .muted{ color:#94a3b8 }
-    body.dark section.bg-gradient-to-b{ background: linear-gradient(180deg,#0f172a 0%, #0b1220 100%) !important; }
-    body.dark section.bg-gradient-to-b h1{ color:#ffffff }
-    body.dark section.bg-gradient-to-b .muted{ color:#cbd5e1 }
-    body.dark #pricing{ background:#0f172a !important; }
-    body.dark #pricing table{ color:#e5e7eb }
-    body.dark #pricing thead th{ color:#f8fafc; border-color:#334155 !important; font-weight:800; }
-    body.dark #pricing tbody tr{ border-color:#334155 }
-    body.dark #pricing td{ color:#e5e7eb }
-    body.dark #faq{ background:#0b1220 !important; }
-    body.dark #faq h2{ color:#ffffff }
-    body.dark details.faq{ background:#0f172a; border-color:#334155 !important; }
-    body.dark details.faq summary{ color:#e5e7eb }
-    body.dark details.faq .faq-content{ color:#cbd5e1 }
-    body.dark .btn-ghost{ background: rgba(255,255,255,.06); border-color:#334155; color:#e5e7eb; }
-    body.dark .btn-ghost:hover{ background: rgba(255,255,255,.1) }
-    body.dark .card-desc{ color:#cbd5e1 }
-    body.dark .btn-primary{ background:#3b82f6; color:#fff; }
-    body.dark .btn-primary:hover{ background:#60a5fa; }
-
     /* ====== 放大導覽列 LOGO ====== */
     .brand-logo{ height:clamp(40px, 8vw, 72px); width:auto }
     header .max-w-6xl > .px-4{ padding-top:.35rem; padding-bottom:.35rem }
@@ -166,7 +142,7 @@
     }
     header nav{ gap:clamp(12px, 2vw, 24px) }
 
-    /* ========= 浮動按鈕（與 pricing.html 一致） ========= */
+    /* ========= 浮動按鈕 ========= */
     .fab{
       position:fixed;right:1rem;z-index:60;
       display:flex;align-items:center;justify-content:center;
@@ -179,49 +155,25 @@
     .fab-top{bottom:calc(9rem + env(safe-area-inset-bottom,0px));width:48px;height:48px;background:#0ea5e9;color:#fff;font-size:1.25rem}
     @media (max-width:767.98px){ .fab-top{bottom:calc(9.5rem + env(safe-area-inset-bottom,0px))} }
 
-    /* ★ 關鍵：LINE 預約按鈕（獨立懸浮）維持一致比例 */
     .fab-book{
       bottom:calc(1rem + env(safe-area-inset-bottom,0px));
-      min-width:48px;
-      height:48px;
-      padding:0 1.1rem;
-      background:var(--primary);
-      color:#fff;
-      font-weight:800;
-      border-radius:9999px;
+      min-width:48px;height:48px;padding:0 1.1rem;
+      background:var(--primary);color:#fff;font-weight:800;border-radius:9999px;
     }
 
-    /* ====== 行動版浮動快速按鈕（本次修正重點） ====== */
+    /* 行動版浮動快速按鈕 */
     @media (max-width: 767.98px){
       .mobile-fab a{
-        display:flex;align-items:center;justify-content:center;
-        height:48px;                 /* 與 .fab-book 完全一致 */
-        padding:0 1.1rem;            /* 與 .fab-book 完全一致 */
-        border-radius:9999px;        /* 真正的膠囊形狀 */
-        font-weight:800;
-        border:0;
-        box-shadow:0 8px 24px rgba(0,0,0,.22);
-        /* iOS Safari 內部橢圓假影修正 */
-        -webkit-appearance:none;
-        background-clip:padding-box;
-        -webkit-mask-image:-webkit-radial-gradient(white, black);
+        display:flex;align-items:center;justify-content:center;height:48px;padding:0 1.1rem;border-radius:9999px;font-weight:800;border:0;box-shadow:0 8px 24px rgba(0,0,0,.22);
+        -webkit-appearance:none;background-clip:padding-box;-webkit-mask-image:-webkit-radial-gradient(white, black);
       }
-      /* 兩顆都改為實心填色，保持視覺一致 */
-      .mobile-fab .btn-ghost{
-        background:var(--accent);    /* 撥打電話：實心藍 */
-        color:#fff;
-      }
-      .mobile-fab .btn-primary{
-        background:var(--primary);   /* LINE：實心綠 */
-        color:#fff;
-      }
-      .mobile-fab a:hover{
-        transform:translateY(-1px) scale(1.03);
-      }
+      .mobile-fab .btn-ghost{ background:var(--accent); color:#fff; }
+      .mobile-fab .btn-primary{ background:var(--primary); color:#fff; }
+      .mobile-fab a:hover{ transform:translateY(-1px) scale(1.03); }
     }
 
     /* =========================
-       ↓↓↓ 覆蓋式「色彩與對比升級」↓↓↓
+       覆蓋式「色彩與對比升級」
        ========================= */
     :root{
       --bg:#f3f5f9; --text:#0b1220; --muted:#5b6b7f;
@@ -289,41 +241,10 @@
       border-color:var(--border) !important;
       box-shadow:0 2px 12px rgba(2,6,23,.04);
     }
-    body.dark header{
-      background:rgba(15,23,42,.88);
-    }
+    body.dark header{ background:rgba(15,23,42,.88); }
     footer{
       background:transparent;
       border-color:var(--border) !important;
-    }
-    details.faq summary{ color:var(--text-strong) }
-    details.faq summary::before{ color:var(--muted) }
-    details.faq[open] summary::before{ color:var(--accent) }
-    .timeline:before{ background:var(--border) }
-    .timeline-item:before{
-      background:linear-gradient(135deg, var(--accent), var(--primary));
-      box-shadow:0 0 0 3px rgba(37,99,235,.08);
-    }
-    .fab-top{ background:var(--accent); color:#fff }
-    .theme-toggle{ background:var(--accent); color:#fff }
-
-    /* ===== 前後對比元件（Before/After） ===== */
-    .ba{ position:relative; border-radius:1rem; overflow:hidden; border:1px solid var(--border); background:var(--card-bg) }
-    .ba .ba-img{ display:block; width:100%; height:auto; }
-    .ba .after{ position:absolute; inset:0 auto 0 0; width:50%; overflow:hidden; border-right:2px solid var(--accent); }
-    .ba .after .ba-img{ width:calc(100% + 1px) }
-    .ba .ba-label{ position:absolute; top:.5rem; left:.5rem; z-index:2; background:rgba(0,0,0,.5); color:#fff; font-size:.75rem; padding:.25rem .5rem; border-radius:.5rem }
-    .ba .ba-label.after{ left:auto; right:.5rem }
-    .ba input[type="range"]{
-      position:absolute; left:1rem; right:1rem; bottom:.75rem; z-index:3;
-      appearance:none; height:4px; background:var(--border); border-radius:9999px;
-    }
-    .ba input[type="range"]::-webkit-slider-thumb{
-      -webkit-appearance:none; width:20px; height:20px; border-radius:9999px;
-      background:var(--accent); border:2px solid #fff; box-shadow:0 0 0 3px rgba(37,99,235,.15);
-    }
-    .ba input[type="range"]::-moz-range-thumb{
-      width:20px; height:20px; border:none; border-radius:9999px; background:var(--accent);
     }
   </style>
 </head>
@@ -491,7 +412,7 @@
           <li>功能回測確認：再次運轉檢查異音、水滴、出風，確保穩定。</li>
           <li>清潔作業區域：移除養生膠帶與防水布，現場清理無水漬/髒污/垃圾。</li>
           <li>注意事項：清洗後建議開機 30 分鐘通風；若短暫有藥劑味，可開窗加強通風。</li>
-          <li>清洗完成回報：提供前後對照圖，回答現場提問，張貼保養貼紙（日期/下次建議/聯絡資訊）。</li>
+          <li>清洗完成回報：提供對比照片（拼貼），回答現場提問，張貼保養貼紙（日期/下次建議/聯絡資訊）。</li>
         </ul>
       </div>
     </details>
@@ -508,12 +429,12 @@
     </details>
   </section>
 
-  <!-- ★ 工作照片日誌（取代原「前後對比」） -->
+  <!-- ★ 工作照片日誌（單張拼貼照） -->
   <section id="cases" class="max-w-6xl mx-auto px-4 py-12 reveal">
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
       <div>
-        <h2 class="text-2xl md:text-3xl font-bold">工作照片日誌｜每日更新</h2>
-        <p class="muted text-sm mt-1">顯示每次清洗的「前／後」對比照片（<span id="workCount">0</span> 筆）</p>
+        <h2 class="text-2xl md:text-3xl font-bold">工作照片日誌</h2>
+        <p class="muted text-sm mt-1">顯示每次清洗的「前／後拼貼對比」照片（<span id="workCount">0</span> 筆）</p>
       </div>
       <div class="flex flex-col sm:flex-row gap-2">
         <select id="filterService" class="btn btn-ghost py-2 px-3">
@@ -650,33 +571,28 @@
     })();
   </script>
 
-  <!-- ★ 新增：工作日誌（SaaS 圖片 / manifest.json）整合腳本 -->
+  <!-- ★ 工作日誌（單張拼貼照 manifest）整合腳本 -->
   <script>
-  /* ========= SaaS 圖片（Cloudinary / ImageKit / Uploadcare / Cloudflare Images）=========
-     - 從 /works/manifest.json 讀取案例
-     - 支援 public_id（自動拼轉檔參數）或完整 URL（直接使用）
-     - 會沿用 #filterService / #filterDate / #filterKeyword / #workGrid / #btnMore
+  /* ========= 單張拼貼照（Cloudinary / ImageKit / Uploadcare / Cloudflare Images）=========
+     - 從 /works/manifest.json 讀取案例，每筆只有一張 image
+     - 點圖在新分頁開大圖
   ====================================================================================== */
 
-  /* ---- 必填設定（依你的供應商填一個或多個） ---- */
   const CONFIG = {
     manifestPath: '/works/manifest.json',
     cloudinary: { cloudName: 'dijzndzw2' },                            // ← Cloudinary
-    imagekit:   { baseUrl: 'https://ik.imagekit.io/YOUR_IMAGEKIT_ID' },     // ← ImageKit Base URL
+    imagekit:   { baseUrl: 'https://ik.imagekit.io/YOUR_IMAGEKIT_ID' },     // ← ImageKit Base URL（如未用可留著）
     uploadcare: { baseCdn: 'https://ucarecdn.com' },                         // ← Uploadcare CDN（固定）
-    cloudflare: { accountHash: 'YOUR_ACCOUNT_HASH', variant: 'public' }      // ← Cloudflare Images 須先建立 variant 名稱
+    cloudflare: { accountHash: 'YOUR_ACCOUNT_HASH', variant: 'public' }      // ← Cloudflare Images 需先建立 variant
   };
 
-  /* ---- 小工具 ---- */
   const $ = s => document.querySelector(s);
-  const $$ = s => Array.from(document.querySelectorAll(s));
   function daysBetween(d){ const ms=(new Date())-new Date(d+'T00:00:00'); return Math.floor(ms/86400000); }
   function matchKeyword(w,kw){ if(!kw) return true; kw=kw.trim(); return [w.city,w.area,w.service,w.note].some(x=>(x||'').includes(kw)); }
 
-  /* 依 provider 產生最佳化圖片 URL（或直接回傳完整 URL） */
   function buildUrl(provider, idOrUrl, width=1600){
     if(!idOrUrl) return '';
-    if(/^https?:\/\//i.test(idOrUrl)) return idOrUrl; // 已是完整網址
+    if(/^https?:\/\//i.test(idOrUrl)) return idOrUrl;
     switch((provider||'').toLowerCase()){
       case 'cloudinary': {
         const c = CONFIG.cloudinary.cloudName;
@@ -698,36 +614,29 @@
     }
   }
 
-  /* 卡片模板（帶前後對比滑桿） */
   function workCard(w){
     const when = daysBetween(w.date)===0 ? '（本日）' : '';
     const title = `${w.date}${when}・${w.city||''}${w.area||''}・${w.service||''}`;
-    const prov = (w.provider || 'url').toLowerCase();
-    const be = buildUrl(prov, w.before);
-    const af = buildUrl(prov, w.after);
-    const altBefore = `${w.city||''}${w.area||''}${w.service||''} 清洗前`;
-    const altAfter  = `${w.city||''}${w.area||''}${w.service||''} 清洗後`;
+    const prov  = (w.provider || 'url').toLowerCase();
+    const src   = buildUrl(prov, w.image);
+    const alt   = `${w.city||''}${w.area||''}${w.service||''} 清洗前後對比（拼貼）`;
 
     return `
-    <article class="card p-0 overflow-hidden">
-      <div class="p-4 border-b flex items-center justify-between">
-        <div class="text-sm font-semibold">${title}</div>
-        <span class="text-xs muted">${w.id||''}</span>
-      </div>
-      <div class="p-4">
-        <div class="ba" data-id="${w.id||''}">
-          <span class="ba-label">清洗前</span>
-          <span class="ba-label after">清洗後</span>
-          <img class="ba-img" src="${be}" alt="${altBefore}" loading="lazy" width="1600" height="900">
-          <div class="after"><img class="ba-img" src="${af}" alt="${altAfter}" loading="lazy" width="1600" height="900"></div>
-          <input type="range" min="0" max="100" value="50" aria-label="前後對比滑桿（0%前→100%後）">
+      <article class="card p-0 overflow-hidden">
+        <div class="p-4 border-b flex items-center justify-between">
+          <div class="text-sm font-semibold">${title}</div>
+          <span class="text-xs muted">${w.id||''}</span>
         </div>
-        ${w.note ? `<p class="mt-3 text-sm muted">${w.note}</p>` : ''}
-      </div>
-    </article>`;
+        <div class="p-4">
+          <a href="${src}" target="_blank" rel="noopener" aria-label="點擊看大圖">
+            <img class="w-full h-auto rounded-lg border" src="${src}" alt="${alt}" loading="lazy" width="1600" height="900">
+          </a>
+          ${w.note ? `<p class="mt-3 text-sm muted">${w.note}</p>` : ''}
+        </div>
+      </article>
+    `;
   }
 
-  /* 狀態與流程 */
   let ALL_WORKS = [], currentFiltered = [];
   let pageSize = 8, page = 1;
 
@@ -746,8 +655,7 @@
         area: x.area || '',
         note: x.note || '',
         provider: (x.provider || 'url').toLowerCase(),
-        before: x.before,
-        after:  x.after
+        image: x.image
       }));
     }catch(e){
       console.error(e);
@@ -784,37 +692,26 @@
 
     if(currentFiltered.length===0){
       grid.innerHTML = `<div class="muted text-sm">目前尚無工作日誌，歡迎稍後再來看看。</div>`;
-      $('#btnMore')?.classList.add('is-hidden');
+      document.getElementById('btnMore')?.classList.add('is-hidden');
       return;
     }
 
     const slice = currentFiltered.slice(0, page*pageSize);
     grid.innerHTML = slice.map(workCard).join('');
-    initBeforeAfter();
 
-    const more = $('#btnMore');
+    const more = document.getElementById('btnMore');
     if(more){
       if(slice.length >= currentFiltered.length){ more.classList.add('is-hidden'); }
       else { more.classList.remove('is-hidden'); }
     }
   }
 
-  function initBeforeAfter(){
-    $$('.ba').forEach(el=>{
-      const range = el.querySelector('input[type="range"]');
-      const after = el.querySelector('.after');
-      const sync = ()=>{ after.style.width = range.value + '%'; };
-      sync();
-      range.addEventListener('input', sync, { passive:true });
-    });
-  }
-
   async function initDiary(){
     await loadWorks();
-    $('#filterService')?.addEventListener('change', applyFilters);
-    $('#filterDate')?.addEventListener('change', applyFilters);
-    $('#filterKeyword')?.addEventListener('input', ()=>{ applyFilters(); });
-    $('#btnMore')?.addEventListener('click', ()=>{ page += 1; renderPage(); });
+    document.getElementById('filterService')?.addEventListener('change', applyFilters);
+    document.getElementById('filterDate')?.addEventListener('change', applyFilters);
+    document.getElementById('filterKeyword')?.addEventListener('input', ()=>{ applyFilters(); });
+    document.getElementById('btnMore')?.addEventListener('click', ()=>{ page += 1; renderPage(); });
     applyFilters();
   }
 
