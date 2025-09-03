@@ -1,0 +1,99 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Cloudinary 上傳（已預填）＋ JSON 產生器</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
+<style>
+  body{font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Noto Sans TC,Arial;margin:24px;color:#0b1220}
+  .row{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+  .btn{display:inline-block;padding:.7rem 1rem;border-radius:.6rem;background:#2563eb;color:#fff;border:0;cursor:pointer;font-weight:700}
+  .gray{background:#0f172a;color:#e5e7eb;padding:12px;border-radius:.6rem;white-space:pre;overflow:auto}
+  input,select{width:100%;padding:.6rem .7rem;border:1px solid #cbd5e1;border-radius:.5rem}
+  label{display:block;margin:.5rem 0 .25rem;font-weight:600}
+  .badge{display:inline-block;padding:.2rem .5rem;border-radius:.5rem;background:#e2e8f0;margin-left:.5rem;font-size:.8rem}
+  .note{background:#f1f5f9;border-left:4px solid #2563eb;padding:.75rem 1rem;border-radius:.5rem;margin:.5rem 0 1rem}
+</style>
+
+<h1>Cloudinary 上傳（已預填）＋ JSON 產生器</h1>
+<p class="note">Cloud name = <b>nu-unsigned</b>、Unsigned preset = <b>nu-unsigned</b>、Folder = <b>natural-uncle</b>。直接按「上傳：清洗前／清洗後」，最後點「產生 JSON」。</p>
+
+<div class="row">
+  <div>
+    <label>Cloud Name</label>
+    <input id="cloudName" value="nu-unsigned" readonly>
+    <label>Unsigned Upload Preset</label>
+    <input id="preset" value="nu-unsigned" readonly>
+    <label>Folder（可改）</label>
+    <input id="folder" value="natural-uncle">
+
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" id="btnBefore">上傳：清洗前</button>
+      <span id="pidBefore" class="badge">尚未上傳</span>
+      <button class="btn" id="btnAfter">上傳：清洗後</button>
+      <span id="pidAfter" class="badge">尚未上傳</span>
+    </div>
+
+    <label style="margin-top:16px">日期（YYYY-MM-DD）</label>
+    <input id="date" placeholder="例如：2025-09-03" value="">
+    <label>服務</label>
+    <select id="service"><option>冷氣</option><option>洗衣機</option><option>水塔</option><option>水管</option></select>
+    <label>城市</label><input id="city" placeholder="例如：台北市">
+    <label>行政區</label><input id="area" placeholder="例如：大安區">
+    <label>備註</label><input id="note" placeholder="選填：現場狀況 / 成果重點">
+
+    <button class="btn" id="gen" style="margin-top:12px">產生 JSON 片段</button>
+  </div>
+  <div>
+    <label>結果（複製貼回 works/manifest.json 陣列中）</label>
+    <textarea id="out" class="gray" rows="18" readonly></textarea>
+  </div>
+</div>
+
+<script>
+function createWidget(which){
+  const cloudName = document.getElementById('cloudName').value.trim();
+  const preset = document.getElementById('preset').value.trim();
+  const folder = document.getElementById('folder').value.trim();
+
+  const widget = cloudinary.createUploadWidget({
+    cloudName,
+    uploadPreset: preset,
+    folder: folder || undefined,
+    multiple: false,
+    sources: ['local','camera','url','google_drive'],
+    clientAllowedFormats: ['jpg','jpeg','png','webp','heic'],
+    maxFileSize: 15 * 1024 * 1024
+  }, (error, result) => {
+    if (!error && result && result.event === "success") {
+      const pid = result.info.public_id;
+      const target = which === 'before' ? 'pidBefore' : 'pidAfter';
+      document.getElementById(target).textContent = pid;
+      document.getElementById(target).style.background = '#bbf7d0';
+    }
+  });
+  widget.open();
+}
+
+document.getElementById('btnBefore').onclick = ()=>createWidget('before');
+document.getElementById('btnAfter').onclick = ()=>createWidget('after');
+
+document.getElementById('gen').onclick = ()=>{
+  const pad = n => n<10? '0'+n : ''+n;
+  const today = new Date(); const y=today.getFullYear(), m=pad(today.getMonth()+1), d=pad(today.getDate());
+  const id = `${y}-${m}-${d}-${Math.floor(Math.random()*90+10)}`;
+  const obj = {
+    id,
+    date: document.getElementById('date').value || `${y}-${m}-${d}`,
+    service: document.getElementById('service').value,
+    city: document.getElementById('city').value || '',
+    area: document.getElementById('area').value || '',
+    note: document.getElementById('note').value || '',
+    provider: 'cloudinary',
+    before: document.getElementById('pidBefore').textContent.includes('尚未') ? '' : document.getElementById('pidBefore').textContent,
+    after:  document.getElementById('pidAfter').textContent.includes('尚未')  ? '' : document.getElementById('pidAfter').textContent
+  };
+  if(!obj.before || !obj.after){ alert('請先上傳清洗前與清洗後兩張圖'); return; }
+  document.getElementById('out').value = JSON.stringify(obj, null, 2);
+};
+</script>
