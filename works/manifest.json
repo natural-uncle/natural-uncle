@@ -1,24 +1,12 @@
 [
   {
-    {
-  "id": "2025-09-03-27",
-  "date": "2025-09-03",
-  "service": "冷氣",
-  "city": "",
-  "area": "",
-  "note": "",
-  "provider": "cloudinary",
-  "before": "natural-uncle/1009_qvmtu4",
-  "after": "natural-uncle/1009_gdqtuq"
-}
-  },
-  {
-    "id": "ac-2025-09-01-01",
-    "date": "2025-09-01",
+    "id": "2025-09-AC-DAAN-01",
+    "date": "2025-09-03",
     "service": "冷氣",
-    "city": "台中市",
+    "city": "台北市",
+    "area": "大安區",
+    "note": "風鼓厚塵與黴斑；掛洗鋁鰭＋風鼓，疏通排水後風量恢復、異味消失。",
     "provider": "cloudinary",
-    "before": "natural-uncle/2025-09-01/before.jpg",
-    "after":  "natural-uncle/2025-09-01/after.jpg"
+    "image": "works/ac/2025-09-03_da-an_collage.jpg"
   }
 ]
