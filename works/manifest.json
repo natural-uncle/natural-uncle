@@ -1,12 +1,16 @@
 [
   {
-    "id": "ac-2025-09-03-01",
-    "date": "2025-09-03",
-    "service": "冷氣",
-    "city": "台中市",
-    "note": "主臥室",
-    "provider": "cloudinary",
-    "collage": "natural-uncle/2025-09-03/ac-case-01-collage.jpg"
+    {
+  "id": "2025-09-03-27",
+  "date": "2025-09-03",
+  "service": "冷氣",
+  "city": "",
+  "area": "",
+  "note": "",
+  "provider": "cloudinary",
+  "before": "natural-uncle/1009_qvmtu4",
+  "after": "natural-uncle/1009_gdqtuq"
+}
   },
   {
     "id": "ac-2025-09-01-01",
