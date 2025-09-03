@@ -43,52 +43,43 @@
 
   <style>
     html{scroll-behavior:smooth}
-    /* ---- 主題色（淺色預設） ---- */
     :root{
-      --bg:#fff; --text:#0f172a; --muted:#475569;
-      --card-bg:#fff; --border:#e2e8f0;
-      --primary:#06C755; --primary-hover:#04b34c;
-      --success:#059669; --success-hover:#047857;
-      --ghost-bg:#fff; --ghost-border:#cbd5e1;
-      --accent:#3b7d2b;
-      --text-strong:#0b1220;
+      --bg:#f3f5f9; --text:#0b1220; --muted:#5b6b7f;
+      --card-bg:#ffffff; --border:#d7deea;
+      --primary:#06C755; --primary-hover:#05b451;
+      --success:#0aa57a; --success-hover:#078d67;
+      --ghost-bg:#ffffff; --ghost-border:#c9d3e3;
+      --accent:#2563eb; --text-strong:#0a0f1a;
     }
     @media (prefers-color-scheme: dark){
-      :root{--bg:#0b1220; --text:#e5e7eb; --muted:#94a3b8;
-        --card-bg:#0f172a; --border:#1f2937;
-        --ghost-bg:#0f172a; --ghost-border:#334155;
-        --accent:#fbbf24; --text-strong:#ffffff;}
+      :root{--bg:#0b1220; --text:#e7edf6; --muted:#afbbce;
+        --card-bg:#0f172a; --border:#233046;
+        --ghost-bg:#0f172a; --ghost-border:#2a3a53;
+        --accent:#60a5fa; --text-strong:#ffffff;}
     }
-    body.dark{--bg:#0b1220; --text:#e5e7eb; --muted:#94a3b8;
-      --card-bg:#0f172a; --border:#1f2937;
-      --ghost-bg:#0f172a; --ghost-border:#334155;
-      --accent:#fbbf24; --text-strong:#ffffff;}
-    body.light{--bg:#fff; --text:#0f172a; --muted:#475569;
-      --card-bg:#fff; --border:#e2e8f0;
-      --ghost-bg:#fff; --ghost-border:#cbd5e1;
-      --accent:#3b7d2b; --text-strong:#0b1220;}
-    body[data-theme]{background:var(--bg);color:var(--text)}
+    body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",Arial}
     .muted{color:var(--muted)}
-    h1,h2,h3{ color:var(--text-strong); letter-spacing:.2px }
+    h1,h2,h3{color:var(--text-strong);font-weight:800}
     .card{background:var(--card-bg);border:1px solid var(--border);border-radius:1rem;padding:1.25rem}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.25rem;border-radius:.75rem;font-weight:600}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-ghost{background:var(--ghost-bg);border:1px solid var(--ghost-border);color:var(--text)}
 
     /* 工作日誌縮圖 */
-    .diary-thumb{
-      aspect-ratio: 4 / 3;
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-      border-radius:.5rem;
-      border:1px solid var(--border);
-    }
+    .diary-thumb{aspect-ratio:4/3;width:100%;object-fit:cover;border-radius:.5rem;border:1px solid var(--border)}
+
+    /* Lightbox */
+    #lightbox{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:100}
+    #lightbox img{max-width:90%;max-height:85%;border-radius:.5rem;box-shadow:0 8px 30px rgba(0,0,0,.6)}
+    #lightbox .close{position:absolute;top:20px;right:24px;font-size:2rem;color:#fff;cursor:pointer}
   </style>
 </head>
 
-<body id="top" data-theme>
-  <!-- Header / Hero / Services / Pricing / Process / SOP ... (原有內容省略，保持不變) -->
+<body id="top">
+  <!-- Header / Hero / Services / Pricing / Process / SOP ... (保持不變，這裡略) -->
 
-  <!-- ★ 工作照片日誌（單張拼貼照） -->
-  <section id="cases" class="max-w-6xl mx-auto px-4 py-12 reveal">
+  <!-- ★ 工作照片日誌 -->
+  <section id="cases" class="max-w-6xl mx-auto px-4 py-12">
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
       <div>
         <h2 class="text-2xl md:text-3xl font-bold">工作照片日誌</h2>
@@ -112,7 +103,7 @@
       </div>
     </div>
 
-    <!-- 改成最多 4 欄 -->
+    <!-- 4 欄縮圖 -->
     <div id="workGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
 
     <div class="mt-6 text-center">
@@ -120,140 +111,93 @@
     </div>
   </section>
 
-  <!-- Footer / 浮動按鈕 / 既有腳本（省略，保持不變） -->
+  <!-- Lightbox -->
+  <div id="lightbox">
+    <span class="close">&times;</span>
+    <img src="" alt="放大圖片">
+  </div>
 
-  <!-- ★ 工作日誌 manifest 整合腳本 -->
   <script>
   const CONFIG = {
-    manifestPath: '/works/manifest.json',
-    cloudinary: { cloudName: 'dijzndzw2' },
-    imagekit:   { baseUrl: 'https://ik.imagekit.io/YOUR_IMAGEKIT_ID' },
-    uploadcare: { baseCdn: 'https://ucarecdn.com' },
-    cloudflare: { accountHash: 'YOUR_ACCOUNT_HASH', variant: 'public' }
+    manifestPath:'/works/manifest.json',
+    cloudinary:{cloudName:'dijzndzw2'},
+    imagekit:{baseUrl:'https://ik.imagekit.io/YOUR_IMAGEKIT_ID'},
+    uploadcare:{baseCdn:'https://ucarecdn.com'},
+    cloudflare:{accountHash:'YOUR_ACCOUNT_HASH',variant:'public'}
   };
-
-  const $ = s => document.querySelector(s);
-  function daysBetween(d){ const ms=(new Date())-new Date(d+'T00:00:00'); return Math.floor(ms/86400000); }
-  function matchKeyword(w,kw){ if(!kw) return true; kw=kw.trim(); return [w.city,w.area,w.service,w.note].some(x=>(x||'').includes(kw)); }
-
-  // ✅ Cloudinary URL 修正（逐段編碼）
-  function buildUrl(provider, idOrUrl, width=1600){
-    if(!idOrUrl) return '';
-    if(/^https?:\/\//i.test(idOrUrl)) return idOrUrl;
+  const $=s=>document.querySelector(s);
+  function daysBetween(d){const ms=(new Date())-new Date(d+'T00:00:00');return Math.floor(ms/86400000)}
+  function matchKeyword(w,kw){if(!kw)return true;kw=kw.trim();return[w.city,w.area,w.service,w.note].some(x=>(x||'').includes(kw))}
+  function buildUrl(provider,idOrUrl,width=1600){
+    if(!idOrUrl)return'';if(/^https?:\/\//i.test(idOrUrl))return idOrUrl;
     switch((provider||'').toLowerCase()){
-      case 'cloudinary': {
-        const c = CONFIG.cloudinary.cloudName;
-        const path = String(idOrUrl).split('/').map(encodeURIComponent).join('/');
-        return `https://res.cloudinary.com/${c}/image/upload/f_auto,q_auto,w_${width}/${path}`;
-      }
-      case 'imagekit': {
-        const base = CONFIG.imagekit.baseUrl.replace(/\/$/,'');
-        return `${base}/${idOrUrl}?tr=f-auto,q-85,w-${width}`;
-      }
-      case 'uploadcare': {
-        const cdn = CONFIG.uploadcare.baseCdn.replace(/\/$/,'');
-        return `${cdn}/${idOrUrl}/-/format/auto/-/quality/smart/-/resize/${width}/`;
-      }
-      case 'cloudflare': {
-        const { accountHash, variant } = CONFIG.cloudflare;
-        return `https://imagedelivery.net/${accountHash}/${encodeURIComponent(idOrUrl)}/${encodeURIComponent(variant)}`;
-      }
-      default: return idOrUrl;
+      case 'cloudinary':{const c=CONFIG.cloudinary.cloudName;const path=String(idOrUrl).split('/').map(encodeURIComponent).join('/');return`https://res.cloudinary.com/${c}/image/upload/f_auto,q_auto,w_${width}/${path}`;}
+      case 'imagekit':{const base=CONFIG.imagekit.baseUrl.replace(/\/$/,'');return`${base}/${idOrUrl}?tr=f-auto,q-85,w-${width}`;}
+      case 'uploadcare':{const cdn=CONFIG.uploadcare.baseCdn.replace(/\/$/,'');return`${cdn}/${idOrUrl}/-/format/auto/-/quality/smart/-/resize/${width}/`;}
+      case 'cloudflare':{const{accountHash,variant}=CONFIG.cloudflare;return`https://imagedelivery.net/${accountHash}/${encodeURIComponent(idOrUrl)}/${encodeURIComponent(variant)}`;}
+      default:return idOrUrl;
     }
   }
-
-  // ✅ 使用縮圖顯示 (600px)，點擊開大圖 (1600px)
   function workCard(w){
-    const when = daysBetween(w.date)===0 ? '（本日）' : '';
-    const title = `${w.date}${when}・${w.city||''}${w.area||''}・${w.service||''}`;
-    const prov  = (w.provider || 'url').toLowerCase();
-    const thumb = buildUrl(prov, w.image, 600);
-    const full  = buildUrl(prov, w.image, 1600);
-    const alt   = `${w.city||''}${w.area||''}${w.service||''} 清洗拼貼`;
-
-    return `
+    const when=daysBetween(w.date)===0?'（本日）':'';
+    const title=`${w.date}${when}・${w.city||''}${w.area||''}・${w.service||''}`;
+    const prov=(w.provider||'url').toLowerCase();
+    const thumb=buildUrl(prov,w.image,600);
+    const full=buildUrl(prov,w.image,1600);
+    const alt=`${w.city||''}${w.area||''}${w.service||''} 清洗拼貼`;
+    return`
       <article class="card p-0 overflow-hidden">
         <div class="p-4 border-b flex items-center justify-between">
           <div class="text-sm font-semibold">${title}</div>
           <span class="text-xs muted">${w.id||''}</span>
         </div>
         <div class="p-4">
-          <a href="${full}" target="_blank" rel="noopener" aria-label="點擊看大圖">
-            <img class="diary-thumb" src="${thumb}" alt="${alt}" loading="lazy" width="600" height="450">
-          </a>
-          ${w.note ? `<p class="mt-3 text-sm muted">${w.note}</p>` : ''}
+          <img class="diary-thumb cursor-pointer" src="${thumb}" data-full="${full}" alt="${alt}" loading="lazy" width="600" height="450">
+          ${w.note?`<p class="mt-3 text-sm muted">${w.note}</p>`:''}
         </div>
-      </article>
-    `;
+      </article>`;
   }
-
-  let ALL_WORKS = [], currentFiltered = [];
-  let pageSize = 8, page = 1;
-
+  let ALL_WORKS=[],currentFiltered=[],pageSize=8,page=1;
   async function loadWorks(){
-    try{
-      const res = await fetch(CONFIG.manifestPath + '?v=' + Date.now(), { cache:'no-store' });
-      if(!res.ok) throw new Error('manifest 載入失敗');
-      const data = await res.json();
-      if(!Array.isArray(data)) throw new Error('manifest 格式應為陣列');
-
-      ALL_WORKS = data.map(x => ({
-        id: x.id || crypto.randomUUID(),
-        date: x.date || new Date().toISOString().slice(0,10),
-        service: x.service || '',
-        city: x.city || '',
-        area: x.area || '',
-        note: x.note || '',
-        provider: (x.provider || 'url').toLowerCase(),
-        image: x.image
-      }));
-    }catch(e){ console.error(e); ALL_WORKS = []; }
+    try{const res=await fetch(CONFIG.manifestPath+'?v='+Date.now(),{cache:'no-store'});
+      if(!res.ok)throw new Error('manifest 載入失敗');
+      const data=await res.json();
+      if(!Array.isArray(data))throw new Error('manifest 格式應為陣列');
+      ALL_WORKS=data.map(x=>({id:x.id||crypto.randomUUID(),date:x.date||new Date().toISOString().slice(0,10),service:x.service||'',city:x.city||'',area:x.area||'',note:x.note||'',provider:(x.provider||'url').toLowerCase(),image:x.image}));
+    }catch(e){console.error(e);ALL_WORKS=[]}
   }
-
   function applyFilters(){
-    const svc = $('#filterService')?.value || 'all';
-    const range = $('#filterDate')?.value || '7';
-    const kw = $('#filterKeyword')?.value || '';
-    const filtered = ALL_WORKS
-      .filter(w => svc==='all' ? true : w.service===svc)
-      .filter(w => {
-        if(range==='all') return true;
-        if(range==='1')  return daysBetween(w.date) <= 0;
-        if(range==='7')  return daysBetween(w.date) <= 7;
-        if(range==='30') return daysBetween(w.date) <= 30;
-        return true;
-      })
-      .filter(w => matchKeyword(w, kw))
-      .sort((a,b) => b.date.localeCompare(a.date));
-    currentFiltered = filtered;
-    const cnt = $('#workCount'); if(cnt) cnt.textContent = filtered.length;
-    page = 1; renderPage();
+    const svc=$('#filterService')?.value||'all';const range=$('#filterDate')?.value||'7';const kw=$('#filterKeyword')?.value||'';
+    const filtered=ALL_WORKS.filter(w=>svc==='all'?true:w.service===svc).filter(w=>{
+      if(range==='all')return true;if(range==='1')return daysBetween(w.date)<=0;if(range==='7')return daysBetween(w.date)<=7;if(range==='30')return daysBetween(w.date)<=30;return true;
+    }).filter(w=>matchKeyword(w,kw)).sort((a,b)=>b.date.localeCompare(a.date));
+    currentFiltered=filtered;const cnt=$('#workCount');if(cnt)cnt.textContent=filtered.length;page=1;renderPage();
   }
-
   function renderPage(){
-    const grid = $('#workGrid'); if(!grid) return;
-    if(currentFiltered.length===0){
-      grid.innerHTML = `<div class="muted text-sm">目前尚無工作日誌，歡迎稍後再來看看。</div>`;
-      document.getElementById('btnMore')?.classList.add('is-hidden'); return;
-    }
-    const slice = currentFiltered.slice(0, page*pageSize);
-    grid.innerHTML = slice.map(workCard).join('');
-    const more = document.getElementById('btnMore');
-    if(more){
-      if(slice.length >= currentFiltered.length){ more.classList.add('is-hidden'); }
-      else { more.classList.remove('is-hidden'); }
-    }
+    const grid=$('#workGrid');if(!grid)return;
+    if(currentFiltered.length===0){grid.innerHTML=`<div class="muted text-sm">目前尚無工作日誌</div>`;$('#btnMore')?.classList.add('is-hidden');return}
+    const slice=currentFiltered.slice(0,page*pageSize);
+    grid.innerHTML=slice.map(workCard).join('');
+    $('#btnMore')?.classList.toggle('is-hidden',slice.length>=currentFiltered.length);
+    bindLightbox();
   }
-
+  function bindLightbox(){
+    document.querySelectorAll('.diary-thumb').forEach(img=>{
+      img.onclick=()=>{const full=img.dataset.full;const lb=$('#lightbox');const lbImg=$('#lightbox img');lbImg.src=full;lb.style.display='flex'}
+    });
+  }
   async function initDiary(){
     await loadWorks();
-    document.getElementById('filterService')?.addEventListener('change', applyFilters);
-    document.getElementById('filterDate')?.addEventListener('change', applyFilters);
-    document.getElementById('filterKeyword')?.addEventListener('input', ()=>applyFilters());
-    document.getElementById('btnMore')?.addEventListener('click', ()=>{ page += 1; renderPage(); });
+    $('#filterService')?.addEventListener('change',applyFilters);
+    $('#filterDate')?.addEventListener('change',applyFilters);
+    $('#filterKeyword')?.addEventListener('input',()=>applyFilters());
+    $('#btnMore')?.addEventListener('click',()=>{page+=1;renderPage()});
     applyFilters();
   }
   initDiary();
+  // Lightbox 關閉
+  $('#lightbox .close').onclick=()=>{$('#lightbox').style.display='none';$('#lightbox img').src=''}
+  $('#lightbox').onclick=e=>{if(e.target.id==='lightbox'){$('#lightbox').style.display='none';$('#lightbox img').src=''}}
   </script>
 </body>
 </html>
