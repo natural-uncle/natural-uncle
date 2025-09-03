@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>自然大叔｜冷氣・洗衣機・水塔・自來水管清洗</title>
+  <meta name="description" content="專業到府清洗：冷氣、直立式洗衣機、水塔、自來水管。透明價格、到府快速、提供保固與發票。立即以 LINE/電話預約。" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+  <style>
+    :root{--border:#e2e8f0;--accent:#2563eb}
+    .muted{color:#475569}
+    .card{background:#fff;border:1px solid var(--border);border-radius:1rem}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:.7rem 1.1rem;border-radius:.7rem;font-weight:700;border:1px solid #cbd5e1}
+    .btn-primary{background:#2563eb;color:#fff;border-color:#2563eb}
+    .ba{position:relative;border-radius:1rem;overflow:hidden;border:1px solid var(--border)}
+    .ba .ba-img{display:block;width:100%;height:auto}
+    .ba .after{position:absolute;inset:0 auto 0 0;width:50%;overflow:hidden;border-right:2px solid var(--accent)}
+    .ba .ba-label{position:absolute;top:.5rem;left:.5rem;z-index:2;background:rgba(0,0,0,.5);color:#fff;font-size:.75rem;padding:.2rem .5rem;border-radius:.4rem}
+    .ba .ba-label.after{left:auto;right:.5rem}
+    .ba input[type="range"]{position:absolute;left:1rem;right:1rem;bottom:.75rem;appearance:none;height:4px;background:#cbd5e1;border-radius:9999px}
+    .ba input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:9999px;background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <!-- Header -->
+  <header class="bg-white/90 sticky top-0 backdrop-blur z-50 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="/" class="font-extrabold text-xl">自然大叔</a>
+      <nav class="hidden md:flex gap-6 text-sm">
+        <a href="#services">服務</a>
+        <a href="#cases">工作日誌</a>
+        <a href="#contact">聯絡</a>
+      </nav>
+      <a href="https://line.me/R/ti/p/@uncle888" class="hidden md:inline-flex btn btn-primary">LINE 諮詢</a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="bg-white border-b">
+    <div class="max-w-6xl mx-auto px-4 py-12 text-center">
+      <h1 class="text-3xl md:text-5xl font-extrabold">冷氣・洗衣機・水塔・自來水管 到府專業清洗</h1>
+      <p class="mt-3 text-lg muted">透明價格｜完工保固｜環保清潔劑｜可開立發票</p>
+      <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="tel:+886912356331" class="btn">一鍵撥打</a>
+        <a href="https://line.me/R/ti/p/@uncle888" class="btn btn-primary">LINE 立即預約</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section id="services" class="max-w-6xl mx-auto px-4 py-10">
+    <h2 class="text-2xl md:text-3xl font-bold mb-5">服務項目</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div class="card p-4"><h3 class="font-bold">冷氣清洗</h3><p class="muted text-sm mt-1">蒸發器、風鼓、濾網，防護處理。</p></div>
+      <div class="card p-4"><h3 class="font-bold">直立式洗衣機清洗</h3><p class="muted text-sm mt-1">全機拆洗除黴與水垢。</p></div>
+      <div class="card p-4"><h3 class="font-bold">水塔清洗</h3><p class="muted text-sm mt-1">排空、刷洗，附清洗照。</p></div>
+      <div class="card p-4"><h3 class="font-bold">自來水管清洗</h3><p class="muted text-sm mt-1">脈衝清洗除鏽垢，改善水質水壓。</p></div>
+    </div>
+  </section>
+
+  <!-- 工作照片日誌 -->
+  <section id="cases" class="max-w-6xl mx-auto px-4 py-10">
+    <div class="flex items-end justify-between gap-3 mb-5">
+      <div>
+        <h2 class="text-2xl md:text-3xl font-bold">工作照片日誌｜即時更新</h2>
+        <p class="muted text-sm mt-1">顯示每次清洗的「前／後」對比照片（<span id="workCount">0</span> 筆）</p>
+      </div>
+      <div class="flex gap-2">
+        <select id="filterService" class="btn py-2 px-3">
+          <option value="all">全部服務</option>
+          <option value="冷氣">冷氣</option>
+          <option value="洗衣機">洗衣機</option>
+          <option value="水塔">水塔</option>
+          <option value="水管">水管</option>
+        </select>
+        <select id="filterDate" class="btn py-2 px-3">
+          <option value="7">近 7 天</option>
+          <option value="30">近 30 天</option>
+          <option value="1">本日</option>
+          <option value="all">全部</option>
+        </select>
+      </div>
+    </div>
+    <div id="workGrid" class="grid md:grid-cols-2 gap-6"></div>
+    <div class="mt-6 text-center"><button id="btnMore" class="btn btn-primary px-6">載入更多</button></div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="bg-white border-t">
+    <div class="max-w-6xl mx-auto px-4 py-10">
+      <h2 class="text-2xl md:text-3xl font-bold mb-5">聯絡 / 預約</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="card p-5">
+          <h3 class="font-bold">快速通道</h3>
+          <ul class="mt-3 text-sm">
+            <li>電話：<a class="text-blue-600 underline" href="tel:+886912356331">+886 912-356-331</a></li>
+            <li>LINE：<a class="text-blue-600 underline" href="https://line.me/R/ti/p/@uncle888">@uncle888</a></li>
+            <li>服務時間：週一至週六 09:00–20:00</li>
+          </ul>
+        </div>
+        <div class="card p-5">
+          <h3 class="font-bold">服務資訊</h3>
+          <ul class="mt-3 text-sm">
+            <li>服務範圍：皆可服務（除宜、花、東、屏）</li>
+            <li>可附照片估價／可開立發票／14 天售後保固</li>
+            <li>施工前請確保水電正常供應，並協助保留必要空間</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-white border-t">
+    <div class="max-w-6xl mx-auto px-4 py-6 text-sm muted flex items-center gap-3">
+      <span>© <span id="year"></span> 自然大叔 Natural Uncle｜統編：88537528</span>
+    </div>
+  </footer>
+
+  <!-- SaaS 圖片 / manifest 整合（Cloudinary 已啟用） -->
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const CONFIG = {
+      manifestPath: '/works/manifest.json',
+      cloudinary: { cloudName: 'nu-unsigned' } // ← 已為你套好
+    };
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    function daysBetween(d){ const ms=(new Date())-new Date(d+'T00:00:00'); return Math.floor(ms/86400000); }
+    function buildUrl(provider, idOrUrl, width=1600){
+      if(!idOrUrl) return '';
+      if(/^https?:\/\//i.test(idOrUrl)) return idOrUrl;
+      if((provider||'').toLowerCase()==='cloudinary'){
+        const c = CONFIG.cloudinary.cloudName;
+        return `https://res.cloudinary.com/${c}/image/upload/f_auto,q_auto,w_${width}/${encodeURIComponent(idOrUrl)}`;
+      }
+      return idOrUrl;
+    }
+    function workCard(w){
+      const when = daysBetween(w.date)===0 ? '（本日）' : '';
+      const title = `${w.date}${when}・${w.city||''}${w.area||''}・${w.service||''}`;
+      const be = buildUrl(w.provider, w.before);
+      const af = buildUrl(w.provider, w.after);
+      const altBefore = `${w.city||''}${w.area||''}${w.service||''} 清洗前`;
+      const altAfter  = `${w.city||''}${w.area||''}${w.service||''} 清洗後`;
+      return `<article class="card overflow-hidden">
+        <div class="p-4 border-b flex items-center justify-between">
+          <div class="text-sm font-semibold">${title}</div><span class="text-xs muted">${w.id||''}</span></div>
+        <div class="p-4">
+          <div class="ba" data-id="${w.id||''}">
+            <span class="ba-label">清洗前</span><span class="ba-label after">清洗後</span>
+            <img class="ba-img" src="${be}" alt="${altBefore}" loading="lazy" width="1600" height="900">
+            <div class="after"><img class="ba-img" src="${af}" alt="${altAfter}" loading="lazy" width="1600" height="900"></div>
+            <input type="range" min="0" max="100" value="50" aria-label="前後對比滑桿（0%前→100%後）">
+          </div>
+          ${w.note ? `<p class="mt-3 text-sm muted">${w.note}</p>` : ''}
+        </div>
+      </article>`;
+    }
+    let ALL_WORKS = [], currentFiltered = [];
+    let pageSize = 8, page = 1;
+    async function loadWorks(){
+      try{
+        const res = await fetch(CONFIG.manifestPath + '?v=' + Date.now(), { cache:'no-store' });
+        if(!res.ok) throw new Error('manifest 載入失敗');
+        const data = await res.json();
+        if(!Array.isArray(data)) throw new Error('manifest 格式應為陣列');
+        ALL_WORKS = data.map(x => ({
+          id: x.id || crypto.randomUUID(),
+          date: x.date || new Date().toISOString().slice(0,10),
+          service: x.service || '',
+          city: x.city || '',
+          area: x.area || '',
+          note: x.note || '',
+          provider: (x.provider || 'cloudinary').toLowerCase(),
+          before: x.before,
+          after:  x.after
+        }));
+      }catch(e){ console.error(e); ALL_WORKS = []; }
+    }
+    function applyFilters(){
+      const svc = $('#filterService')?.value || 'all';
+      const range = $('#filterDate')?.value || '7';
+      const filtered = ALL_WORKS
+        .filter(w => svc==='all' ? true : w.service===svc)
+        .filter(w => (range==='all') || (range==='1' && daysBetween(w.date)<=0) || (range==='7' && daysBetween(w.date)<=7) || (range==='30' && daysBetween(w.date)<=30));
+      currentFiltered = filtered.sort((a,b) => b.date.localeCompare(a.date));
+      $('#workCount').textContent = currentFiltered.length;
+      page = 1; renderPage();
+    }
+    function renderPage(){
+      const grid = $('#workGrid'); if(!grid) return;
+      if(currentFiltered.length===0){ grid.innerHTML = `<div class="muted text-sm">目前尚無工作日誌，歡迎稍後再來看看。</div>`; $('#btnMore')?.classList.add('hidden'); return; }
+      const slice = currentFiltered.slice(0, page*pageSize);
+      grid.innerHTML = slice.map(workCard).join('');
+      initBeforeAfter();
+      const more = $('#btnMore');
+      if(more){ if(slice.length >= currentFiltered.length){ more.classList.add('hidden'); } else { more.classList.remove('hidden'); } }
+    }
+    function initBeforeAfter(){
+      $$('.ba').forEach(el=>{
+        const range = el.querySelector('input[type="range"]');
+        const after = el.querySelector('.after');
+        const sync = ()=>{ after.style.width = range.value + '%'; };
+        sync(); range.addEventListener('input', sync, { passive:true });
+      });
+    }
+    async function initDiary(){
+      await loadWorks();
+      $('#filterService')?.addEventListener('change', applyFilters);
+      $('#filterDate')?.addEventListener('change', applyFilters);
+      $('#btnMore')?.addEventListener('click', ()=>{ page += 1; renderPage(); });
+      applyFilters();
+    }
+    initDiary();
+  </script>
+</body>
+</html>
