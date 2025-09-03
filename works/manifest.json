@@ -1,12 +1,14 @@
-[
-  {
-  "id": "2025-09-03-32",
-  "date": "2025-09-01",
+{
+  "id": "2025-09-AC-DAAN-01",
+  "date": "2025-09-03",
   "service": "冷氣",
-  "city": "台中市",
-  "area": "",
-  "note": "",
+  "city": "台北市",
+  "area": "大安區",
+  "note": "風鼓厚塵與黴斑；掛洗鋁鰭＋風鼓，疏通排水後風量恢復、異味消失。",
   "provider": "cloudinary",
-  "image": "natural-uncle/1009_b1krnj"
+  "images": [
+    "natural-uncle/2025-09-03_collage_overview.jpg",
+    "natural-uncle/2025-09-03_collage_detail1.jpg",
+    "natural-uncle/2025-09-03_collage_detail2.jpg"
+  ]
 }
-]
