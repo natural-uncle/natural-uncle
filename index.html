@@ -18,7 +18,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://yourdomain.com/">
 
-  <!-- 圖片 CDN 預連線（按需保留） -->
+  <!-- （可選）SaaS 圖片預連線：用到哪個就留哪個 -->
   <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
   <link rel="preconnect" href="https://ik.imagekit.io" crossorigin>
   <link rel="preconnect" href="https://ucarecdn.com" crossorigin>
@@ -55,8 +55,156 @@
 
   <style>
     html{scroll-behavior:smooth}
+    /* ---- 主題色（淺色預設） ---- */
+    :root{
+      --bg:#fff; --text:#0f172a; --muted:#475569;
+      --card-bg:#fff; --border:#e2e8f0;
+      --primary:#06C755; --primary-hover:#04b34c;
+      --success:#059669; --success-hover:#047857;
+      --ghost-bg:#fff; --ghost-border:#cbd5e1;
+      --accent:#3b7d2b;
+      --text-strong:#0b1220;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b1220; --text:#e5e7eb; --muted:#94a3b8;
+        --card-bg:#0f172a; --border:#1f2937;
+        --ghost-bg:#0f172a; --ghost-border:#334155;
+        --accent:#fbbf24; --text-strong:#ffffff;
+      }
+    }
+    body.dark{
+      --bg:#0b1220; --text:#e5e7eb; --muted:#94a3b8;
+      --card-bg:#0f172a; --border:#1f2937;
+      --ghost-bg:#0f172a; --ghost-border:#334155;
+      --accent:#fbbf24; --text-strong:#ffffff;
+    }
+    body.light{
+      --bg:#fff; --text:#0f172a; --muted:#475569;
+      --card-bg:#fff; --border:#e2e8f0;
+      --ghost-bg:#fff; --ghost-border:#cbd5e1;
+      --accent:#3b7d2b; --text-strong:#0b1220;
+    }
+    body[data-theme]{background:var(--bg);color:var(--text)}
+    .muted{color:var(--muted)}
+    h1,h2,h3{ color:var(--text-strong); letter-spacing:.2px }
+    h1{ font-weight:800 } h2{ font-weight:800 } h3{ font-weight:700 }
+    .card-title{ color:var(--text-strong); font-weight:800 }
+    .card-desc{margin-top:.5rem;font-size:.9rem;color:var(--muted)}
+    .card-list{margin-top:.75rem;padding-left:1.25rem;list-style:disc;font-size:.9rem}
 
-    /* ---- 主題色（升級版） ---- */
+    /* ---- 元件 ---- */
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.25rem;border-radius:.75rem;font-weight:600;transition:transform .15s ease,background-color .2s ease,box-shadow .2s ease}
+    .btn:hover{transform:scale(1.05)}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-primary:hover{background:var(--primary-hover)}
+    .btn-success{background:var(--success);color:#fff}
+    .btn-success:hover{background:var(--success-hover)}
+    .btn-ghost{background:var(--ghost-bg);border:1px solid var(--ghost-border);color:var(--text)}
+    .btn-ghost:hover{box-shadow:0 6px 20px rgba(0,0,0,.08)}
+    .card{background:var(--card-bg);border:1px solid var(--border);border-radius:1rem;padding:1.25rem}
+
+    /* ---- 滾動動畫 ---- */
+    .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+
+    /* ---- 主題切換浮動鈕（可拖曳） ---- */
+    .theme-toggle{
+      position:fixed;bottom:5rem;right:1rem;width:48px;height:48px;border-radius:9999px;
+      background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 8px 24px rgba(3,105,161,.35);cursor:pointer;z-index:60;touch-action:none
+    }
+    @media (max-width: 767.98px){
+      .theme-toggle{ right:auto !important; left:1rem !important; bottom:calc(7.5rem + env(safe-area-inset-bottom,0px)) !important; }
+      .mobile-fab{ bottom:calc(1rem + env(safe-area-inset-bottom,0px)) !important; right:1rem !important; }
+    }
+
+    /* ---- FAQ 折疊 ---- */
+    details.faq{background:var(--card-bg);border:1px solid var(--border);border-radius:.75rem;padding:1rem;margin-bottom:.75rem}
+    details.faq summary{cursor:pointer;font-weight:600;position:relative;padding-left:1.5rem}
+    details.faq summary::-webkit-details-marker{display:none} details.faq summary::marker{content:""}
+    details.faq summary::before{content:"➕";position:absolute;left:0;top:.1rem;font-size:1.1rem;color:var(--muted);transition:transform .2s ease,color .2s ease}
+    details.faq[open] summary::before{content:"➖";color:var(--primary)}
+    details.faq .faq-content{max-height:0;opacity:0;overflow:hidden;transition:max-height .4s ease,opacity .3s ease}
+    details.faq[open] .faq-content{max-height:1000px;opacity:1}
+
+    /* ---- 施工流程：時間軸 ---- */
+    .timeline{position:relative;margin-left:1rem}
+    .timeline:before{content:"";position:absolute;left:12px;top:0;bottom:0;width:2px;background:var(--border)}
+    .timeline-item{position:relative;padding-left:2.5rem;margin-bottom:1rem}
+    .timeline-item:before{content:"";position:absolute;left:3px;top:.35rem;width:18px;height:18px;border-radius:9999px;background:var(--accent)}
+
+    /* ---- 深色對比修正 ---- */
+    body.dark header{ background: rgba(15,23,42,.92); border-color: #334155 !important; }
+    body.dark header nav a{ color:#e5e7eb }
+    body.dark footer{ background:#0f172a; border-color:#334155 !important; }
+    body.dark footer .muted{ color:#94a3b8 }
+    body.dark section.bg-gradient-to-b{ background: linear-gradient(180deg,#0f172a 0%, #0b1220 100%) !important; }
+    body.dark section.bg-gradient-to-b h1{ color:#ffffff }
+    body.dark section.bg-gradient-to-b .muted{ color:#cbd5e1 }
+    body.dark #pricing{ background:#0f172a !important; }
+    body.dark #pricing table{ color:#e5e7eb }
+    body.dark #pricing thead th{ color:#f8fafc; border-color:#334155 !important; font-weight:800; }
+    body.dark #pricing tbody tr{ border-color:#334155 }
+    body.dark #pricing td{ color:#e5e7eb }
+    body.dark #faq{ background:#0b1220 !important; }
+    body.dark #faq h2{ color:#ffffff }
+    body.dark details.faq{ background:#0f172a; border-color:#334155 !important; }
+    body.dark details.faq summary{ color:#e5e7eb }
+    body.dark details.faq .faq-content{ color:#cbd5e1 }
+    body.dark .btn-ghost{ background: rgba(255,255,255,.06); border-color:#334155; color:#e5e7eb; }
+    body.dark .btn-ghost:hover{ background: rgba(255,255,255,.1) }
+    body.dark .card-desc{ color:#cbd5e1 }
+    body.dark .btn-primary{ background:#3b82f6; color:#fff; }
+    body.dark .btn-primary:hover{ background:#60a5fa; }
+
+    /* ====== 放大導覽列 LOGO ====== */
+    .brand-logo{ height:clamp(40px, 8vw, 72px); width:auto }
+    header .max-w-6xl > .px-4{ padding-top:.35rem; padding-bottom:.35rem }
+    @media(min-width:768px){
+      header .max-w-6xl > .px-4{ padding-top:.5rem; padding-bottom:.5rem }
+    }
+    header nav{ gap:clamp(12px, 2vw, 24px) }
+
+    /* ========= 浮動按鈕（與 pricing.html 一致） ========= */
+    .fab{
+      position:fixed;right:1rem;z-index:60;
+      display:flex;align-items:center;justify-content:center;
+      border-radius:9999px;
+      box-shadow:0 8px 24px rgba(0,0,0,.22);
+      cursor:pointer;transition:transform .2s ease,opacity .3s ease,box-shadow .2s ease
+    }
+    .fab:hover{transform:translateY(-1px) scale(1.05);box-shadow:0 12px 28px rgba(0,0,0,.28)}
+    .fab.is-hidden{opacity:0;pointer-events:none}
+    .fab-top{bottom:calc(9rem + env(safe-area-inset-bottom,0px));width:48px;height:48px;background:#0ea5e9;color:#fff;font-size:1.25rem}
+    @media (max-width:767.98px){ .fab-top{bottom:calc(9.5rem + env(safe-area-inset-bottom,0px))} }
+
+    /* ★ 關鍵：LINE 預約按鈕（獨立懸浮）維持一致比例 */
+    .fab-book{
+      bottom:calc(1rem + env(safe-area-inset-bottom,0px));
+      min-width:48px;
+      height:48px;
+      padding:0 1.1rem;
+      background:var(--primary);
+      color:#fff;
+      font-weight:800;
+      border-radius:9999px;
+    }
+
+    /* ====== 行動版浮動快速按鈕（本次修正重點） ====== */
+    @media (max-width: 767.98px){
+      .mobile-fab a{
+        display:flex;align-items:center;justify-content:center;
+        height:48px; padding:0 1.1rem; border-radius:9999px;
+        font-weight:800; border:0; box-shadow:0 8px 24px rgba(0,0,0,.22);
+        -webkit-appearance:none; background-clip:padding-box; -webkit-mask-image:-webkit-radial-gradient(white, black);
+      }
+      .mobile-fab .btn-ghost{ background:var(--accent); color:#fff; }
+      .mobile-fab .btn-primary{ background:var(--primary); color:#fff; }
+      .mobile-fab a:hover{ transform:translateY(-1px) scale(1.03); }
+    }
+
+    /* ========================= 覆蓋式「色彩與對比升級」 ========================= */
     :root{
       --bg:#f3f5f9; --text:#0b1220; --muted:#5b6b7f;
       --card-bg:#ffffff; --border:#d7deea;
@@ -92,19 +240,29 @@
         linear-gradient(#f6f8fc, #eef2f8);
       color:var(--text);
     }
-
-    .muted{color:var(--muted)}
-    h1,h2,h3{ color:var(--text-strong); letter-spacing:.2px }
-    h1{ font-weight:800 } h2{ font-weight:800 } h3{ font-weight:700 }
-    .card{background:var(--card-bg);border:1px solid var(--border);border-radius:1rem;padding:1.25rem; box-shadow:0 6px 20px rgba(15,23,42,.06) }
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.25rem;border-radius:.75rem;font-weight:600; box-shadow:0 3px 10px rgba(2,6,23,.06) }
-    .btn-primary{background:var(--accent);color:#fff}
-    .btn-primary:hover{background:#1d4ed8}
+    body.dark[data-theme]{
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(96,165,250,.20), transparent 60%),
+        radial-gradient(1000px 500px at 90% -20%, rgba(6,199,85,.18), transparent 55%),
+        linear-gradient(#0f172a, #0b1220);
+    }
+    .card{ box-shadow:0 6px 20px rgba(15,23,42,.06) }
+    body.dark .card{ box-shadow:0 8px 24px rgba(0,0,0,.35) }
+    .btn{ box-shadow:0 3px 10px rgba(2,6,23,.06) }
+    .btn-primary{ background:var(--accent); color:#fff }
+    .btn-primary:hover{ background:#1d4ed8 }
     .btn-success{ background:var(--primary); color:#fff }
     .btn-success:hover{ background:var(--primary-hover) }
-    .btn-ghost{background:var(--ghost-bg);border:1px solid var(--ghost-border);color:var(--text)}
-    .btn:hover{transform:scale(1.03); transition:transform .15s ease}
-
+    .btn-ghost{ background:var(--ghost-bg); border:1px solid var(--ghost-border); color:var(--text) }
+    #pricing thead th{
+      color:var(--text-strong);
+      border-color:var(--border) !important;
+      background:linear-gradient(180deg, rgba(37,99,235,.08), rgba(37,99,235,0));
+      font-weight:800;
+    }
+    #pricing tbody tr{ border-color:var(--border) }
+    #pricing td{ color:var(--text) }
+    body.dark #pricing thead th{ background:linear-gradient(180deg, rgba(96,165,250,.18), rgba(96,165,250,0)); }
     header{
       background:rgba(255,255,255,.88);
       backdrop-filter:saturate(1.1) blur(8px);
@@ -112,52 +270,24 @@
       box-shadow:0 2px 12px rgba(2,6,23,.04);
     }
     body.dark header{ background:rgba(15,23,42,.88); }
-
-    /* 導覽列 Logo */
-    .brand-logo{ height:clamp(40px, 8vw, 72px); width:auto }
-
-    /* FAQ 折疊 */
-    details.faq{background:var(--card-bg);border:1px solid var(--border);border-radius:.75rem;padding:1rem;margin-bottom:.75rem}
-    details.faq summary{cursor:pointer;font-weight:600;position:relative;padding-left:1.5rem}
-    details.faq summary::-webkit-details-marker{display:none} details.faq summary::marker{content:""}
-    details.faq summary::before{content:"➕";position:absolute;left:0;top:.1rem;font-size:1.1rem;color:var(--muted)}
-    details.faq[open] summary::before{content:"➖";color:var(--accent)}
-    details.faq .faq-content{max-height:0;opacity:0;overflow:hidden;transition:max-height .4s ease,opacity .3s ease}
-    details.faq[open] .faq-content{max-height:1000px;opacity:1}
-
-    /* 時間軸 */
-    .timeline{position:relative;margin-left:1rem}
-    .timeline:before{content:"";position:absolute;left:12px;top:0;bottom:0;width:2px;background:var(--border)}
-    .timeline-item{position:relative;padding-left:2.5rem;margin-bottom:1rem}
-    .timeline-item:before{content:"";position:absolute;left:3px;top:.35rem;width:18px;height:18px;border-radius:9999px;background:linear-gradient(135deg, var(--accent), var(--primary)); box-shadow:0 0 0 3px rgba(37,99,235,.08);}
-
-    /* 浮動按鈕 */
-    .fab{
-      position:fixed;right:1rem;z-index:60;display:flex;align-items:center;justify-content:center;border-radius:9999px;
-      box-shadow:0 8px 24px rgba(0,0,0,.22);cursor:pointer;transition:transform .2s ease,opacity .3s ease,box-shadow .2s ease
+    footer{ background:transparent; border-color:var(--border) !important; }
+    details.faq summary{ color:var(--text-strong) }
+    details.faq summary::before{ color:var(--muted) }
+    details.faq[open] summary::before{ color:var(--accent) }
+    .timeline:before{ background:var(--border) }
+    .timeline-item:before{
+      background:linear-gradient(135deg, var(--accent), var(--primary));
+      box-shadow:0 0 0 3px rgba(37,99,235,.08);
     }
-    .fab:hover{transform:translateY(-1px) scale(1.05);box-shadow:0 12px 28px rgba(0,0,0,.28)}
-    .fab.is-hidden{opacity:0;pointer-events:none}
-    .fab-top{bottom:calc(9rem + env(safe-area-inset-bottom,0px));width:48px;height:48px;background:var(--accent);color:#fff;font-size:1.25rem}
-    .fab-book{bottom:calc(1rem + env(safe-area-inset-bottom,0px));min-width:48px;height:48px;padding:0 1.1rem;background:var(--primary);color:#fff;font-weight:800;border-radius:9999px;}
+    .fab-top{ background:var(--accent); color:#fff }
+    .theme-toggle{ background:var(--accent); color:#fff }
 
-    /* 行動版快速按鈕 */
-    @media (max-width: 767.98px){
-      .mobile-fab a{
-        display:flex;align-items:center;justify-content:center;height:48px;padding:0 1.1rem;border-radius:9999px;font-weight:800;border:0;
-        box-shadow:0 8px 24px rgba(0,0,0,.22);-webkit-appearance:none;background-clip:padding-box;-webkit-mask-image:-webkit-radial-gradient(white, black);
-      }
-      .mobile-fab .btn-ghost{ background:var(--accent); color:#fff; }
-      .mobile-fab .btn-primary{ background:var(--primary); color:#fff; }
-    }
-
-    /* 工作日誌縮圖（小卡、統一比例） */
-    .diary-thumb{aspect-ratio:4/3;width:100%;height:auto;object-fit:cover;border-radius:.5rem;border:1px solid var(--border)}
-
-    /* Lightbox */
-    #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:100}
-    #lightbox img{max-width:90%;max-height:85%;border-radius:.5rem;box-shadow:0 8px 30px rgba(0,0,0,.6)}
-    #lightbox .close{position:absolute;top:20px;right:24px;font-size:2rem;color:#fff;cursor:pointer}
+    /* ===== 【工作日誌】縮圖與 Lightbox 樣式 ===== */
+    .diary-thumb{aspect-ratio:4/3;width:100%;object-fit:cover;border-radius:.5rem;border:1px solid var(--border)}
+    #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;z-index:100}
+    #lightbox img{max-width:92%;max-height:92%;border-radius:.75rem;box-shadow:0 0 25px rgba(0,0,0,.5)}
+    #lightbox.active{display:flex}
+    #lightbox .close{position:absolute;top:1rem;right:1rem;font-size:2rem;color:#fff;cursor:pointer}
   </style>
 </head>
 
@@ -258,7 +388,7 @@
           <div class="timeline-item"><h3 class="font-semibold">步驟 2｜到府前防護與檢查</h3><p class="muted text-sm mt-1">鋪設養生膠帶保護；實機測試功能、觀察機況、風量與溫差。</p></div>
           <div class="timeline-item"><h3 class="font-semibold">步驟 3｜拆機與深度清洗</h3><p class="muted text-sm mt-1">清洗熱交換器、風鼓、導風坡道、濾網與集水盤、疏通排水管；環保藥劑不傷材。</p></div>
           <div class="timeline-item"><h3 class="font-semibold">步驟 4｜組裝回測與漏水檢查</h3><p class="muted text-sm mt-1">恢復裝機、運轉測試、檢查機況/滴水，確認運作穩定。</p></div>
-          <div class="timeline-item"><h3 class="font-semibold">步驟 5｜收尾清場與保固說明</h3><p class="muted text-sm mt-1">現場清潔、提供對比照片（拼貼）、說明 14 天保固內容。</p></div>
+          <div class="timeline-item"><h3 class="font-semibold">步驟 5｜收尾清場與保固說明</h3><p class="muted text-sm mt-1">現場清潔、提供對照圖與保養貼紙，說明 14 天保固內容。</p></div>
         </div>
       </div>
       <div class="card">
@@ -311,7 +441,7 @@
           <li><strong>清洗部位：</strong>熱交換器（鋁鰭片）、鼓風扇、導風坡道、濾網、集水盤與外殼、疏通排水孔。</li>
           <li><strong>工具技巧：</strong>高壓清洗搭配可調噴嘴，依材質調整水壓避免損傷與潑濺。</li>
           <li><strong>環保藥劑：</strong>弱性環保清潔劑，不傷塑料金屬、不易殘留、無異味。</li>
-          <li><strong>紀錄回報：</strong>清洗前後拍照存證，提供客戶留存。</li>
+          <li><strong>紀錄回報：</strong>清洗前後拍照存證，提供客戶留存，作為下次保養參考。</li>
           <li><strong>時間估算：</strong>每台約 60 分鐘（含檢測與整理），視機型/位置/髒污調整。</li>
         </ul>
       </div>
@@ -324,6 +454,7 @@
           <li>功能回測確認：再次運轉檢查異音、水滴、出風，確保穩定。</li>
           <li>清潔作業區域：移除養生膠帶與防水布，現場清理無水漬/髒污/垃圾。</li>
           <li>注意事項：清洗後建議開機 30 分鐘通風；若短暫有藥劑味，可開窗加強通風。</li>
+          <li>清洗完成回報：提供前後對照圖，回答現場提問，張貼保養貼紙（日期/下次建議/聯絡資訊）。</li>
         </ul>
       </div>
     </details>
@@ -344,8 +475,8 @@
   <section id="cases" class="max-w-6xl mx-auto px-4 py-12 reveal">
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
       <div>
-        <h2 class="text-2xl md:text-3xl font-bold">工作照片日誌</h2>
-        <p class="muted text-sm mt-1">顯示每次清洗的拼貼照（<span id="workCount">0</span> 筆）</p>
+        <h2 class="text-2xl md:text-3xl font-bold">工作照片日誌｜每日更新</h2>
+        <p class="muted text-sm mt-1">顯示每次清洗的拼貼照片（<span id="workCount">0</span> 筆）</p>
       </div>
       <div class="flex flex-col sm:flex-row gap-2">
         <select id="filterService" class="btn btn-ghost py-2 px-3">
@@ -365,8 +496,7 @@
       </div>
     </div>
 
-    <!-- 4 欄縮圖（更小更清爽） -->
-    <div id="workGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    <div id="workGrid" class="grid md:grid-cols-2 gap-6"></div>
 
     <div class="mt-6 text-center">
       <button id="btnMore" class="btn btn-primary px-6">載入更多</button>
@@ -422,20 +552,14 @@
     <a href="https://line.me/R/ti/p/@uncle888" class="btn btn-primary">LINE 諮詢</a>
   </div>
 
-  <!-- 主題切換（可拖曳） -->
-  <button id="themeToggle" class="fab theme-toggle" aria-label="切換深淺色" aria-pressed="false" title="切換深淺色">🌙</button>
+  <!-- 深/淺色切換（可拖曳） -->
+  <button id="themeToggle" class="theme-toggle" aria-label="切換深淺色" aria-pressed="false">🌙</button>
 
-  <!-- 返回頂部 + LINE 預約 -->
+  <!-- 浮動按鈕（返回頂部 + LINE 預約） -->
   <a href="#top" id="backTop" class="fab fab-top is-hidden" aria-label="返回頂部" title="返回頂部">↑</a>
   <a href="https://line.me/R/ti/p/@uncle888" class="fab fab-book" aria-label="LINE 預約" title="LINE 預約">LINE 預約</a>
 
-  <!-- Lightbox -->
-  <div id="lightbox">
-    <span class="close" aria-label="關閉">×</span>
-    <img src="" alt="放大圖片">
-  </div>
-
-  <!-- 功能腳本：年份、主題、滾動動畫、拖曳、返回頂部、工作日誌 + Lightbox -->
+  <!-- 既有的功能腳本：主題、滾動動畫、拖曳等 -->
   <script>
     /* 年份自動更新 */
     document.getElementById('year').textContent = new Date().getFullYear();
@@ -489,34 +613,32 @@
     })();
   </script>
 
-  <!-- ★ 工作日誌（單張拼貼照 manifest）整合 + Lightbox -->
+  <!-- ★ 工作日誌（SaaS 圖片 / manifest.json）整合腳本：單張拼貼照 + Lightbox -->
   <script>
-  /* ========= 單張拼貼照（Cloudinary / ImageKit / Uploadcare / Cloudflare Images）=========
-     - 從 /works/manifest.json 讀取案例，每筆只有一張 image
-     - 列表顯示 600px 縮圖，點擊以 Lightbox 顯示 1600px 大圖
-  ====================================================================================== */
+  /* ========= 從 /works/manifest.json 讀取，每筆只有一張 image =========
+     支援 Cloudinary / ImageKit / Uploadcare / Cloudflare Images
+  ====================================================================== */
 
   const CONFIG = {
     manifestPath: '/works/manifest.json',
-    cloudinary: { cloudName: 'dijzndzw2' },                                // ← Cloudinary
-    imagekit:   { baseUrl: 'https://ik.imagekit.io/YOUR_IMAGEKIT_ID' },    // ← 如不用可忽略
-    uploadcare: { baseCdn: 'https://ucarecdn.com' },
-    cloudflare: { accountHash: 'YOUR_ACCOUNT_HASH', variant: 'public' }
+    cloudinary: { cloudName: 'dijzndzw2' },                                   // ← 依你實際 Cloudinary 帳號
+    imagekit:   { baseUrl: 'https://ik.imagekit.io/YOUR_IMAGEKIT_ID' },       // ← 如未用可忽略
+    uploadcare: { baseCdn: 'https://ucarecdn.com' },                           // ← 固定
+    cloudflare: { accountHash: 'YOUR_ACCOUNT_HASH', variant: 'public' }        // ← 如未用可忽略
   };
 
   const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
   function daysBetween(d){ const ms=(new Date())-new Date(d+'T00:00:00'); return Math.floor(ms/86400000); }
   function matchKeyword(w,kw){ if(!kw) return true; kw=kw.trim(); return [w.city,w.area,w.service,w.note].some(x=>(x||'').includes(kw)); }
 
-  // 分段編碼：避免 public_id 中的 / 被整串 encode 壞掉
   function buildUrl(provider, idOrUrl, width=1600){
     if(!idOrUrl) return '';
     if(/^https?:\/\//i.test(idOrUrl)) return idOrUrl;
-    switch((provider||'').toLowerCase()){
+    switch((provider||'cloudinary').toLowerCase()){
       case 'cloudinary': {
         const c = CONFIG.cloudinary.cloudName;
-        const path = String(idOrUrl).split('/').map(encodeURIComponent).join('/');
-        return `https://res.cloudinary.com/${c}/image/upload/f_auto,q_auto,w_${width}/${path}`;
+        return `https://res.cloudinary.com/${c}/image/upload/f_auto,q_auto,w_${width}/${encodeURIComponent(idOrUrl)}`;
       }
       case 'imagekit': {
         const base = CONFIG.imagekit.baseUrl.replace(/\/$/,'');
@@ -537,10 +659,10 @@
   function workCard(w){
     const when = daysBetween(w.date)===0 ? '（本日）' : '';
     const title = `${w.date}${when}・${w.city||''}${w.area||''}・${w.service||''}`;
-    const prov  = (w.provider || 'url').toLowerCase();
-    const thumb = buildUrl(prov, w.image, 600);    // 列表縮圖
-    const full  = buildUrl(prov, w.image, 1600);   // Lightbox 大圖
-    const alt   = `${w.city||''}${w.area||''}${w.service||''} 清洗拼貼`;
+    const prov  = (w.provider || 'cloudinary').toLowerCase();
+    const thumb = buildUrl(prov, w.image, 600);
+    const full  = buildUrl(prov, w.image, 1600);
+    const alt   = `${w.city||''}${w.area||''}${w.service||''}${w.note ? '｜'+w.note : ''}`;
 
     return `
       <article class="card p-0 overflow-hidden">
@@ -549,7 +671,9 @@
           <span class="text-xs muted">${w.id||''}</span>
         </div>
         <div class="p-4">
-          <img class="diary-thumb cursor-pointer" src="${thumb}" data-full="${full}" alt="${alt}" loading="lazy" width="600" height="450">
+          <a href="#" class="open-lightbox" data-full="${full}">
+            <img class="diary-thumb" src="${thumb}" alt="${alt}" loading="lazy" width="600" height="450">
+          </a>
           ${w.note ? `<p class="mt-3 text-sm muted">${w.note}</p>` : ''}
         </div>
       </article>
@@ -573,7 +697,7 @@
         city: x.city || '',
         area: x.area || '',
         note: x.note || '',
-        provider: (x.provider || 'url').toLowerCase(),
+        provider: (x.provider || 'cloudinary').toLowerCase(),
         image: x.image
       }));
     }catch(e){
@@ -611,52 +735,47 @@
 
     if(currentFiltered.length===0){
       grid.innerHTML = `<div class="muted text-sm">目前尚無工作日誌，歡迎稍後再來看看。</div>`;
-      document.getElementById('btnMore')?.classList.add('is-hidden');
+      $('#btnMore')?.classList.add('is-hidden');
       return;
     }
 
     const slice = currentFiltered.slice(0, page*pageSize);
     grid.innerHTML = slice.map(workCard).join('');
 
-    const more = document.getElementById('btnMore');
+    const more = $('#btnMore');
     if(more){
-      if(slice.length >= currentFiltered.length){ more.classList.add('is-hidden'); }
-      else { more.classList.remove('is-hidden'); }
+      more.classList.toggle('is-hidden', slice.length >= currentFiltered.length);
     }
-
-    bindLightbox(); // 綁定當前頁面的縮圖
   }
 
-  function bindLightbox(){
-    const lb = document.getElementById('lightbox');
-    const lbImg = lb.querySelector('img');
-    document.querySelectorAll('.diary-thumb').forEach(img=>{
-      img.onclick = ()=>{
-        lbImg.src = img.dataset.full;
-        lb.style.display = 'flex';
-      };
-    });
-  }
+  // Lightbox
+  const lightbox = document.createElement('div');
+  lightbox.id = 'lightbox';
+  lightbox.innerHTML = `<img src="" alt=""><span class="close" aria-label="關閉">×</span>`;
+  document.body.appendChild(lightbox);
 
-  async function initDiary(){
-    await loadWorks();
-    document.getElementById('filterService')?.addEventListener('change', applyFilters);
-    document.getElementById('filterDate')?.addEventListener('change', applyFilters);
-    document.getElementById('filterKeyword')?.addEventListener('input', ()=>{ applyFilters(); });
-    document.getElementById('btnMore')?.addEventListener('click', ()=>{ page += 1; renderPage(); });
-    applyFilters();
-  }
+  document.body.addEventListener('click', e=>{
+    const a=e.target.closest('.open-lightbox'); if(a){ e.preventDefault();
+      const full=a.getAttribute('data-full');
+      const img=lightbox.querySelector('img');
+      img.src=full; img.alt=a.querySelector('img')?.alt || '';
+      lightbox.classList.add('active');
+    }
+    if(e.target.classList.contains('close')) lightbox.classList.remove('active');
+    if(e.target.id==='lightbox' && e.target===lightbox) lightbox.classList.remove('active');
+  });
 
-  initDiary();
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape') lightbox.classList.remove('active');
+  });
 
-  /* Lightbox 關閉 */
-  document.querySelector('#lightbox .close').onclick = ()=>{
-    const lb = document.getElementById('lightbox'); const img = lb.querySelector('img');
-    img.src=''; lb.style.display='none';
-  };
-  document.getElementById('lightbox').onclick = (e)=>{
-    if(e.target.id === 'lightbox'){ const lbImg = e.currentTarget.querySelector('img'); lbImg.src=''; e.currentTarget.style.display='none';}
-  };
+  // 綁定事件 & 初始化
+  document.getElementById('btnMore')?.addEventListener('click', ()=>{ page += 1; renderPage(); });
+  document.getElementById('filterService')?.addEventListener('change', applyFilters);
+  document.getElementById('filterDate')?.addEventListener('change', applyFilters);
+  document.getElementById('filterKeyword')?.addEventListener('input', ()=>{ applyFilters(); });
+
+  (async function initDiary(){ await loadWorks(); applyFilters(); })();
   </script>
 </body>
 </html>
