@@ -1,13 +1,18 @@
 [
   {
-    "id": "2025-09-03-01",
-    "date": "2025-09-03",
-    "service": "冷氣",
-    "city": "台北市",
-    "area": "（請填寫，例如大安區）",
-    "note": "分離式冷氣深度清洗，異味與風量明顯改善。",
+    "id": "629733",
+    "date": "2025-09-10",
+    "service": "清洗",
     "provider": "url",
-    "before": "before1.jpg",
-    "after": "after1.jpg"
+    "url": "https://cleaning-collages.netlify.app/post.html?slug=629733",
+    "note": "拼貼照片"
+  },
+  {
+    "id": "167643",
+    "date": "2025-09-10",
+    "service": "清洗",
+    "provider": "url",
+    "url": "https://cleaning-collages.netlify.app/post.html?slug=167643",
+    "note": "拼貼照片"
   }
 ]
