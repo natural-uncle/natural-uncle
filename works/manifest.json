@@ -1,11 +1,12 @@
 [
   {
-    "id": "629733",
+    "id": "aircon-001",
     "date": "2025-09-10",
-    "service": "清洗",
-    "provider": "url",
-    "url": "https://cleaning-collages.netlify.app/post.html?slug=629733",
-    "note": "拼貼照片"
+    "service": "冷氣",
+    "provider": "cloudinary",
+    "before": "samples/aircon-before",
+    "after": "samples/aircon-after",
+    "note": "冷氣深度清洗"
   },
   {
     "id": "167643",
