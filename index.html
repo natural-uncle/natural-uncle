@@ -660,6 +660,7 @@
   /* ---- 必填設定（依你的供應商填一個或多個） ---- */
   const CONFIG = {
     manifestPath: '/works/manifest.json',
+    netlifyList: 'https://cleaning-collages.netlify.app/.netlify/functions/list-posts',
     cloudinary: { cloudName: 'nu-unsigned' },                            // ← Cloudinary
     imagekit:   { baseUrl: 'https://ik.imagekit.io/YOUR_IMAGEKIT_ID' },     // ← ImageKit Base URL
     uploadcare: { baseCdn: 'https://ucarecdn.com' },                         // ← Uploadcare CDN（固定）
@@ -823,7 +824,33 @@
       .filter(w => matchKeyword(w, kw))
       .sort((a,b) => b.date.localeCompare(a.date));
 
-    currentFiltered = filtered;
+    
+      // 額外：載入 Netlify list-posts 作品清單並合併
+      try{
+        const r2 = await fetch(CONFIG.netlifyList + '?v=' + Date.now(), { cache:'no-store', mode:'cors' });
+        if(r2.ok){
+          const j = await r2.json();
+          const items = Array.isArray(j.items) ? j.items : [];
+          const mapped = items.map(x => ({
+            id: x.slug || crypto.randomUUID(),
+            date: x.date || x.created_at || new Date().toISOString().slice(0,10),
+            service: (x.tags||'').split(',')[0] || '清洗',
+            city: '',
+            area: '',
+            note: x.title || '',
+            provider: 'url',
+            // 以 post viewer 連結為單張模式來源
+            url: (location && location.origin ? location.origin : '') + '/#/v/' + encodeURIComponent(x.slug||''),
+            before: undefined,
+            after: undefined
+          }));
+          // 合併去重：以 id/slug 為鍵
+          const map = new Map(ALL_WORKS.map(w=>[w.id, w]));
+          for(const it of mapped){ map.set(it.id, it); }
+          ALL_WORKS = Array.from(map.values());
+        }
+      }catch(e){ /* 忽略 list-posts 錯誤，不影響本地 manifest */ }
+currentFiltered = filtered;
     const cnt = $('#workCount'); if(cnt) cnt.textContent = filtered.length;
     page = 1;
     renderPage();
