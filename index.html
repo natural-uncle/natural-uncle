@@ -343,7 +343,7 @@
         <a href="pricing.html">價格細項</a>
         <a href="#process">施工流程</a>
         <a href="#ac-sop">冷氣SOP</a>
-        <a href="#cases">工作日誌</a>
+        <a href="#portfolio">作品清單</a>
         <a href="#faq">常見問題</a>
         <a href="#contact">聯絡預約</a>
       </nav>
@@ -507,37 +507,20 @@
     </details>
   </section>
 
-  <!-- ★ 工作照片日誌（取代原「前後對比」） -->
-  <section id="cases" class="max-w-6xl mx-auto px-4 py-12 reveal">
-    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+  
+<!-- ★ 作品清單（以 Netlify list-posts 為資料源） -->
+<section id="portfolio" class="section">
+  <div class="container">
+    <div class="flex items-end justify-between mb-3">
       <div>
-        <h2 class="text-2xl md:text-3xl font-bold">工作照片日誌｜每日更新</h2>
-        <p class="muted text-sm mt-1">顯示每次清洗的「前／後」對比照片（<span id="workCount">0</span> 筆）</p>
-      </div>
-      <div class="flex flex-col sm:flex-row gap-2">
-        <select id="filterService" class="btn btn-ghost py-2 px-3">
-          <option value="all">全部服務</option>
-          <option value="冷氣">冷氣清洗</option>
-          <option value="洗衣機">直立式洗衣機清洗</option>
-          <option value="水塔">水塔清洗</option>
-          <option value="水管">自來水管清洗</option>
-        </select>
-        <select id="filterDate" class="btn btn-ghost py-2 px-3">
-          <option value="7">近 7 天</option>
-          <option value="30">近 30 天</option>
-          <option value="1">本日</option>
-          <option value="all">全部</option>
-        </select>
-        <input id="filterKeyword" class="btn btn-ghost py-2 px-3" placeholder="關鍵字（區域/備註）" />
+        <h2 class="text-2xl md:text-3xl font-bold">作品清單</h2>
+        <p class="muted text-sm mt-1">來自 Netlify 相簿清單（自動同步）</p>
       </div>
     </div>
+    <div id="portfolioGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </div>
+</section>
 
-    <div id="workGrid" class="grid md:grid-cols-2 gap-6"></div>
-
-    <div class="mt-6 text-center">
-      <button id="btnMore" class="btn btn-primary px-6">載入更多</button>
-    </div>
-  </section>
 
   <!-- FAQ -->
   <section id="faq" class="bg-slate-50 reveal">
@@ -927,7 +910,36 @@ async function hydrateNetlifyAlbums(){
   }
 }
 
-initDiary();
+
+async function initPortfolio(){
+  try{
+    const r = await fetch(CONFIG.netlifyList + '?v=' + Date.now(), { mode:'cors', cache:'no-store' });
+    const j = await r.json();
+    const items = Array.isArray(j.items) ? j.items : [];
+    const grid = document.getElementById('portfolioGrid');
+    if(!grid) return;
+    if(items.length===0){
+      grid.innerHTML = '<div class="muted text-sm">目前沒有作品。</div>';
+      return;
+    }
+    grid.innerHTML = items.map((it,i)=>{
+      const slug = it.slug || '';
+      const title = it.title || ('作品 ' + (i+1));
+      const cover = it.cover || it.preview || (Array.isArray(it.items) && it.items[0] && it.items[0].url) || '';
+      const thumb = (typeof galleryUrl==='function' && cover) ? galleryUrl(cover) : cover;
+      const href = 'https://cleaning-collages.netlify.app/#/v/' + encodeURIComponent(slug);
+      return `<a class="card overflow-hidden block" href="${href}" target="_blank" rel="noopener noreferrer">
+        ${thumb ? `<img src="${thumb}" class="w-full h-auto object-cover" loading="lazy" alt="${title}">` : ''}
+        <div class="p-3 text-base text-slate-700">${title}</div>
+      </a>`;
+    }).join('');
+  }catch(e){
+    const grid = document.getElementById('portfolioGrid');
+    if(grid) grid.innerHTML = '<div class="text-sm text-red-600">作品清單載入失敗：' + (e.message||e) + '</div>';
+  }
+}
+
+initPortfolio();
 
   </script>
 </body>
