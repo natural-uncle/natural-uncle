@@ -872,8 +872,7 @@
   }
 })();
 </script>
-
-<div class="fixed inset-0 hidden items-center justify-center z-50" id="offer-modal">
+<div class="hidden justify-center fixed z-50 inset-0 items-center" id="offer-modal">
 <div class="absolute inset-0 bg-black/50" data-close="offer"></div>
 <div class="relative bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-50 rounded-xl shadow-xl max-w-lg w-[90%] p-6">
 <h3 class="text-xl font-bold mb-2" id="offer-title">優惠內容</h3>
@@ -884,7 +883,8 @@
 </div>
 </div>
 <style>
-  #offer-modal.hidden { display: none; }
+#offer-modal { display: flex; align-items: center; justify-content: center; }
+#offer-modal.hidden { display: none; }
 </style>
 <script>
 (function(){
@@ -895,7 +895,7 @@
   function openModal(item){
     if(!modal) return;
     titleEl.textContent = item.title || '優惠內容';
-    bodyEl.textContent = item.body || '';
+    bodyEl.innerHTML = item.bodyHtml || item.body || '';
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
   }
