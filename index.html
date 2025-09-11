@@ -358,6 +358,32 @@
 
 .btn-success{ background:#10b981; color:#fff; }
 .btn-success:hover{ background:#059669; }
+</style><style>
+/* Dark mode hard override for 清洗前後拼貼｜精選 */
+@media (prefers-color-scheme: dark) {
+  #works-teaser { background-color:#0f0f0f !important; color:#f5f5f5 !important; }
+  #works-teaser h1, #works-teaser h2, #works-teaser h3,
+  #works-teaser p, #works-teaser a, #works-teaser span { color:#ffffff !important; }
+  #works-teaser .bg-white, #works-teaser .bg-gray-50, #works-teaser .bg-gray-100 { background-color:#0f0f0f !important; }
+}
+html.dark #works-teaser,
+body.dark #works-teaser,
+[data-theme="dark"] #works-teaser {
+  background-color:#0f0f0f !important; color:#f5f5f5 !important;
+}
+html.dark #works-teaser h1, html.dark #works-teaser h2, html.dark #works-teaser h3,
+html.dark #works-teaser p,  html.dark #works-teaser a,  html.dark #works-teaser span,
+body.dark #works-teaser h1, body.dark #works-teaser h2, body.dark #works-teaser h3,
+body.dark #works-teaser p,  body.dark #works-teaser a,  body.dark #works-teaser span,
+[data-theme="dark"] #works-teaser h1, [data-theme="dark"] #works-teaser h2, [data-theme="dark"] #works-teaser h3,
+[data-theme="dark"] #works-teaser p,  [data-theme="dark"] #works-teaser a,  [data-theme="dark"] #works-teaser span {
+  color:#ffffff !important;
+}
+html.dark #works-teaser .bg-white, html.dark #works-teaser .bg-gray-50, html.dark #works-teaser .bg-gray-100,
+body.dark #works-teaser .bg-white, body.dark #works-teaser .bg-gray-50, body.dark #works-teaser .bg-gray-100,
+[data-theme="dark"] #works-teaser .bg-white, [data-theme="dark"] #works-teaser .bg-gray-50, [data-theme="dark"] #works-teaser .bg-gray-100 {
+  background-color:#0f0f0f !important;
+}
 </style></head>
 <body data-theme="" id="top">
 <!-- Header -->
@@ -451,7 +477,7 @@
 </div>
 </section>
 <!-- 施工流程 + 到府前準備 -->
-<section class="py-12 bg-gray-50" id="works-teaser">
+<section class="py-12" id="works-teaser">
 <div class="max-w-6xl mx-auto px-4">
 <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">清洗前後拼貼｜精選</h2>
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="works-grid"></div>
@@ -475,61 +501,7 @@
         </a>
       </div>
     `).join('');
-  
-// Lightbox setup for works-grid
-(function(){
-  const grid = document.getElementById('works-grid');
-  const lb = document.getElementById('lightbox');
-  const lbImg = document.getElementById('lb-img');
-  const btnPrev = document.getElementById('lb-prev');
-  const btnNext = document.getElementById('lb-next');
-  let anchors = [];
-  let current = -1;
-
-  function refreshAnchors(){
-    anchors = Array.from(grid.querySelectorAll('a'));
-  }
-  function openAt(i){
-    if(!anchors.length) return;
-    current = i;
-    const url = anchors[i].getAttribute('href');
-    lbImg.setAttribute('src', url);
-    lb.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeBox(){
-    lb.classList.add('hidden');
-    lbImg.setAttribute('src','');
-    document.body.style.overflow = '';
-  }
-  function nav(dir){
-    if(anchors.length <= 1) return;
-    const next = (current + dir + anchors.length) % anchors.length;
-    openAt(next);
-  }
-
-  refreshAnchors();
-  grid.addEventListener('click', (e)=>{
-    const a = e.target.closest('a');
-    if(!a || !grid.contains(a)) return;
-    e.preventDefault();
-    refreshAnchors();
-    const i = anchors.indexOf(a);
-    openAt(i >= 0 ? i : 0);
-  });
-  lb.addEventListener('click', (e)=>{
-    const t = e.target;
-    if(t && t.getAttribute('data-close') === 'lightbox') closeBox();
-  });
-  btnPrev?.addEventListener('click', (e)=>{ e.preventDefault(); nav(-1); });
-  btnNext?.addEventListener('click', (e)=>{ e.preventDefault(); nav(1); });
-  document.addEventListener('keydown', (e)=>{
-    if(lb.classList.contains('hidden')) return;
-    if(e.key === 'Escape') closeBox();
-    if(e.key === 'ArrowLeft') nav(-1);
-    if(e.key === 'ArrowRight') nav(1);
-  });
-})();} catch (e) {
+  } catch (e) {
     grid.innerHTML = `<p class="text-center text-gray-600">暫無作品</p>`;
   }
 })();
@@ -926,22 +898,5 @@
   }
 })();
 </script>
-
-<div class="fixed inset-0 hidden z-50 items-center justify-center" id="lightbox">
-<div class="absolute inset-0 bg-black/80" data-close="lightbox"></div>
-<div class="relative max-w-5xl w-[92%]">
-<button aria-label="關閉" class="absolute -top-3 -right-3 rounded-full w-10 h-10 bg-white text-black text-2xl leading-none" data-close="lightbox" id="lb-close">×</button>
-<button aria-label="上一張" class="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 text-black text-3xl" id="lb-prev">‹</button>
-<button aria-label="下一張" class="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 text-black text-3xl" id="lb-next">›</button>
-<img alt="作品預覽" class="w-full h-auto rounded-xl shadow" id="lb-img" src=""/>
-</div>
-</div>
-<style>
-  #lightbox { display:flex; align-items:center; justify-content:center; }
-  #lightbox.hidden { display:none; }
-  @media (prefers-color-scheme: dark) {
-    #lb-close, #lb-prev, #lb-next { background-color: #111; color:#fff; }
-  }
-</style>
 </body>
 </html>
