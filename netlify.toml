@@ -24,3 +24,6 @@
 #   from = "/old-path"
 #   to = "/pricing.html"
 #   status = 301
+
+[functions]
+  node_bundler = "esbuild"
