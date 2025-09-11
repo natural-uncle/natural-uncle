@@ -520,35 +520,60 @@ body.dark #offer-modal .offer-panel a,
 </section>
 
 <!-- Announcement Modal -->
-<div id="offer-modal" class="fixed inset-0 hidden z-50">
-  <div class="absolute inset-0 bg-black/50"></div>
-  <div class="relative mx-auto my-16 max-w-lg w-[92%] rounded-xl bg-white shadow-lg p-6">
-    <div class="flex items-center justify-between mb-3">
-      <h3 id="offer-title" class="text-lg font-bold">優惠內容</h3>
-      <button id="offer-close" aria-label="關閉" class="px-2 py-1 border rounded">×</button>
+<!-- Announcement Modal (beautified, no X) -->
+<style>
+  /* Modal transitions */
+  #offer-modal.hidden { display: none; }
+  #offer-modal .modal-overlay { opacity: 0; transition: opacity .2s ease; }
+  #offer-modal .modal-panel { opacity: 0; transform: translateY(8px) scale(.98); transition: transform .2s ease, opacity .2s ease; }
+  #offer-modal.open .modal-overlay { opacity: 1; }
+  #offer-modal.open .modal-panel { opacity: 1; transform: translateY(0) scale(1); }
+</style>
+<div id="offer-modal" class="fixed inset-0 hidden z-50" role="dialog" aria-modal="true" aria-labelledby="offer-title">
+  <div class="modal-overlay absolute inset-0 bg-black/50"></div>
+  <div class="modal-panel relative mx-auto my-12 max-w-lg w-[92%] rounded-2xl bg-white shadow-2xl p-6">
+    <div class="flex items-start gap-3 mb-3">
+      <div class="shrink-0 w-8 h-8 rounded-full bg-amber-600 text-white flex items-center justify-center text-sm">告</div>
+      <div class="flex-1">
+        <h3 id="offer-title" class="text-xl font-extrabold text-gray-900">優惠內容</h3>
+      </div>
     </div>
-    <div id="offer-body" class="text-sm leading-6"></div>
-    <div class="mt-5 text-right">
-      <button id="offer-close-2" class="px-3 py-1.5 border rounded">關閉</button>
+    <div id="offer-body" class="text-base leading-7 text-gray-700"></div>
+    <div class="mt-6 text-right">
+      <button id="offer-close-2" class="inline-flex items-center px-4 py-2 rounded-xl border border-amber-600 text-amber-700 hover:bg-amber-50">關閉</button>
     </div>
   </div>
 </div>
 <script>
-// Basic close controls
 (function(){
   const modal = document.getElementById('offer-modal');
-  const closeButtons = [document.getElementById('offer-close'), document.getElementById('offer-close-2')];
-  closeButtons.forEach(btn => btn && btn.addEventListener('click', () => {
-    modal.classList.add('hidden');
-    document.body.style.overflow = '';
-  }));
-  // click backdrop to close
-  modal && modal.addEventListener('click', (e) => {
-    if(e.target === modal || e.target.classList.contains('bg-black/50')){
-      modal.classList.add('hidden');
-      document.body.style.overflow = '';
-    }
+  const overlay = modal?.querySelector('.modal-overlay');
+  const panel = modal?.querySelector('.modal-panel');
+  function closeModal(){
+    if (!modal) return;
+    modal.classList.remove('open');
+    // wait for transition then hide
+    setTimeout(()=>{ modal.classList.add('hidden'); document.body.style.overflow=''; }, 200);
+  }
+  document.getElementById('offer-close-2')?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', (e)=>{
+    // click backdrop to close
+    if (e.target === modal || e.target === overlay) closeModal();
   });
+  // Expose openModal with animation
+  window.openModal = function(item){
+    if (!modal) return;
+    const titleEl = document.getElementById('offer-title');
+    const bodyEl = document.getElementById('offer-body');
+    if (titleEl) titleEl.textContent = item?.title || '優惠內容';
+    if (bodyEl) bodyEl.innerHTML = item?.bodyHtml || (item?.body || '');
+    modal.classList.remove('hidden');
+    // Force reflow to enable transition
+    void modal.offsetWidth;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+  window.closeOfferModal = closeModal;
 })();
 </script>
 
