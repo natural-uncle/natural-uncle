@@ -18,7 +18,7 @@
     "end": "2025-10-8",
     "ctaText": "休假時段",
     "ctaUrl": "/index.html#service",
-    "priority": 2,
+    "priority": 1,
     "bodyHtml": "<ul><li>10/3 休假</li><li>10/4 休假</li></ul>"
     "modal": true,
     "hideBodyHtmlInList": true
