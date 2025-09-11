@@ -573,7 +573,7 @@ body.dark #offer-modal .offer-panel a,
 
   async function initAnnouncements(){
     try {
-      const res = await fetch('/data/announcements.json');
+      const res = await fetch('data/announcements.json');
       const list = await res.json();
       const now = new Date();
       const items = list
@@ -595,7 +595,11 @@ body.dark #offer-modal .offer-panel a,
           </article>
         `).join('');
         news.innerHTML = html;
+      
+      if (!items || items.length === 0) {
+        news.innerHTML = '<div class="text-sm text-gray-500">目前沒有最新公告或載入失敗。</div>';
       }
+}
 
       // Global delegated click for any anchor with data-modal="1"
       document.addEventListener('click', (e) => {
