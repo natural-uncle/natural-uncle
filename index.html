@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>自然大叔｜官方網站</title>
+<title>自然大叔｜冷氣・洗衣機・水塔・自來水管清洗</title>
 <meta content="專業到府清洗：冷氣、直立式洗衣機、水塔、自來水管。透明價格、到府快速、提供保固與發票。立即以 LINE/電話預約。" name="description"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <!-- Favicon / Icons -->
@@ -383,7 +383,16 @@
 </header>
 <!-- Hero -->
 
-<section class="max-w-4xl mx-auto px-4 space-y-3 my-8" id="news"></section><section class="relative bg-gradient-to-b from-sky-50 to-white">
+<section id="news" class="max-w-5xl mx-auto px-4 my-10">
+  <div class="rounded-xl border border-amber-300 bg-amber-50/80 shadow-sm">
+    <div class="flex items-center gap-3 px-5 py-3 border-b border-amber-200 bg-amber-100 rounded-t-xl">
+      <span class="text-xl">🔔</span>
+      <h2 class="text-lg md:text-xl font-extrabold tracking-wide text-amber-800">最新消息｜公告</h2>
+      <span class="ml-auto inline-block text-xs px-2 py-0.5 rounded bg-amber-600 text-white">NEW</span>
+    </div>
+    <div id="news-list" class="p-5 space-y-4"></div>
+  </div>
+</section>
 <div class="max-w-6xl mx-auto px-4 py-14 text-center">
 <h1 class="text-3xl md:text-5xl font-extrabold">冷氣・洗衣機・水塔・自來水管 到府專業清洗</h1>
 <p class="mt-4 text-lg muted">透明價格｜完工保固｜環保清潔劑｜可開立發票</p>
@@ -583,7 +592,7 @@
 <li>LINE：<a class="text-sky-700 underline" href="https://line.me/R/ti/p/@uncle888">@uncle888</a></li>
 <li>服務時間：週一至週六 09:00–20:00</li>
 </ul>
-<a class="items-center mt-4 btn-success sm:w-auto text-sm whitespace-nowrap md:text-base btn-booking justify-center w-40 btn inline-flex" href="https://forms.gle/TuQ2Q6XXHB9XEB9Z7">立即線上預約</a>
+<a class="items-center mt-4 btn-success sm:w-auto text-sm whitespace-nowrap md:text-base btn-booking justify-center w-40 btn inline-flex" href="https://yourdomain.com/booking">立即線上預約</a>
 </div>
 <div class="p-5 rounded-2xl border">
 <h3 class="font-bold">服務資訊</h3>
@@ -856,6 +865,34 @@
     const el = document.getElementById('news');
     if (el) el.innerHTML = html || '';
   } catch(e) { console.error('news error', e); }
+})();
+</script>
+<script>
+(async () => {
+  try {
+    const res = await fetch('/data/announcements.json');
+    const list = await res.json();
+    const now = new Date();
+    const items = list
+      .filter(x => new Date(x.start) <= now && now <= new Date(x.end))
+      .sort((a,b) => (b.priority||0) - (a.priority||0));
+
+    const html = items.map(x => `
+      <article class="rounded-lg border border-amber-200 bg-white p-4 md:p-5 shadow">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-600 text-white text-xs">告</span>
+          <h3 class="font-bold text-gray-900">${x.title}</h3>
+        </div>
+        <p class="text-sm text-gray-700">${x.body}</p>
+        ${x.ctaUrl ? `<a href="${x.ctaUrl}" class="inline-block mt-3 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition">${x.ctaText || '了解更多'}</a>` : ''}
+      </article>
+    `).join('');
+
+    const listEl = document.getElementById('news-list');
+    if (listEl) listEl.innerHTML = html || '<div class="text-sm text-gray-500">目前沒有最新公告。</div>';
+  } catch (e) {
+    console.error('news error', e);
+  }
 })();
 </script>
 </body>
