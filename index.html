@@ -880,7 +880,6 @@
 <svg aria-hidden="true" height="20" viewbox="0 0 24 24" width="20"><path d="M11 15h2v2h-2zm0-8h2v6h-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8" fill="currentColor"></path></svg>
 <h3 id="offer-title">優惠內容</h3>
 </div>
-
 </div>
 <div class="modal-body">
 <div id="offer-body"></div>
@@ -1004,5 +1003,12 @@
     });
   }
 })();
-</script></body>
+</script><style>
+/* Force black title in dark mode */
+@media (prefers-color-scheme: dark) {
+  #offer-modal .modal-header { background: rgba(255,255,255,0.92) !important; }
+  #offer-modal .modal-title h3 { color: #000000 !important; }
+  #offer-modal .modal-title svg { color: #000000 !important; }
+}
+</style></body>
 </html>
