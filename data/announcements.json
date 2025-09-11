@@ -11,14 +11,14 @@
     "bodyHtml": "<p>限時 85 折...</p>"
   },
   {
-    "id": "news-202510",
-    "title": "國慶連假服務公告",
-    "body": "10/10 正常接單，10/11 休假",
-    "start": "2025-09-01",
-    "end": "2025-10-12",
-    "ctaText": "瞭解服務時段",
-    "ctaUrl": "/index.html",
+    "id": "promo-202509",
+    "title": "夏末冷氣清洗 85 折",
+    "body": "限時優惠：2025/09/10 – 2025/09/30",
+    "start": "2025-09-10",
+    "end": "2025-09-30",
+    "ctaText": "查看優惠",
+    "ctaUrl": "/pricing.html",
     "priority": 1,
-    "bodyHtml": "<ul><li>10/10 正常</li><li>10/11 休假</li></ul>"
+    "bodyHtml": "<p>限時 85 折...</p>"
   }
 ]
