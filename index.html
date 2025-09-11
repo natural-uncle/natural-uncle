@@ -880,9 +880,7 @@
 <svg aria-hidden="true" height="20" viewbox="0 0 24 24" width="20"><path d="M11 15h2v2h-2zm0-8h2v6h-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8" fill="currentColor"></path></svg>
 <h3 id="offer-title">優惠內容</h3>
 </div>
-<button aria-label="關閉" class="modal-close" data-close="offer" title="關閉">
-<svg aria-hidden="true" height="18" viewbox="0 0 24 24" width="18"><path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z" fill="currentColor"></path></svg>
-</button>
+
 </div>
 <div class="modal-body">
 <div id="offer-body"></div>
@@ -946,6 +944,14 @@
 @keyframes modal-pop {
   from { opacity:0; transform: translateY(4px) scale(0.98); }
   to { opacity:1; transform: translateY(0) scale(1); }
+}
+
+
+/* Overrides */
+@media (prefers-color-scheme: dark) {
+  #offer-modal .modal-header { background: rgba(245, 158, 11, 0.20); } /* amber-500 @20% */
+  #offer-modal .modal-title h3 { color: #fbbf24; } /* amber-400 for better contrast */
+  #offer-modal .modal-title svg { color: #fbbf24; }
 }
 </style>
 <script>
