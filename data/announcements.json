@@ -18,7 +18,7 @@
     "end": "2025-10-12",
     "ctaText": "瞭解服務時段",
     "ctaUrl": "/index.html#service",
-    "priority": 2,
+    "priority": 1,
     "bodyHtml": "<ul><li>10/10 正常</li><li>10/11 休假</li></ul>"
   }
 ]
