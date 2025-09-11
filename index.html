@@ -872,19 +872,81 @@
   }
 })();
 </script>
-<div class="hidden justify-center fixed z-50 inset-0 items-center" id="offer-modal">
-<div class="absolute inset-0 bg-black/50" data-close="offer"></div>
-<div class="relative bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-50 rounded-xl shadow-xl max-w-lg w-[90%] p-6">
-<h3 class="text-xl font-bold mb-2" id="offer-title">優惠內容</h3>
-<p class="text-sm leading-6 mb-4" id="offer-body"></p>
-<div class="text-right">
-<button class="px-4 py-2 rounded-lg bg-neutral-800 text-white dark:bg-white dark:text-neutral-900" data-close="offer">關閉</button>
+<div class="hidden fixed justify-center z-50 inset-0 items-center" id="offer-modal">
+<div aria-hidden="true" class="absolute inset-0 bg-black/60 backdrop-blur-sm" data-close="offer"></div>
+<div aria-labelledby="offer-title" aria-modal="true" class="relative w-[92%] max-w-xl rounded-2xl shadow-2xl overflow-hidden modal-card" role="dialog">
+<div class="modal-header">
+<div class="modal-title">
+<svg aria-hidden="true" height="20" viewbox="0 0 24 24" width="20"><path d="M11 15h2v2h-2zm0-8h2v6h-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8" fill="currentColor"></path></svg>
+<h3 id="offer-title">優惠內容</h3>
+</div>
+<button aria-label="關閉" class="modal-close" data-close="offer" title="關閉">
+<svg aria-hidden="true" height="18" viewbox="0 0 24 24" width="18"><path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z" fill="currentColor"></path></svg>
+</button>
+</div>
+<div class="modal-body">
+<div id="offer-body"></div>
+</div>
+<div class="modal-footer">
+<button class="btn-primary" data-close="offer">關閉</button>
 </div>
 </div>
 </div>
 <style>
-#offer-modal { display: flex; align-items: center; justify-content: center; }
-#offer-modal.hidden { display: none; }
+/* Modal layout */
+#offer-modal { display:flex; align-items:center; justify-content:center; padding: 1rem; }
+#offer-modal.hidden { display:none; }
+#offer-modal .modal-card {
+  background: linear-gradient(180deg, var(--m-surface, #ffffff), var(--m-surface-2, #fcfcfc));
+  color: #111827;
+  animation: modal-pop .2s ease-out;
+}
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  #offer-modal .modal-card {
+    --m-surface: #0f1115; --m-surface-2: #111318;
+    color: #f8fafc;
+  }
+}
+/* Header */
+#offer-modal .modal-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 1rem 1.25rem;
+  background: rgba(251, 191, 36, 0.12);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark) {
+  #offer-modal .modal-header { border-bottom-color: rgba(255,255,255,.08); }
+}
+#offer-modal .modal-title { display:flex; align-items:center; gap:.5rem; font-weight:700; }
+#offer-modal .modal-title h3 { font-size: 1.125rem; margin:0; }
+#offer-modal .modal-close {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:32px; height:32px; border-radius:8px; border:0; background:transparent; color:#374151; cursor:pointer;
+}
+#offer-modal .modal-close:hover { background: rgba(0,0,0,.06); }
+@media (prefers-color-scheme: dark) {
+  #offer-modal .modal-close { color:#e5e7eb; }
+  #offer-modal .modal-close:hover { background: rgba(255,255,255,.08); }
+}
+/* Body */
+#offer-modal .modal-body { padding: 1rem 1.25rem; max-height: min(70vh, 560px); overflow:auto; }
+#offer-modal .modal-body p { margin: .5rem 0; line-height:1.6; }
+#offer-modal .modal-body ul { margin: .5rem 0 .75rem 1.25rem; list-style: disc; }
+#offer-modal .modal-body a { text-decoration: underline; }
+/* Footer */
+#offer-modal .modal-footer { padding: .75rem 1.25rem 1.25rem; display:flex; justify-content:flex-end; gap:.5rem; }
+#offer-modal .btn-primary {
+  padding:.5rem 1rem; border-radius:.75rem; border:0; cursor:pointer; color:white; background:#111827;
+}
+#offer-modal .btn-primary:hover { filter: brightness(1.05); }
+/* Backdrop */
+#offer-modal .backdrop { background: rgba(0,0,0,.6); }
+/* Animation */
+@keyframes modal-pop {
+  from { opacity:0; transform: translateY(4px) scale(0.98); }
+  to { opacity:1; transform: translateY(0) scale(1); }
+}
 </style>
 <script>
 (function(){
