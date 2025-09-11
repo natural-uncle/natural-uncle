@@ -348,7 +348,17 @@
 .btn-pricing:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-}</style></head>
+}</style><style>
+/* Final button palette overrides */
+.btn-line{ background:#06C755; color:#fff; }
+.btn-line:hover{ filter:brightness(0.95); }
+
+.btn-primary{ background:#3b82f6; color:#fff; }
+.btn-primary:hover{ background:#2563eb; }
+
+.btn-success{ background:#10b981; color:#fff; }
+.btn-success:hover{ background:#059669; }
+</style></head>
 <body data-theme="" id="top">
 <!-- Header -->
 <header class="bg-white/90 sticky top-0 backdrop-blur z-50 border-b">
@@ -368,7 +378,7 @@
 <a href="#faq">常見問題</a>
 <a href="#contact">聯絡預約</a>
 </nav>
-<a class="hidden md:inline-flex btn btn-primary" href="https://line.me/R/ti/p/@uncle888">LINE 諮詢</a>
+<a class="hidden md:inline-flex btn btn-line" href="https://line.me/R/ti/p/@uncle888">LINE 諮詢</a>
 </div>
 </header>
 <!-- Hero -->
@@ -378,7 +388,7 @@
 <p class="mt-4 text-lg muted">透明價格｜完工保固｜環保清潔劑｜可開立發票</p>
 <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
 <a class="btn btn-ghost" href="tel:+886912356331">一鍵撥打</a>
-<a class="btn btn-primary" href="https://line.me/R/ti/p/@uncle888">LINE 立即預約</a>
+<a class="btn btn-line" href="https://line.me/R/ti/p/@uncle888">LINE 立即預約</a>
 </div>
 <ul class="mt-6 flex flex-wrap gap-3 justify-center text-sm muted">
 <li>累積服務 2,000+ 戶</li><li>到府 2–3 小時完工</li><li>設備保護與現場防護處理</li>
@@ -522,34 +532,6 @@
 </details>
 </section>
 <!-- ★ 工作照片日誌（取代原「前後對比」） -->
-<section class="max-w-6xl mx-auto px-4 py-12 reveal" id="cases">
-<div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
-<div>
-<h2 class="text-2xl md:text-3xl font-bold">工作照片日誌｜每日更新</h2>
-<p class="muted text-sm mt-1">顯示每次清洗的「前／後」對比照片（<span id="workCount">0</span> 筆）</p>
-</div>
-<div class="flex flex-col sm:flex-row gap-2">
-<select class="btn btn-ghost py-2 px-3" id="filterService">
-<option value="all">全部服務</option>
-<option value="冷氣">冷氣清洗</option>
-<option value="洗衣機">直立式洗衣機清洗</option>
-<option value="水塔">水塔清洗</option>
-<option value="水管">自來水管清洗</option>
-</select>
-<select class="btn btn-ghost py-2 px-3" id="filterDate">
-<option value="7">近 7 天</option>
-<option value="30">近 30 天</option>
-<option value="1">本日</option>
-<option value="all">全部</option>
-</select>
-<input class="btn btn-ghost py-2 px-3" id="filterKeyword" placeholder="關鍵字（區域/備註）"/>
-</div>
-</div>
-<div class="grid md:grid-cols-2 gap-6" id="workGrid"></div>
-<div class="mt-6 text-center">
-<button class="btn btn-primary px-6" id="btnMore">載入更多</button>
-</div>
-</section>
 <!-- FAQ -->
 <section class="bg-slate-50 reveal" id="faq">
 <div class="max-w-6xl mx-auto px-4 py-12">
@@ -593,7 +575,7 @@
 <!-- 行動版浮動快速按鈕 -->
 <div class="fixed bottom-4 right-4 flex flex-col gap-2 md:hidden mobile-fab">
 <a class="btn btn-ghost" href="tel:+886912356331">撥打電話</a>
-<a class="btn btn-primary" href="https://line.me/R/ti/p/@uncle888">LINE 諮詢</a>
+<a class="btn btn-line" href="https://line.me/R/ti/p/@uncle888">LINE 諮詢</a>
 </div>
 <!-- 深/淺色切換（可拖曳） -->
 <button aria-label="切換深淺色" aria-pressed="false" class="theme-toggle" id="themeToggle">🌙</button>
