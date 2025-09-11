@@ -565,5 +565,37 @@ body.dark #offer-modal .offer-panel a,
   }
 })();
 </script>
+<!-- Announcement Modal -->
+<div id="offer-modal" class="fixed inset-0 hidden z-50">
+  <div class="absolute inset-0 bg-black/50"></div>
+  <div class="relative mx-auto my-16 max-w-lg w-[92%] rounded-xl bg-white shadow-lg p-6">
+    <div class="flex items-center justify-between mb-3">
+      <h3 id="offer-title" class="text-lg font-bold">優惠內容</h3>
+      <button id="offer-close" aria-label="關閉" class="px-2 py-1 border rounded">×</button>
+    </div>
+    <div id="offer-body" class="text-sm leading-6"></div>
+    <div class="mt-5 text-right">
+      <button id="offer-close-2" class="px-3 py-1.5 border rounded">關閉</button>
+    </div>
+  </div>
+</div>
+<script>
+// Basic close controls
+(function(){
+  const modal = document.getElementById('offer-modal');
+  const closeButtons = [document.getElementById('offer-close'), document.getElementById('offer-close-2')];
+  closeButtons.forEach(btn => btn && btn.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }));
+  // click backdrop to close
+  modal && modal.addEventListener('click', (e) => {
+    if(e.target === modal || e.target.classList.contains('bg-black/50')){
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  });
+})();
+</script>
 </body>
 </html>
