@@ -1,13 +1,10 @@
-# 靜態站，無建置指令
 [build]
   command = ""
   publish = "."
 
-# Netlify Functions 設定
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# 指定 Node 版本給所有 Functions（用到 global fetch）
 [functions."*"]
   node_version = "18"
