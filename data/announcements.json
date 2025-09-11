@@ -12,13 +12,13 @@
   },
   {
     "id": "news-202510",
-    "title": "國慶連假服務公告",
-    "body": "10/10 正常接單，10/11 休假",
-    "start": "2025-09-01",
-    "end": "2025-10-12",
-    "ctaText": "瞭解服務時段",
+    "title": "中秋連假服務公告",
+    "body": "連假期間正常接單",
+    "start": "2025-09-12",
+    "end": "2025-10-8",
+    "ctaText": "休假時段",
     "ctaUrl": "/index.html#service",
     "priority": 2,
-    "bodyHtml": "<ul><li>10/10 正常</li><li>10/11 休假</li></ul>"
+    "bodyHtml": "<ul><li>10/3 休假</li><li>10/4 休假</li></ul>"
   }
 ]
