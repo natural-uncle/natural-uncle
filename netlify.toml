@@ -1,0 +1,26 @@
+[build]
+  # Static site. No build step.
+  command = ""
+  publish = "."
+
+# Security headers for all routes
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+# Cache static assets longer. Adjust patterns as needed.
+[[headers]]
+  for = "/*.{css,js,png,jpg,jpeg,gif,svg,webp,ico,woff,woff2}"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Example redirects (uncomment if needed)
+# [[redirects]]
+#   from = "/old-path"
+#   to = "/pricing.html"
+#   status = 301
