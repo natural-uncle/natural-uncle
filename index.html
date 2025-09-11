@@ -935,7 +935,7 @@ body.dark #offer-modal .offer-panel a,
   const modal = document.getElementById('offer-modal');
   const titleEl = document.getElementById('offer-title');
   const bodyEl = document.getElementById('offer-body');
-  function openModal(item){
+  window.openModal = function(item){
     if(!modal) return;
     titleEl.textContent = item.title || '優惠內容';
     bodyEl.innerHTML = item.bodyHtml || (item.body||'').replace(/\n/g,'<br>');
