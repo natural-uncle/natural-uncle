@@ -1,14 +1,16 @@
 [
   {
     "id": "promo-202509",
-    "title": "官方網站建立了 ！",
+    "title": "官方網站建立 ！",
     "body": "限時優惠：2025/09/10 – 2025/09/30",
     "start": "2025-09-10",
     "end": "2025-09-30",
     "ctaText": "查看優惠",
     "ctaUrl": "/pricing.html",
     "priority": 1,
-    "bodyHtml": "<p>清洗冷氣室內機送防霉噴劑處理</p>"
+    "bodyHtml": "<p>清洗冷氣室內機送防霉噴劑處理</p>",
+    "modal": true,
+    "showBodyInList": false
   },
   {
     "id": "news-202510",
