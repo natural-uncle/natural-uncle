@@ -6,17 +6,22 @@ export async function handler(event) {
   const key = process.env.CLOUDINARY_API_KEY;
   const secret = process.env.CLOUDINARY_API_SECRET;
 
+  // Query params
   const params = new URLSearchParams(event.queryStringParameters || {});
-  const tag = params.get("tag") || "works-collage";
-  const page = parseInt(params.get("page") || "1", 10);
-  const perPage = parseInt(params.get("perPage") || "24", 10);
+  const folder = params.get("folder") || "collages"; // default folder name
+  const perPage = parseInt(params.get("perPage") || "3", 10); // default to 3
   const nextCursor = params.get("next") || null;
 
-  // Cloudinary Search API（需要 Basic Auth）
+  if (!cloud || !key || !secret) {
+    return { statusCode: 500, body: JSON.stringify({ error: "Cloudinary env missing" }) };
+  }
+
+  // Cloudinary Search by folder, newest first
+  // Docs: expression examples include `folder=my_folder` and sorting by uploaded_at
   const body = {
-    expression: `tags=${tag}`,
+    expression: `resource_type:image AND folder=${folder}`,
     sort_by: [{ uploaded_at: "desc" }],
-    max_results: perPage,
+    max_results: perPage
   };
   if (nextCursor) body.next_cursor = nextCursor;
 
@@ -24,9 +29,9 @@ export async function handler(event) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Basic " + Buffer.from(`${key}:${secret}`).toString("base64"),
+      "Authorization": "Basic " + Buffer.from(`${key}:${secret}`).toString("base64")
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   });
 
   if (!res.ok) {
@@ -35,22 +40,19 @@ export async function handler(event) {
   }
 
   const data = await res.json();
-  // 將結果轉為前端好用的最小欄位
   const items = (data.resources || []).map(r => ({
     id: r.public_id,
-    w: r.width,
-    h: r.height,
-    // 縮圖：w_480，自動格式與品質
+    // thumbnails and full-size transformations
     thumb: `https://res.cloudinary.com/${cloud}/image/upload/f_auto,q_auto,w_480/${r.public_id}.${r.format}`,
-    // 大圖：w_1600
-    full: `https://res.cloudinary.com/${cloud}/image/upload/f_auto,q_auto,w_1600/${r.public_id}.${r.format}`,
-    tags: r.tags || [],
+    full:  `https://res.cloudinary.com/${cloud}/image/upload/f_auto,q_auto,w_1600/${r.public_id}.${r.format}`,
     uploaded_at: r.created_at,
+    tags: r.tags || [],
+    folder: r.folder || ""
   }));
 
   return {
     statusCode: 200,
     headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=60" },
-    body: JSON.stringify({ items, next: data.next_cursor || null }),
+    body: JSON.stringify({ items, next: data.next_cursor || null })
   };
 }
