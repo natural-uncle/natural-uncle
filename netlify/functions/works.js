@@ -63,7 +63,7 @@ export async function handler(event) {
 
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=60" },
+      headers: { "Content-Type": "application/json", "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache", "Expires": "0" },
       body: JSON.stringify({ items, next: data.next_cursor || null })
     };
   } catch (e) {
