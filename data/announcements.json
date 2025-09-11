@@ -22,5 +22,7 @@
     "ctaUrl": "/index.html#service",
     "priority": 2,
     "bodyHtml": "<ul><li>10/3 休假</li><li>10/4 休假</li></ul>"
+    "modal": true,
+    "hideBodyHtmlInList": true
   }
 ]
