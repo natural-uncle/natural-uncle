@@ -898,5 +898,68 @@ body.dark #works-teaser .bg-white, body.dark #works-teaser .bg-gray-50, body.dar
   }
 })();
 </script>
-</body>
+
+<div class="fixed inset-0 hidden items-center justify-center z-50" id="offer-modal">
+<div class="absolute inset-0 bg-black/50" data-close="offer"></div>
+<div class="relative bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-50 rounded-xl shadow-xl max-w-lg w-[90%] p-6">
+<h3 class="text-xl font-bold mb-2" id="offer-title">優惠內容</h3>
+<div class="text-sm leading-6 mb-4" id="offer-body"></div>
+<div class="text-right">
+<button class="px-4 py-2 rounded-lg bg-neutral-800 text-white dark:bg-white dark:text-neutral-900" data-close="offer">關閉</button>
+</div>
+</div>
+</div>
+<style>
+#offer-modal { display:flex; align-items:center; justify-content:center; }
+#offer-modal.hidden { display:none; }
+</style>
+<script>
+(function(){
+  const modal = document.getElementById('offer-modal');
+  const titleEl = document.getElementById('offer-title');
+  const bodyEl = document.getElementById('offer-body');
+  function openModal(item){
+    if(!modal) return;
+    titleEl.textContent = item.title || '優惠內容';
+    bodyEl.innerHTML = item.bodyHtml || (item.body||'').replace(/\n/g,'<br>');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(){
+    if(!modal) return;
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+  modal?.addEventListener('click', (e)=>{
+    const t = e.target;
+    if(t && t.getAttribute('data-close') === 'offer') closeModal();
+  });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+
+  // Delegate on announcements list
+  const news = document.getElementById('news-list');
+  if(news){
+    news.addEventListener('click', async (e) => {
+      const a = e.target.closest('a');
+      if(!a) return;
+      const text = (a.textContent || '').trim();
+      if(text.includes('查看優惠')){
+        e.preventDefault();
+        try {
+          const res = await fetch('/data/announcements.json?_=' + Date.now(), { cache: 'no-store' });
+          const list = await res.json();
+          const now = new Date();
+          const items = list
+            .filter(x => new Date(x.start) <= now && now <= new Date(x.end))
+            .sort((a,b) => (b.priority||0) - (a.priority||0));
+          const item = items.find(x => (x.ctaText||'').trim().includes('查看優惠')) || items[0];
+          if(item) openModal(item);
+        } catch(_) {
+          window.location.href = a.href;
+        }
+      }
+    });
+  }
+})();
+</script></body>
 </html>
