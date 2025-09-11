@@ -358,35 +358,6 @@
 
 .btn-success{ background:#10b981; color:#fff; }
 .btn-success:hover{ background:#059669; }
-</style><style>
-/* Fix "清洗前後拼貼｜精選" section dark mode contrast */
-@media (prefers-color-scheme: dark) {
-  #works-teaser {
-    background-color: #121212 !important;
-    color: #f5f5f5 !important;
-  }
-  #works-teaser h1,
-  #works-teaser h2,
-  #works-teaser h3,
-  #works-teaser p,
-  #works-teaser span,
-  #works-teaser li,
-  #works-teaser a {
-    color: #ffffff !important;
-  }
-  #works-teaser .bg-white,
-  #works-teaser .bg-gray-50,
-  #works-teaser .bg-gray-100 {
-    background-color: #121212 !important;
-  }
-  #works-teaser .text-gray-500,
-  #works-teaser .text-gray-600,
-  #works-teaser .text-gray-700,
-  #works-teaser .text-gray-800,
-  #works-teaser .text-gray-900 {
-    color: #eaeaea !important;
-  }
-}
 </style></head>
 <body data-theme="" id="top">
 <!-- Header -->
@@ -480,7 +451,7 @@
 </div>
 </section>
 <!-- 施工流程 + 到府前準備 -->
-<section class="py-12 featured-section" id="works-teaser">
+<section class="py-12 bg-gray-50" id="works-teaser">
 <div class="max-w-6xl mx-auto px-4">
 <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">清洗前後拼貼｜精選</h2>
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="works-grid"></div>
@@ -901,5 +872,69 @@
   }
 })();
 </script>
-</body>
+
+<div class="fixed inset-0 hidden items-center justify-center z-50" id="offer-modal">
+<div class="absolute inset-0 bg-black/50" data-close="offer"></div>
+<div class="relative bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-50 rounded-xl shadow-xl max-w-lg w-[90%] p-6">
+<h3 class="text-xl font-bold mb-2" id="offer-title">優惠內容</h3>
+<p class="text-sm leading-6 mb-4" id="offer-body"></p>
+<div class="text-right">
+<button class="px-4 py-2 rounded-lg bg-neutral-800 text-white dark:bg-white dark:text-neutral-900" data-close="offer">關閉</button>
+</div>
+</div>
+</div>
+<style>
+  #offer-modal.hidden { display: none; }
+</style>
+<script>
+(function(){
+  const modal = document.getElementById('offer-modal');
+  const titleEl = document.getElementById('offer-title');
+  const bodyEl = document.getElementById('offer-body');
+
+  function openModal(item){
+    if(!modal) return;
+    titleEl.textContent = item.title || '優惠內容';
+    bodyEl.textContent = item.body || '';
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(){
+    if(!modal) return;
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+  modal?.addEventListener('click', (e)=>{
+    const t = e.target;
+    if(t && t.getAttribute('data-close') === 'offer') closeModal();
+  });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+
+  // Delegate clicks from news-list for "查看優惠" CTA
+  const news = document.getElementById('news-list');
+  if(news){
+    news.addEventListener('click', async (e) => {
+      const a = e.target.closest('a');
+      if(!a) return;
+      const text = (a.textContent || '').trim();
+      if(text === '查看優惠'){
+        e.preventDefault();
+        try {
+          const res = await fetch('/data/announcements.json?_=' + Date.now(), { cache: 'no-store' });
+          const list = await res.json();
+          const now = new Date();
+          const items = list
+            .filter(x => new Date(x.start) <= now && now <= new Date(x.end))
+            .sort((a,b) => (b.priority||0) - (a.priority||0));
+          const first = items.find(x => (x.ctaText||'').trim() === '查看優惠') || items[0];
+          if(first) openModal(first);
+        } catch(_) {
+          // fallback: open original link
+          window.location.href = a.href;
+        }
+      }
+    });
+  }
+})();
+</script></body>
 </html>
