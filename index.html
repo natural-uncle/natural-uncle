@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>自然大叔｜官方網站</title>
+<title>自然大叔｜冷氣・洗衣機・水塔・自來水管清洗</title>
 <meta content="專業到府清洗：冷氣、直立式洗衣機、水塔、自來水管。透明價格、到府快速、提供保固與發票。立即以 LINE/電話預約。" name="description"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <!-- Favicon / Icons -->
@@ -385,30 +385,35 @@ body.dark #works-teaser .bg-white, body.dark #works-teaser .bg-gray-50, body.dar
   background-color:#0f0f0f !important;
 }
 </style><style>
-/* Offer modal beautify */
+/* Polished Offer Modal */
 #offer-modal { display:flex; align-items:center; justify-content:center; padding: 1rem; }
 #offer-modal.hidden { display:none; }
 #offer-modal .offer-overlay { background: rgba(0,0,0,.55); backdrop-filter: blur(2px); }
-#offer-modal .panel { background:#ffffff; color:#111827; border-radius: 1rem; box-shadow: 0 20px 50px rgba(0,0,0,.25); }
-#offer-modal .panel .close-btn { background: transparent; border: 0; font-size: 1.5rem; line-height: 1; color: inherit; opacity: .7; }
-#offer-modal .panel .close-btn:hover { opacity: 1; }
-#offer-modal .panel .actions .btn { padding: .5rem 1rem; border-radius: .5rem; border: 0; cursor: pointer; }
-#offer-modal .panel .actions .btn-primary { background: #111827; color: #fff; }
-#offer-modal .panel .actions .btn-primary:hover { filter: brightness(1.1); }
-#offer-modal .panel .actions .btn-ghost { background: transparent; color: inherit; }
-#offer-modal .panel a { text-decoration: underline; color: #0ea5e9; }
+#offer-modal .offer-panel { background:#ffffff; color:#111827; border-radius: 1rem; box-shadow: 0 24px 60px rgba(0,0,0,.28); }
+#offer-modal .offer-title { margin-top: .25rem; }
+#offer-modal .offer-body { margin-top: .25rem; }
+#offer-modal .offer-close { width: 2rem; height: 2rem; border: 0; background: transparent; color: inherit; font-size: 1.5rem; line-height: 1; opacity: .7; cursor: pointer; }
+#offer-modal .offer-close:hover { opacity: 1; transform: scale(1.06); }
+#offer-modal .offer-panel a { color: #0ea5e9; text-decoration: underline; }
+#offer-modal .offer-panel p { margin: .25rem 0 .5rem; }
+#offer-modal .offer-panel ul { padding-left: 1.2rem; margin: .25rem 0 .5rem; }
+#offer-modal .offer-panel li { margin: .2rem 0; list-style: disc; }
 
-/* Dark mode support */
+/* Entry animation */
+@keyframes modal-in { from { opacity: 0; transform: translateY(8px) scale(.98);} to { opacity: 1; transform: none; } }
+#offer-modal .offer-panel { animation: modal-in .18s ease-out; }
+
+/* Dark mode */
 @media (prefers-color-scheme: dark) {
-  #offer-modal .panel { background:#111213; color:#f5f7fa; }
-  #offer-modal .panel a { color:#60a5fa; }
+  #offer-modal .offer-panel { background:#121212; color:#eaeaea; }
+  #offer-modal .offer-panel a { color:#93c5fd; }
 }
-html.dark #offer-modal .panel,
-body.dark #offer-modal .panel,
-[data-theme="dark"] #offer-modal .panel { background:#111213; color:#f5f7fa; }
-html.dark #offer-modal .panel a,
-body.dark #offer-modal .panel a,
-[data-theme="dark"] #offer-modal .panel a { color:#93c5fd; }
+html.dark #offer-modal .offer-panel,
+body.dark #offer-modal .offer-panel,
+[data-theme="dark"] #offer-modal .offer-panel { background:#121212; color:#eaeaea; }
+html.dark #offer-modal .offer-panel a,
+body.dark #offer-modal .offer-panel a,
+[data-theme="dark"] #offer-modal .offer-panel a { color:#93c5fd; }
 </style></head>
 <body data-theme="" id="top">
 <!-- Header -->
@@ -658,7 +663,7 @@ body.dark #offer-modal .panel a,
 <!-- Footer -->
 <footer class="bg-white border-t">
 <div class="max-w-6xl mx-auto px-4 py-8 text-sm muted flex items-center gap-3">
-<img alt="" class="h-10 md:h-12 w-auto opacity-80 dark:opacity-90" height="96" loading="lazy" src="logo-mark.png" width="96"/>
+<img alt="" class="h-10 md:h-12 w-auto opacity-80 dark:opacity-90" height="96" loading="lazy" src="https://res.cloudinary.com/dijzndzw2/image/fetch/f_auto,q_auto/logo-mark.jpg" width="96"/>
 <span>© <span id="year"></span> 自然大叔 Natural Uncle｜統編：88537528</span>
 </div>
 </footer>
@@ -923,20 +928,8 @@ body.dark #offer-modal .panel a,
   }
 })();
 </script>
-<div class="hidden justify-center fixed z-50 inset-0 items-center" id="offer-modal"><div class="offer-overlay absolute inset-0" data-close="offer"></div>
-<div class="absolute inset-0 bg-black/50" data-close="offer"></div>
-<div class="text-neutral-900 panel shadow-xl dark:bg-neutral-900 dark:text-neutral-50 rounded-xl relative bg-white shadow-2xl max-w-xl rounded-2xl w-[90%] max-w-lg p-6">
-<h3 class="text-xl font-bold mb-2" id="offer-title">優惠內容</h3>
-<div class="text-sm leading-6 mb-4" id="offer-body"></div>
-<div class="text-right">
-<button class="px-4 py-2 rounded-lg bg-neutral-800 text-white dark:bg-white dark:text-neutral-900" data-close="offer">關閉</button>
-</div>
-<div class="actions mt-4 text-right"><button class="btn btn-primary" data-close="offer">關閉</button></div></div>
-</div>
-<style>
-#offer-modal { display:flex; align-items:center; justify-content:center; }
-#offer-modal.hidden { display:none; }
-</style>
+<div class="fixed inset-0 hidden z-50" id="offer-modal"><div class="offer-overlay absolute inset-0" data-close="offer"></div><div class="offer-panel relative max-w-xl w-[92%] p-6 md:p-7 rounded-2xl shadow-2xl"><button aria-label="關閉" class="offer-close absolute top-2 right-2" data-close="offer">×</button><h3 class="offer-title text-xl font-bold mb-2" id="offer-title">優惠內容</h3><div class="offer-body text-sm leading-6" id="offer-body"></div></div></div>
+
 <script>
 (function(){
   const modal = document.getElementById('offer-modal');
