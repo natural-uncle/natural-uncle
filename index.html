@@ -978,5 +978,53 @@ body.dark #offer-modal .offer-panel a,
     });
   }
 })();
-</script></body>
+</script><script>
+(async () => {
+  try {
+    const res = await fetch('/data/announcements.json');
+    const list = await res.json();
+    const now = new Date();
+    const items = list
+      .filter(x => (!x.start || new Date(x.start) <= now) && (!x.end || now <= new Date(x.end)))
+      .sort((a,b) => (a.priority ?? 99) - (b.priority ?? 99) || new Date(b.start||0) - new Date(a.start||0));
+
+    const news = document.getElementById('news-list');
+    if (news) {
+      const html = items.map(x => `
+        <article class="rounded-lg border border-amber-200 bg-white p-4 md:p-5 shadow" data-id="${x.id||''}">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-600 text-white text-xs">告</span>
+            <h3 class="font-bold text-gray-900">${x.title||''}</h3>
+          </div>
+          ${x.body ? `<p class="text-sm text-gray-600 mb-2">${x.body}</p>` : ''}
+          ${x.bodyHtml || ''}
+          ${x.ctaUrl ? `<a class="btn btn-primary mt-3 inline-flex items-center" href="${x.ctaUrl}" data-modal="1">${x.ctaText||'瞭解更多'}</a>` : ''}
+        </article>
+      `).join('');
+      news.innerHTML = html;
+
+      news.addEventListener('click', (e) => {
+        const a = e.target.closest('a');
+        if (!a) return;
+        const card = a.closest('article[data-id]');
+        const id = card ? card.getAttribute('data-id') : null;
+        const useModal = a.dataset.modal === '1';
+        if (useModal && id) {
+          e.preventDefault();
+          const item = items.find(x => String(x.id) === String(id)) || null;
+          if (item && typeof window.openModal === 'function') {
+            window.openModal(item);
+          } else {
+            // Fallback to navigation
+            window.location.href = a.href;
+          }
+        }
+      });
+    }
+  } catch (e) {
+    console.error('Announcements init failed:', e);
+  }
+})();
+</script>
+</body>
 </html>
