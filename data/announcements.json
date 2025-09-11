@@ -9,17 +9,6 @@
     "ctaUrl": "/pricing.html",
     "priority": 1,
     "bodyHtml": "<p>清洗冷氣室內機送防霉噴劑處理</p>",
-  },
-  {
-    "id": "news-202510",
-    "title": "中秋連假服務公告",
-    "body": "連假期間正常接單",
-    "start": "2025-09-11",
-    "end": "2025-10-8",
-    "ctaText": "休假時段",
-    "ctaUrl": "/index.html#service",
-    "priority": 1,
-    "bodyHtml": "<ul><li>10/3 休假</li><li>10/4 休假</li></ul>"
     "modal": true,
     "hideBodyHtmlInList": true
   }
