@@ -1,5 +1,7 @@
 // netlify/functions/works.js
-// Uses Node 18+ global fetch. No external deps.
+// Node 18+
+// Cloudinary Search API: https://cloudinary.com/documentation/search_api
+
 export async function handler(event) {
   try {
     const cloud = process.env.CLOUDINARY_CLOUD_NAME;
@@ -11,29 +13,32 @@ export async function handler(event) {
     }
 
     const params = new URLSearchParams(event.queryStringParameters || {});
-    const folder = params.get("folder") || "collages"; // e.g., works/collages
+    const folder = params.get("folder") || "collages"; // e.g. works/collages
     const perPage = parseInt(params.get("perPage") || "3", 10);
     const nextCursor = params.get("next") || null;
 
+    // Build Cloudinary Search request
+    const url = `https://api.cloudinary.com/v1_1/${cloud}/resources/search`;
     const body = {
       expression: `resource_type:image AND folder=${folder}`,
       sort_by: [{ uploaded_at: "desc" }],
-      max_results: perPage
+      max_results: 50
     };
     if (nextCursor) body.next_cursor = nextCursor;
 
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud}/resources/search`, {
+    const auth = Buffer.from(`${key}:${secret}`).toString("base64");
+    const res = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Basic " + Buffer.from(`${key}:${secret}`).toString("base64")
+        "Authorization": `Basic ${auth}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(body)
     });
 
     if (!res.ok) {
       const txt = await res.text();
-      return { statusCode: 500, body: JSON.stringify({ error: txt }) };
+      return { statusCode: 502, body: JSON.stringify({ error: "Cloudinary error", detail: txt }) };
     }
 
     const data = await res.json();
@@ -46,10 +51,14 @@ export async function handler(event) {
       folder: r.folder || ""
     }));
 
-    
-    // Randomize order and limit to perPage on each request
-    if (Array.isArray(items)) {
-      items = items.sort(() => Math.random() - 0.5).slice(0, perPage);
+    // Randomize client payload every request
+    if (Array.isArray(items) && items.length > 0) {
+      // Fisher-Yates for unbiased shuffle
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+      items = items.slice(0, Math.max(1, perPage || 3));
     }
 
     return {
