@@ -805,5 +805,23 @@
 
   initDiary();
   </script>
+
+<section class="mt-10" id="works-teaser">
+<h2 class="text-xl font-bold mb-3">清洗前後拼貼｜精選</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="works-grid"></div>
+<a class="btn btn-primary mt-4 inline-block" href="/works/index.html">看全部案例</a>
+</section>
+<script>
+(async () => {
+  const res = await fetch('/.netlify/functions/works?tag=works-collage&perPage=3');
+  const { items=[] } = await res.json();
+  const grid = document.getElementById('works-grid');
+  grid.innerHTML = items.map(it => `
+    <a href="${it.full}" target="_blank" rel="noopener">
+      <img src="${it.thumb}" alt="作品集" loading="lazy" class="rounded shadow" />
+    </a>
+  `).join('');
+})();
+</script>
 </body>
 </html>
