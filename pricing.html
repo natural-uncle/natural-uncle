@@ -207,7 +207,10 @@
     .fab-top{ background:var(--accent); color:#fff }
     .fab-book{ background:var(--primary); color:#fff }
   </style>
-</head>
+<style>
+.accordion-toggle { font-weight: 600; }
+.accordion-panel { background: #fff; }
+</style></head>
 <body data-theme="" id="top">
 <!-- Header（行動裝置兩行設計；桌機置中） -->
 <header class="sticky top-0 z-50 backdrop-blur border-b">
@@ -261,12 +264,12 @@
 </section>
 <!-- 冷氣清洗 -->
 <section class="max-w-6xl mx-auto px-4 py-8" id="ac">
-<div class="card p-6">
+<div class="p-6 card accordion-root relative">
 <div class="flex items-start justify-between gap-4">
 <div>
 <h2 class="text-2xl font-extrabold">冷氣清洗</h2>
 <p class="mt-1 muted">分離式/吊隱式，現場掛洗。含防護與環保清潔劑。</p>
-</div>
+</div><div class="flex justify-end mt-4"></div><div class="mt-6"></div>
 </div>
 <div class="overflow-x-auto mt-5">
 <table class="price w-full text-left text-sm">
@@ -288,7 +291,7 @@
 <li>冷媒不足、安裝不良屬冷凍空調範疇，建議先處理後再清洗。</li>
 </ul>
 </details>
-</div>
+<div class="text-right mt-4"></div><div class="text-right mt-4"><button class="accordion-toggle bg-sky-600 text-white px-4 py-2 rounded" type="button">查看加價說明</button></div><div class="accordion-panel shadow hidden rounded-lg p-4 bg-gray-50 w-full mt-2"><ul class="list-disc pl-6 text-sm text-gray-700 space-y-1"><li>室內機長度大於 182 cm：加收 💲3️⃣0️⃣0️⃣ 元／台</li><li>變形金剛系列：加收 💲5️⃣0️⃣0️⃣ 元／台</li><li>國際牌 CU/CS-PX.GX.QX.LX 等系列</li><li>三菱變形金剛變形系列</li><li>富士通 一體式水盤 機型：加收 💲5️⃣0️⃣0️⃣ 元／台</li></ul></div></div>
 </section>
 <!-- 直立式洗衣機 -->
 <section class="max-w-6xl mx-auto px-4 py-8" id="wm">
@@ -470,5 +473,14 @@
       onScroll();
     })();
   </script>
-</body>
+<script>
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('.accordion-toggle');
+  if(!btn) return;
+  const root = btn.closest('.accordion-root') || document;
+  const panel = root.querySelector('.accordion-panel');
+  if(!panel) return;
+  panel.classList.toggle('hidden');
+});
+</script></body>
 </html>
