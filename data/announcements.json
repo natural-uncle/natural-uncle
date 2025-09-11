@@ -10,7 +10,7 @@
     "priority": 1,
     "bodyHtml": "<p>清洗冷氣室內機送防霉噴劑處理</p>",
     "modal": true,
-    "showBodyInList": false
+    "hideBodyHtmlInList": true
   },
   {
     "id": "news-202510",
