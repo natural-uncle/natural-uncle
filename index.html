@@ -536,8 +536,8 @@ body.dark #offer-modal .offer-panel a,
             <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-600 text-white text-xs">告</span>
             <h3 class="font-bold text-gray-900">${x.title||''}</h3>
           </div>
-          ${x.showBodyInList === false ? '' : (x.body ? `<p class="text-sm text-gray-600 mb-2">${x.body}</p>` : '')}
-          ${x.showBodyInList === false ? '' : (x.bodyHtml || '')}
+          ${x.body ? `<p class="text-sm text-gray-600 mb-2">${x.body}</p>` : ''}
+          ${x.hideBodyHtmlInList === true ? '' : (x.bodyHtml || '')}
           ${x.ctaUrl ? `<a class="btn btn-primary mt-3 inline-flex items-center" href="${x.ctaUrl}" data-modal="${x.modal===true?'1':'0'}">${x.ctaText||'瞭解更多'}</a>` : ''}
         </article>
       `).join('');
