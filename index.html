@@ -414,7 +414,7 @@ body.dark #offer-modal .offer-panel,
 html.dark #offer-modal .offer-panel a,
 body.dark #offer-modal .offer-panel a,
 [data-theme="dark"] #offer-modal .offer-panel a { color:#93c5fd; }
-</style><style id="accordion-css">.js-enabled .collapsible[aria-hidden="true"]{display:none;}</style></head>
+</style></head>
 <body data-theme="" id="top">
 <!-- Header -->
 <header class="bg-white/90 sticky top-0 backdrop-blur z-50 border-b">
@@ -442,10 +442,10 @@ body.dark #offer-modal .offer-panel a,
 <div class="rounded-xl border border-amber-300 bg-amber-50/80 shadow-sm">
 <div class="flex items-center gap-3 px-5 py-3 border-b border-amber-200 bg-amber-100 rounded-t-xl">
 <span class="text-xl">🔔</span>
-<h2 aria-expanded="false" class="text-lg md:text-xl font-extrabold tracking-wide text-amber-800 toggle-trigger" data-controls="news-list">最新消息｜公告</h2>
+<h2 class="text-lg md:text-xl font-extrabold tracking-wide text-amber-800">最新消息｜公告</h2>
 <span class="ml-auto inline-block text-xs px-2 py-0.5 rounded bg-amber-600 text-white">NEW</span>
 </div>
-<div aria-hidden="false" class="p-5 space-y-4 collapsible" id="news-list"></div>
+<div class="p-5 space-y-4" id="news-list"></div>
 </div>
 </section>
 <section class="relative bg-gradient-to-b from-sky-50 to-white">
@@ -903,7 +903,8 @@ body.dark #offer-modal .offer-panel a,
 <script>
 (async () => {
   try {
-    const res = await fetch('/data/announcements.json');
+    let res = await fetch('data/announcements.json').catch(()=>null);
+    if(!res || !res.ok){ try{ res = await fetch('/data/announcements.json'); }catch(_){} }
     const list = await res.json();
     const now = new Date();
     const items = list
@@ -977,29 +978,28 @@ body.dark #offer-modal .offer-panel a,
     });
   }
 })();
-</script><script id="accordion-js">
+</script><script id="news-toggle-js">
 document.addEventListener('DOMContentLoaded', function(){
-  document.body.classList.add('js-enabled');
-  // default collapsed after JS loads
-  document.querySelectorAll('.collapsible').forEach(function(p){
-    if (!p.hasAttribute('data-initialized')){
-      p.setAttribute('aria-hidden','true');
-      p.setAttribute('data-initialized','1');
-    }
+  var heading = Array.from(document.querySelectorAll('h2')).find(function(h){
+    return h && h.textContent && h.textContent.trim().includes('最新消息｜公告');
   });
-  document.addEventListener('click', function(e){
-    var t = e.target;
-    if (t && t.classList && t.classList.contains('toggle-trigger') && t.hasAttribute('data-controls')){
-      var pid = t.getAttribute('data-controls');
-      var panel = document.getElementById(pid);
-      if (panel){
-        e.preventDefault();
-        var isOpen = t.getAttribute('aria-expanded') === 'true';
-        t.setAttribute('aria-expanded', (!isOpen).toString());
-        panel.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
-      }
+  var panel = document.getElementById('news-list');
+  if(!panel) return;
+  panel.setAttribute('aria-hidden','false');
+  if(heading){
+    heading.setAttribute('role','button');
+    heading.setAttribute('tabindex','0');
+    heading.setAttribute('aria-controls','news-list');
+    heading.setAttribute('aria-expanded','true');
+    function toggle(){
+      var isOpen = heading.getAttribute('aria-expanded') === 'true';
+      heading.setAttribute('aria-expanded', (!isOpen).toString());
+      panel.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+      if(isOpen){ panel.style.display='none'; } else { panel.style.display=''; }
     }
-  });
+    heading.addEventListener('click', function(e){ e.preventDefault(); toggle(); });
+    heading.addEventListener('keydown', function(e){ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); toggle(); } });
+  }
 });
 </script></body>
 </html>
