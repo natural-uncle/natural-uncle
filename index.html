@@ -445,7 +445,20 @@ body.dark #offer-modal .offer-panel a,
 <h2 class="text-lg md:text-xl font-extrabold tracking-wide text-amber-800">最新消息｜公告</h2>
 <span class="ml-auto inline-block text-xs px-2 py-0.5 rounded bg-amber-600 text-white">NEW</span>
 </div>
-<div class="p-5 space-y-4" id="news-list"></div>
+<div class="p-5 space-y-4" id="news-list">
+<article class="rounded-lg border border-amber-200 bg-white p-4 md:p-5 shadow" data-ann-id="promo-202509">
+<div class="flex items-center gap-2 mb-2">
+<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-600 text-white text-xs">告</span>
+<h3 class="font-bold text-gray-900">夏末冷氣清洗 85 折</h3>
+</div>
+<p class="text-sm text-gray-700"><p>限時 85 折，適用於 <strong>分離式</strong> 與 <strong>窗型</strong> 機型。</p>
+<ul>
+<li>到府專業清洗</li>
+<li>使用環保清潔劑</li>
+<li>老客戶再折 NT$50</li></ul></p>
+<a class="inline-flex items-center gap-1 text-sm font-medium text-white bg-blue-600 px-3 py-1.5 rounded hover:bg-blue-700 transition" href="/pricing.html">查看優惠</a>
+</article>
+</div>
 </div>
 </section>
 <section class="relative bg-gradient-to-b from-sky-50 to-white">
@@ -930,7 +943,6 @@ body.dark #offer-modal .offer-panel a,
 })();
 </script>
 <div class="fixed inset-0 hidden z-50" id="offer-modal"><div class="offer-overlay absolute inset-0" data-close="offer"></div><div class="offer-panel relative max-w-xl w-[92%] p-6 md:p-7 rounded-2xl shadow-2xl"><button aria-label="關閉" class="offer-close absolute top-2 right-2" data-close="offer">×</button><h3 class="offer-title text-xl font-bold mb-2" id="offer-title">優惠內容</h3><div class="offer-body text-sm leading-6" id="offer-body"></div></div></div>
-
 <script>
 (function(){
   const modal = document.getElementById('offer-modal');
