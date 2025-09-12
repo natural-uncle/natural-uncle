@@ -13,7 +13,7 @@
 <body class="bg-slate-50 text-slate-900">
   <div class="max-w-5xl mx-auto p-4 md:p-6">
     <h1 class="text-2xl md:text-3xl font-extrabold">最新消息｜公告管理</h1>
-    <p class="text-sm text-slate-600 mt-1">這是靜態後台。可載入 <code class="mono">/news.json</code>、新增/編輯/刪除，並下載新的 <code class="mono">news.json</code> 後上傳到伺服器。</p>
+    <p class="text-sm text-slate-600 mt-1">純前端管理。編輯完成後按「下載」產出新的 <code class="mono">news.json</code> 進行部署。</p>
 
     <div class="mt-4 flex flex-wrap gap-2">
       <button id="btnLoad" class="px-3 py-2 rounded bg-blue-600 text-white text-sm hover:bg-blue-700">載入伺服器上的 news.json</button>
@@ -25,16 +25,13 @@
       <button id="btnDownload" class="px-3 py-2 rounded bg-amber-600 text-white text-sm hover:bg-amber-700">下載更新後的 news.json</button>
     </div>
 
-    <div class="mt-4">
-      <details open class="bg-white rounded-xl border p-3">
-        <summary class="font-bold cursor-pointer">說明</summary>
-        <ul class="list-disc pl-6 text-sm text-slate-700 mt-2 space-y-1">
-          <li>本頁為純前端，無資料庫。您編輯的內容只在瀏覽器記憶體中，點 <strong>下載</strong> 以產出新檔。</li>
-          <li>部署時把下載的 <code class="mono">news.json</code> 放到與 <code class="mono">index.html</code> 相同層級（或 <code class="mono">/data/news.json</code> 並調整路徑）。</li>
-          <li><strong>startsAt / endsAt</strong> 會控制前台是否顯示，格式 YYYY-MM-DD（含當日）。</li>
-        </ul>
-      </details>
-    </div>
+    <details class="mt-4 bg-white rounded-xl border p-3" open>
+      <summary class="font-bold cursor-pointer">欄位說明</summary>
+      <ul class="list-disc pl-6 text-sm text-slate-700 mt-2 space-y-1">
+        <li><code class="mono">startsAt</code>/<code class="mono">endsAt</code> 控制顯示時間窗（YYYY-MM-DD）。</li>
+        <li><code class="mono">summaryButtonText</code> 可自訂前台展開按鈕文字（預設「查看內容」）。</li>
+      </ul>
+    </details>
 
     <div id="list" class="mt-4 space-y-3"></div>
   </div>
@@ -74,6 +71,10 @@
         <div class="space-y-2">
           <label class="block text-xs text-slate-600">endsAt（YYYY-MM-DD）</label>
           <input data-field="endsAt" class="w-full border rounded px-2 py-1 text-sm" placeholder="2025-09-30">
+        </div>
+        <div class="space-y-2 md:col-span-2">
+          <label class="block text-xs text-slate-600">展開按鈕文字 summaryButtonText</label>
+          <input data-field="summaryButtonText" class="w-full border rounded px-2 py-1 text-sm" placeholder="例如：查看優惠、詳細內容、更多資訊">
         </div>
         <div class="md:col-span-2 space-y-2">
           <label class="block text-xs text-slate-600">摘要 summary</label>
@@ -116,13 +117,13 @@
         node.querySelector('[data-field="period"]').value = it.period || '';
         node.querySelector('[data-field="startsAt"]').value = it.startsAt || '';
         node.querySelector('[data-field="endsAt"]').value = it.endsAt || '';
+        node.querySelector('[data-field="summaryButtonText"]').value = it.summaryButtonText || '';
         node.querySelector('[data-field="summary"]').value = it.summary || '';
         node.querySelector('[data-field="bullets"]').value = (it.bullets||[]).join('\\n');
         node.querySelector('[data-field="ctaText"]').value = it.cta?.text || '';
         node.querySelector('[data-field="ctaHref"]').value = it.cta?.href || '';
         node.querySelector('[data-field="pinned"]').checked = !!it.pinned;
 
-        // 綁定變更
         node.querySelectorAll('[data-field]').forEach(input=>{
           input.addEventListener('input', (e)=>{
             const f = e.target.getAttribute('data-field');
@@ -135,6 +136,7 @@
             if(f==='period') t.period = v;
             if(f==='startsAt') t.startsAt = v;
             if(f==='endsAt') t.endsAt = v;
+            if(f==='summaryButtonText') t.summaryButtonText = v;
             if(f==='summary') t.summary = v;
             if(f==='bullets') t.bullets = v.split('\\n').filter(x=>x.trim().length);
             if(f==='ctaText'){ t.cta = t.cta || {}; t.cta.text = v; }
@@ -144,13 +146,8 @@
         node.querySelector('[data-field="pinned"]').addEventListener('change',(e)=>{
           items[idx].pinned = e.target.checked;
         });
-
-        // 刪除
         node.querySelector('[data-action="delete"]').addEventListener('click', ()=>{
-          if(confirm('確定刪除這一筆嗎？')){
-            items.splice(idx, 1);
-            render();
-          }
+          if(confirm('確定刪除這一筆嗎？')){ items.splice(idx, 1); render(); }
         });
 
         listEl.appendChild(node);
@@ -164,7 +161,7 @@
         items = await res.json();
         render();
       }catch(e){
-        alert('讀取 /news.json 失敗。請確認檔案位置。也可改用「從本機匯入」。');
+        alert('讀取 /news.json 失敗。請確認檔案位置或改用「從本機匯入」。');
       }
     }
 
@@ -184,6 +181,7 @@
         badge: '告',
         title: '',
         period: '',
+        summaryButtonText: '查看內容',
         summary: '',
         bullets: [],
         cta: { text:'', href:'' },
@@ -209,18 +207,14 @@
       reader.readAsText(file, 'utf-8');
     }
 
-    // 綁定
-    $('#btnLoad').addEventListener('click', loadFromServer);
-    $('#btnDownload').addEventListener('click', downloadJson);
-    $('#btnAdd').addEventListener('click', addItem);
-    $('#fileInput').addEventListener('change', (e)=>{
+    document.getElementById('btnLoad').addEventListener('click', loadFromServer);
+    document.getElementById('btnDownload').addEventListener('click', downloadJson);
+    document.getElementById('btnAdd').addEventListener('click', addItem);
+    document.getElementById('fileInput').addEventListener('change', (e)=>{
       const f = e.target.files?.[0];
       if(f) importLocal(f);
-      e.target.value = '';
+      e.target.value='';
     });
-
-    // 嘗試預載（可略過）
-    // render();
   </script>
 </body>
 </html>
