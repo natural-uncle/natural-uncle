@@ -1,28 +1,13 @@
 [
   {
     "id": "promo-202509",
-    "title": "官方網站建立 ！",
+    "title": "夏末冷氣清洗 85 折",
     "body": "限時優惠：2025/09/10 – 2025/09/30",
     "start": "2025-09-10",
     "end": "2025-09-30",
     "ctaText": "查看優惠",
     "ctaUrl": "/pricing.html",
     "priority": 1,
-    "bodyHtml": "<p>清洗冷氣室內機送防霉噴劑處理</p>",
-    "modal": true,
-    "hideBodyHtmlInList": true
-  },
-  {
-    "id": "news-202510",
-    "title": "中秋連假服務公告",
-    "body": "連假期間正常接單",
-    "start": "2025-09-11",
-    "end": "2025-10-08",
-    "ctaText": "休息時段",
-    "ctaUrl": "/index.html#service",
-    "priority": 2,
-    "bodyHtml": "<ul><li>10/3 休假</li><li>10/4 休假</li></ul>",
-    "modal": true,
-    "hideBodyHtmlInList": true
+    "bodyHtml": "<p>限時 85 折，適用於 <strong>分離式</strong> 與 <strong>窗型</strong> 機型。</p>\n<ul>\n  <li>到府專業清洗</li>\n  <li>使用環保清潔劑</li>\n  <li>老客戶再折 NT$50</li></p>"
   }
 ]
