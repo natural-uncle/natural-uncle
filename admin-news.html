@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>最新消息｜公告管理</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:9999px;background:#f59e0b;color:#fff;font-size:12px}
+    .mono{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <div class="max-w-5xl mx-auto p-4 md:p-6">
+    <h1 class="text-2xl md:text-3xl font-extrabold">最新消息｜公告管理</h1>
+    <p class="text-sm text-slate-600 mt-1">這是靜態後台。可載入 <code class="mono">/news.json</code>、新增/編輯/刪除，並下載新的 <code class="mono">news.json</code> 後上傳到伺服器。</p>
+
+    <div class="mt-4 flex flex-wrap gap-2">
+      <button id="btnLoad" class="px-3 py-2 rounded bg-blue-600 text-white text-sm hover:bg-blue-700">載入伺服器上的 news.json</button>
+      <label class="px-3 py-2 rounded bg-slate-200 text-slate-800 text-sm hover:bg-slate-300 cursor-pointer">
+        從本機匯入 news.json
+        <input id="fileInput" type="file" accept="application/json" class="hidden"/>
+      </label>
+      <button id="btnAdd" class="px-3 py-2 rounded bg-emerald-600 text-white text-sm hover:bg-emerald-700">新增一筆</button>
+      <button id="btnDownload" class="px-3 py-2 rounded bg-amber-600 text-white text-sm hover:bg-amber-700">下載更新後的 news.json</button>
+    </div>
+
+    <div class="mt-4">
+      <details open class="bg-white rounded-xl border p-3">
+        <summary class="font-bold cursor-pointer">說明</summary>
+        <ul class="list-disc pl-6 text-sm text-slate-700 mt-2 space-y-1">
+          <li>本頁為純前端，無資料庫。您編輯的內容只在瀏覽器記憶體中，點 <strong>下載</strong> 以產出新檔。</li>
+          <li>部署時把下載的 <code class="mono">news.json</code> 放到與 <code class="mono">index.html</code> 相同層級（或 <code class="mono">/data/news.json</code> 並調整路徑）。</li>
+          <li><strong>startsAt / endsAt</strong> 會控制前台是否顯示，格式 YYYY-MM-DD（含當日）。</li>
+        </ul>
+      </details>
+    </div>
+
+    <div id="list" class="mt-4 space-y-3"></div>
+  </div>
+
+  <template id="rowTpl">
+    <div class="bg-white rounded-xl border p-4">
+      <div class="flex items-center gap-2">
+        <span class="badge">告</span>
+        <input data-field="title" class="flex-1 border rounded px-2 py-1 text-sm" placeholder="標題">
+        <label class="text-sm flex items-center gap-1">
+          <input type="checkbox" data-field="pinned"> 置頂
+        </label>
+        <button data-action="delete" class="ml-auto text-sm px-2 py-1 rounded border border-red-600 text-red-700 hover:bg-red-50">刪除</button>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-3 mt-3">
+        <div class="space-y-2">
+          <label class="block text-xs text-slate-600">ID</label>
+          <input data-field="id" class="w-full border rounded px-2 py-1 text-sm mono" placeholder="唯一識別，例如 promo-202509">
+        </div>
+        <div class="space-y-2">
+          <label class="block text-xs text-slate-600">類型 type（promo/announce）</label>
+          <input data-field="type" class="w-full border rounded px-2 py-1 text-sm" placeholder="promo 或 announce">
+        </div>
+        <div class="space-y-2">
+          <label class="block text-xs text-slate-600">徽章文字 badge</label>
+          <input data-field="badge" class="w-full border rounded px-2 py-1 text-sm" placeholder="告、優…">
+        </div>
+        <div class="space-y-2">
+          <label class="block text-xs text-slate-600">顯示期間 period（純文字）</label>
+          <input data-field="period" class="w-full border rounded px-2 py-1 text-sm" placeholder="2025/09/10 – 2025/09/30">
+        </div>
+        <div class="space-y-2">
+          <label class="block text-xs text-slate-600">startsAt（YYYY-MM-DD）</label>
+          <input data-field="startsAt" class="w-full border rounded px-2 py-1 text-sm" placeholder="2025-09-10">
+        </div>
+        <div class="space-y-2">
+          <label class="block text-xs text-slate-600">endsAt（YYYY-MM-DD）</label>
+          <input data-field="endsAt" class="w-full border rounded px-2 py-1 text-sm" placeholder="2025-09-30">
+        </div>
+        <div class="md:col-span-2 space-y-2">
+          <label class="block text-xs text-slate-600">摘要 summary</label>
+          <textarea data-field="summary" class="w-full border rounded px-2 py-1 text-sm" rows="2" placeholder="簡短說明"></textarea>
+        </div>
+        <div class="md:col-span-2 space-y-2">
+          <label class="block text-xs text-slate-600">條列 bullets（每行一項）</label>
+          <textarea data-field="bullets" class="w-full border rounded px-2 py-1 text-sm mono" rows="3" placeholder="到府專業清洗\n使用環保清潔劑"></textarea>
+        </div>
+        <div class="space-y-2">
+          <label class="block text-xs text-slate-600">CTA 文字</label>
+          <input data-field="ctaText" class="w-full border rounded px-2 py-1 text-sm" placeholder="LINE 聯繫">
+        </div>
+        <div class="space-y-2">
+          <label class="block text-xs text-slate-600">CTA 連結</label>
+          <input data-field="ctaHref" class="w-full border rounded px-2 py-1 text-sm" placeholder="https://line.me/...">
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const listEl = $('#list');
+    const tpl = $('#rowTpl');
+    let items = [];
+
+    function render(){
+      listEl.innerHTML = '';
+      if(!items.length){
+        listEl.innerHTML = '<p class="text-sm text-slate-600">目前沒有資料，請點「新增一筆」或「載入」。</p>';
+        return;
+      }
+      items.forEach((it, idx) => {
+        const node = tpl.content.cloneNode(true);
+        node.querySelector('[data-field="title"]').value = it.title || '';
+        node.querySelector('[data-field="id"]').value = it.id || '';
+        node.querySelector('[data-field="type"]').value = it.type || 'announce';
+        node.querySelector('[data-field="badge"]').value = it.badge || '';
+        node.querySelector('[data-field="period"]').value = it.period || '';
+        node.querySelector('[data-field="startsAt"]').value = it.startsAt || '';
+        node.querySelector('[data-field="endsAt"]').value = it.endsAt || '';
+        node.querySelector('[data-field="summary"]').value = it.summary || '';
+        node.querySelector('[data-field="bullets"]').value = (it.bullets||[]).join('\\n');
+        node.querySelector('[data-field="ctaText"]').value = it.cta?.text || '';
+        node.querySelector('[data-field="ctaHref"]').value = it.cta?.href || '';
+        node.querySelector('[data-field="pinned"]').checked = !!it.pinned;
+
+        // 綁定變更
+        node.querySelectorAll('[data-field]').forEach(input=>{
+          input.addEventListener('input', (e)=>{
+            const f = e.target.getAttribute('data-field');
+            const v = e.target.value;
+            const t = items[idx];
+            if(f==='title') t.title = v;
+            if(f==='id') t.id = v;
+            if(f==='type') t.type = v;
+            if(f==='badge') t.badge = v;
+            if(f==='period') t.period = v;
+            if(f==='startsAt') t.startsAt = v;
+            if(f==='endsAt') t.endsAt = v;
+            if(f==='summary') t.summary = v;
+            if(f==='bullets') t.bullets = v.split('\\n').filter(x=>x.trim().length);
+            if(f==='ctaText'){ t.cta = t.cta || {}; t.cta.text = v; }
+            if(f==='ctaHref'){ t.cta = t.cta || {}; t.cta.href = v; }
+          });
+        });
+        node.querySelector('[data-field="pinned"]').addEventListener('change',(e)=>{
+          items[idx].pinned = e.target.checked;
+        });
+
+        // 刪除
+        node.querySelector('[data-action="delete"]').addEventListener('click', ()=>{
+          if(confirm('確定刪除這一筆嗎？')){
+            items.splice(idx, 1);
+            render();
+          }
+        });
+
+        listEl.appendChild(node);
+      });
+    }
+
+    async function loadFromServer(){
+      try{
+        const res = await fetch('/news.json?v=' + Date.now(), { cache:'no-store' });
+        if(!res.ok) throw new Error('載入失敗');
+        items = await res.json();
+        render();
+      }catch(e){
+        alert('讀取 /news.json 失敗。請確認檔案位置。也可改用「從本機匯入」。');
+      }
+    }
+
+    function downloadJson(){
+      const blob = new Blob([JSON.stringify(items, null, 2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'news.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function addItem(){
+      items.unshift({
+        id: 'ann-' + Date.now(),
+        type: 'announce',
+        badge: '告',
+        title: '',
+        period: '',
+        summary: '',
+        bullets: [],
+        cta: { text:'', href:'' },
+        pinned: false,
+        startsAt: '',
+        endsAt: ''
+      });
+      render();
+    }
+
+    function importLocal(file){
+      const reader = new FileReader();
+      reader.onload = e => {
+        try{
+          const data = JSON.parse(e.target.result);
+          if(!Array.isArray(data)) throw new Error('格式應為陣列');
+          items = data;
+          render();
+        }catch(err){
+          alert('匯入失敗：' + err.message);
+        }
+      };
+      reader.readAsText(file, 'utf-8');
+    }
+
+    // 綁定
+    $('#btnLoad').addEventListener('click', loadFromServer);
+    $('#btnDownload').addEventListener('click', downloadJson);
+    $('#btnAdd').addEventListener('click', addItem);
+    $('#fileInput').addEventListener('change', (e)=>{
+      const f = e.target.files?.[0];
+      if(f) importLocal(f);
+      e.target.value = '';
+    });
+
+    // 嘗試預載（可略過）
+    // render();
+  </script>
+</body>
+</html>
