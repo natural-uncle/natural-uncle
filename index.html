@@ -445,7 +445,11 @@ body.dark #offer-modal .offer-panel a,
 <h2 class="text-lg md:text-xl font-extrabold tracking-wide text-amber-800">最新消息｜公告</h2>
 <span class="ml-auto inline-block text-xs px-2 py-0.5 rounded bg-amber-600 text-white">NEW</span>
 </div>
-<div class="p-5 space-y-4" id="news-list"><div class="text-sm text-gray-500">載入中…</div></div>
+<div class="p-5 space-y-4" id="news-list"><article class="rounded-lg border border-amber-200 bg-white p-4 md:p-5 shadow" data-ann-id="promo-202509"><div class="flex items-center gap-2 mb-2"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-600 text-white text-xs">告</span><h3 class="font-bold text-gray-900">夏末冷氣清洗 85 折</h3></div><p class="text-sm text-gray-700">限時優惠：2025/09/10 – 2025/09/30</p><details><summary class="inline-flex items-center gap-1 text-sm font-medium text-white bg-blue-600 px-3 py-1.5 rounded hover:bg-blue-700 transition cursor-pointer">查看優惠</summary><div class="mt-3 rounded border border-amber-200 bg-amber-50 p-3"><p>限時 85 折，適用於 <strong>分離式</strong> 與 <strong>窗型</strong> 機型。</p>
+<ul>
+<li>到府專業清洗</li>
+<li>使用環保清潔劑</li>
+<li>老客戶再折 NT$50</li></ul></div></details></article></div>
 </div>
 </section>
 <section class="relative bg-gradient-to-b from-sky-50 to-white">
@@ -900,101 +904,7 @@ body.dark #offer-modal .offer-panel a,
 
   initDiary();
   </script>
-<script>
-(async () => {
-  try {
-    let res = await fetch('data/announcements.json').catch(()=>null);
-    if(!res || !res.ok){ try{ res = await fetch('/data/announcements.json'); }catch(_){} }
-    let list = [];
-    try { list = await res.json(); } catch(_) { list = []; }
-    const list = await res.json();
-    const now = new Date();
-    const items = list
-      .filter(x => new Date(x.start) <= now && now <= new Date(x.end))
-      .sort((a,b) => (b.priority||0) - (a.priority||0));
 
-    const html = items.map(x => `
-      <article class="rounded-lg border border-amber-200 bg-white p-4 md:p-5 shadow" data-ann-id="${x.id||\'\'}">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-600 text-white text-xs">告</span>
-          <h3 class="font-bold text-gray-900">${x.title}</h3>
-        </div>
-        <p class="text-sm text-gray-700">${x.body}</p>
-        ${x.ctaUrl ? `<a href="${x.ctaUrl}" class="inline-block mt-3 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition">${x.ctaText || '了解更多'}</a>` : ''}
-      </article>
-    `).join('');
-
-    const listEl = document.getElementById('news-list');
-    if (listEl) listEl.innerHTML = html || '目前沒有最新公告或資料載入失敗。';
-  } catch (e) {
-    console.error('news error', e);
-  }
-})();
-</script>
 <div class="fixed inset-0 hidden z-50" id="offer-modal"><div class="offer-overlay absolute inset-0" data-close="offer"></div><div class="offer-panel relative max-w-xl w-[92%] p-6 md:p-7 rounded-2xl shadow-2xl"><button aria-label="關閉" class="offer-close absolute top-2 right-2" data-close="offer">×</button><h3 class="offer-title text-xl font-bold mb-2" id="offer-title">優惠內容</h3><div class="offer-body text-sm leading-6" id="offer-body"></div></div></div>
-<script>
-(function(){
-  const modal = document.getElementById('offer-modal');
-  const titleEl = document.getElementById('offer-title');
-  const bodyEl = document.getElementById('offer-body');
-  function openModal(item){
-    if(!modal) return;
-    titleEl.textContent = item.title || '優惠內容';
-    bodyEl.innerHTML = item.bodyHtml || (item.body||'').replace(/\n/g,'<br>');
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeModal(){
-    if(!modal) return;
-    modal.classList.add('hidden');
-    document.body.style.overflow = '';
-  }
-  modal?.addEventListener('click', (e)=>{
-    const t = e.target;
-    if(t && t.getAttribute('data-close') === 'offer') closeModal();
-  });
-  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
-
-  // Delegate on announcements list
-  const news = document.getElementById('news-list');
-  if(news){
-    news.addEventListener('click', async (e) => {
-      const a = e.target.closest('a');
-      if(!a) return;
-      const text = (a.textContent || '').trim();
-      if(text.includes('查看優惠')){
-        e.preventDefault();
-        try {
-          const art = a.closest('article');
-          const id = art ? art.getAttribute('data-ann-id') : null;
-          let res = await fetch('data/announcements.json?_=' + Date.now(), { cache: 'no-store' }).catch(()=>null);
-          if(!res || !res.ok){ try { res = await fetch('/data/announcements.json?_=' + Date.now(), { cache: 'no-store' }); } catch(_) {} }
-          const list = res && res.ok ? await res.json() : [];
-          const item = (id && Array.isArray(list)) ? list.find(x => x.id === id) : null;
-          const chosen = item || (Array.isArray(list) ? list.find(x => (x.ctaText||'').trim().includes('查看優惠')) : null);
-          if(art){
-            let panel = art.querySelector('.offer-details');
-            if(!panel){
-              panel = document.createElement('div');
-              panel.className = 'offer-details mt-3 rounded border border-amber-200 bg-amber-50 p-3';
-              panel.setAttribute('aria-hidden','true');
-              panel.style.display = 'none';
-              panel.innerHTML = (chosen && (chosen.bodyHtml || chosen.body)) || '';
-              a.insertAdjacentElement('afterend', panel);
-            }
-            const isHidden = panel.style.display === 'none';
-            panel.style.display = isHidden ? '' : 'none';
-            panel.setAttribute('aria-hidden', (!isHidden).toString());
-            a.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
-          } else {
-            if(a && a.href) window.location.href = a.href;
-          }
-        } catch(_) {
-          if(a && a.href) window.location.href = a.href;
-        }
-      }
-    });
-  }
-})();
-</script></body>
+</body>
 </html>
