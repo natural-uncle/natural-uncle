@@ -445,18 +445,7 @@ body.dark #offer-modal .offer-panel a,
 <h2 class="text-lg md:text-xl font-extrabold tracking-wide text-amber-800">最新消息｜公告</h2>
 <span class="ml-auto inline-block text-xs px-2 py-0.5 rounded bg-amber-600 text-white">NEW</span>
 </div>
-<div class="p-5 space-y-4" id="news-list">
-<article class="rounded-lg border border-amber-200 bg-white p-4 md:p-5 shadow" data-ann-id="promo-202509">
-<div class="flex items-center gap-2 mb-2">
-<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-600 text-white text-xs">告</span>
-<h3 class="font-bold text-gray-900">官方網站建立 ！</h3>
-</div>
-<p class="text-sm text-gray-700"><p>限時優惠：2025/09/10 – 2025/09/30</p>
-<ul>
-<li>同歡贈優惠服務</li></ul></p>
-<a class="inline-flex items-center gap-1 text-sm font-medium text-white bg-blue-600 px-3 py-1.5 rounded hover:bg-blue-700 transition" href="/pricing.html">查看優惠</a>
-</article>
-</div>
+<div class="p-5 space-y-4" id="news-list"><div class="text-sm text-gray-500">載入中…</div></div>
 </div>
 </section>
 <section class="relative bg-gradient-to-b from-sky-50 to-white">
@@ -916,6 +905,8 @@ body.dark #offer-modal .offer-panel a,
   try {
     let res = await fetch('data/announcements.json').catch(()=>null);
     if(!res || !res.ok){ try{ res = await fetch('/data/announcements.json'); }catch(_){} }
+    let list = [];
+    try { list = await res.json(); } catch(_) { list = []; }
     const list = await res.json();
     const now = new Date();
     const items = list
@@ -934,7 +925,7 @@ body.dark #offer-modal .offer-panel a,
     `).join('');
 
     const listEl = document.getElementById('news-list');
-    if (listEl) listEl.innerHTML = html || '<div class="text-sm text-gray-500">目前沒有最新公告。</div>';
+    if (listEl) listEl.innerHTML = html || '目前沒有最新公告或資料載入失敗。';
   } catch (e) {
     console.error('news error', e);
   }
