@@ -1,0 +1,22 @@
+[
+  {
+    "id": "promo-202509",
+    "type": "promo",
+    "badge": "告",
+    "title": "夏末冷氣清洗 85 折",
+    "period": "2025/09/10 – 2025/09/30",
+    "summary": "限時 85 折，適用於分離式與窗型機型。",
+    "bullets": [
+      "到府專業清洗",
+      "使用環保清潔劑",
+      "老客戶再折 NT$50"
+    ],
+    "cta": {
+      "text": "LINE 聯繫",
+      "href": "https://line.me/R/ti/p/@uncle888"
+    },
+    "pinned": true,
+    "startsAt": "2025-09-10",
+    "endsAt": "2025-09-30"
+  }
+]
