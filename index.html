@@ -978,5 +978,69 @@ body.dark #offer-modal .offer-panel a,
     });
   }
 })();
-</script></body>
+</script>
+<style>
+  /* Announcements accordion */
+  #announcements {max-width: 980px; margin: 3rem auto; padding: 0 1rem;}
+  #announcements .heading{font-size:1.75rem; font-weight:700; margin: 0 0 1rem;}
+  .ann-card {border:1px solid #e5e7eb; border-radius:12px; margin: .75rem 0; background:#fff; box-shadow: 0 2px 8px rgba(0,0,0,.04); overflow:hidden;}
+  .ann-summary {list-style:none; cursor:pointer; padding:1rem 1.25rem; display:flex; align-items:center; justify-content:space-between;}
+  .ann-title {font-weight:600; font-size:1.05rem;}
+  .ann-meta {display:flex; gap:.5rem; align-items:center; font-size:.85rem; color:#6b7280;}
+  .badge {border:1px solid #d1d5db; border-radius:9999px; padding:.15rem .5rem; font-size:.75rem; white-space:nowrap;}
+  .priority {border-color:#f59e0b; color:#92400e; background:#fffbeb;}
+  details.ann-card[open] .ann-summary{background:#f9fafb}
+  .ann-body {padding:0 1.25rem 1rem 1.25rem; color:#374151; line-height:1.7}
+  .ann-actions {padding:0 1.25rem 1.25rem; display:flex; gap:.75rem}
+  .ann-actions a {text-decoration:none; border:1px solid #111827; padding:.6rem .9rem; border-radius:10px}
+  .ann-actions a.primary {background:#111827; color:#fff}
+  /* 隱藏舊的彈窗與觸發器 */
+  #announcement-modal,.announcement-modal,[data-announcements-modal]{display:none !important}
+</style>
+
+<section id="announcements" aria-labelledby="announcements-title">
+  <h2 id="announcements-title" class="heading">最新公告</h2>
+  <div id="announcements-list" role="list"></div>
+</section>
+
+<script>
+(function(){
+  // 將任何文字為「最新公告」的觸發元素改為滾動至區塊
+  document.addEventListener('click', function(e){
+    const el = e.target.closest('a,button');
+    if(!el) return;
+    const text = (el.innerText || el.textContent || '').trim();
+    if(text.includes('最新公告')){
+      e.preventDefault();
+      const sec = document.getElementById('announcements');
+      if(sec){ sec.scrollIntoView({behavior:'smooth'}); }
+    }
+  }, true);
+
+  fetch('/data/announcements.json', {cache: 'no-store'})
+    .then(r => r.json())
+    .then(items => {
+      // 依 priority 降冪排序
+      items.sort((a,b) => (b.priority||0) - (a.priority||0));
+      const list = document.getElementById('announcements-list');
+      if(!list) return;
+      list.innerHTML = items.map(it => {
+        const range = (it.start && it.end) ? `${it.start} – ${it.end}` : '';
+        const hasHtml = !!it.bodyHtml;
+        const body = hasHtml ? it.bodyHtml : (it.body ? `<p>${it.body}</p>` : '');
+        const cta = it.ctaUrl ? `<div class="ann-actions"><a class="primary" href="${it.ctaUrl}">${it.ctaText||'了解更多'}</a></div>` : '';
+        const prio = (it.priority||0) > 0 ? `<span class="badge priority">優先</span>` : '';
+        const date = range ? `<span class="badge">${range}</span>` : '';
+        return `<details class="ann-card"><summary class="ann-summary"><span class="ann-title">${it.title||'公告'}</span><span class="ann-meta">${prio}${date}</span></summary><div class="ann-body">${body}</div>${cta}</details>`;
+      }).join('');
+    })
+    .catch(err => {
+      const list = document.getElementById('announcements-list');
+      if(list){ list.innerHTML = `<div class="ann-card"><div class="ann-body">無法載入公告。</div></div>`; }
+      console.error(err);
+    });
+})();
+</script>
+
+</body>
 </html>
