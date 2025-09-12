@@ -414,7 +414,23 @@ body.dark #offer-modal .offer-panel,
 html.dark #offer-modal .offer-panel a,
 body.dark #offer-modal .offer-panel a,
 [data-theme="dark"] #offer-modal .offer-panel a { color:#93c5fd; }
-</style></head>
+</style>
+<style id="ann-expander-style">
+.ann-expander{border:1px solid rgba(0,0,0,.08);border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.ann-expander__header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;cursor:pointer;font-weight:600}
+.ann-expander__header .label{display:flex;gap:8px;align-items:center}
+.ann-expander__chev{transition:transform .2s ease}
+.ann-expander.open .ann-expander__chev{transform:rotate(180deg)}
+.ann-expander__body{max-height:0;overflow:hidden;transition:max-height .25s ease,padding .25s ease}
+.ann-expander.open .ann-expander__body{padding:12px 16px}
+.ann-item{padding:12px 0;border-top:1px dashed rgba(0,0,0,.1)}
+.ann-item:first-child{border-top:0}
+.ann-item h4{margin:0 0 6px 0;font-size:1rem}
+.ann-item .meta{font-size:.875rem;opacity:.7;margin-bottom:6px}
+.ann-item .content{font-size:.95rem;line-height:1.6}
+</style>
+
+</head>
 <body data-theme="" id="top">
 <!-- Header -->
 <header class="bg-white/90 sticky top-0 backdrop-blur z-50 border-b">
@@ -1039,6 +1055,43 @@ body.dark #offer-modal .offer-panel a,
       if(list){ list.innerHTML = `<div class="ann-card"><div class="ann-body">無法載入公告。</div></div>`; }
       console.error(err);
     });
+})();
+</script>
+
+
+<script id="ann-expander-script">
+(function(){
+  const expander = document.querySelector('.ann-expander');
+  if(!expander) return;
+  const header = expander.querySelector('.ann-expander__header');
+  const body = expander.querySelector('.ann-expander__body');
+  const btns = document.querySelectorAll('button, a');
+  // 沿用原本的開啟按鈕：凡是文字含「最新消息」或「公告」者，改成切換展開
+  btns.forEach(b=>{
+    const t=(b.textContent||'').trim();
+    if(/最新消息|公告|news|announcement/i.test(t)){
+      b.addEventListener('click', function(e){
+        e.preventDefault();
+        expander.classList.toggle('open');
+        if(expander.classList.contains('open')){
+          body.style.maxHeight = body.scrollHeight + 'px';
+        }else{
+          body.style.maxHeight = 0;
+        }
+      }, {passive:false});
+    }
+  });
+  // 也可點擊標題列展開
+  if(header){
+    header.addEventListener('click', function(){
+      expander.classList.toggle('open');
+      if(expander.classList.contains('open')){
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }else{
+        body.style.maxHeight = 0;
+      }
+    });
+  }
 })();
 </script>
 
