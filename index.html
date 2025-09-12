@@ -446,6 +446,14 @@ body.dark #offer-modal .offer-panel a,
 <span class="ml-auto inline-block text-xs px-2 py-0.5 rounded bg-amber-600 text-white">NEW</span>
 </div>
 <div class="p-5 space-y-4" id="news-list"></div>
+  <p class="text-sm text-gray-700">限時優惠：2025/09/10 – 2025/09/30</p>
+  <br>
+  <details><summary class="inline-flex items-center gap-1 text-sm font-medium text-white bg-blue-600 px-3 py-1.5 rounded hover:bg-blue-700 transition cursor-pointer">查看優惠</summary><div class="mt-3 rounded border border-amber-200 bg-amber-50 p-3">
+  <p>限時 85 折，適用於 <strong>分離式</strong> 與 <strong>窗型</strong> 機型。</p>
+<ul>
+<li>到府專業清洗</li>
+<li>使用環保清潔劑</li>
+<li>老客戶再折 NT$50</li></ul></div></details></article></div>
 </div>
 </section>
 <section class="relative bg-gradient-to-b from-sky-50 to-white">
@@ -958,16 +966,82 @@ body.dark #offer-modal .offer-panel a,
   ${it.summary ? `<p class="mt-2 text-sm text-gray-700">${it.summary}</p>` : ''}
   ${(bullets || it.cta) ? `
     <details class="mt-3">
-      <summary
-  class="cursor-pointer list-none inline-flex items-center gap-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded transition"
->
-  <!-- 圖示 (eye icon) -->
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-  </svg>
-  查看內容
-</summary>
+      <summary class="inline-flex items-center gap-1 text-sm font-medium text-blue-700 cursor-pointer">查看內容</summary>
+      <div class="mt-3 rounded border border-amber-200 bg-amber-50 p-3">
+        ${bullets}
+        ${cta ? `<div class="mt-2">${cta}</div>` : ''}
+      </div>
+    </details>` : ''
+  }
+</article>`;
+    }).join('');
+  } catch (e) {
+    console.error(e);
+    el.innerHTML = `<p class="text-sm text-red-700">公告載入失敗，請稍後再試。</p>`;
+  }
+})();
+</script>
+
+
+<script>
+(async () => {
+  const el = document.getElementById('news-list');
+  if (!el) return;
+  const url = '/news.json?v=' + Date.now();
+
+  function todayInTZ(tz='Asia/Taipei'){
+    const fmt = new Intl.DateTimeFormat('en-CA', { timeZone: tz, year:'numeric', month:'2-digit', day:'2-digit' });
+    const [y,m,d] = fmt.format(new Date()).split('-').map(Number);
+    return new Date(Date.UTC(y, m-1, d, 0, 0, 0));
+  }
+  function parseYMD(s){ if(!s) return null; const [y,m,d]=s.split('-').map(Number); return new Date(Date.UTC(y, m-1, d, 0,0,0)); }
+  const today = todayInTZ('Asia/Taipei');
+
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error('news.json 載入失敗');
+    let items = await res.json();
+
+    items = items.filter(it => {
+      const start = parseYMD(it.startsAt);
+      const end   = parseYMD(it.endsAt);
+      const startOk = !start || today >= start;
+      const endOk   = !end   || today <= end;
+      return startOk && endOk;
+    });
+
+    items.sort((a,b) => (b.pinned===true) - (a.pinned===true)
+      || String(b.startsAt||'').localeCompare(String(a.startsAt||'')));
+
+    if (!items.length) { el.innerHTML = `<p class="text-sm text-gray-600">目前沒有公告</p>`; return; }
+
+    el.innerHTML = items.map(it => {
+      const badge = it.badge || (it.type === 'promo' ? '優' : '告');
+      const bullets = Array.isArray(it.bullets) && it.bullets.length
+        ? `<ul>${it.bullets.map(x=>`<li>${x}</li>`).join('')}</ul>` : '';
+      const cta = it.cta?.href
+        ? `<a class="inline-flex items-center gap-1 text-sm font-medium text-white bg-blue-600 px-3 py-1.5 rounded hover:bg-blue-700 transition" href="${it.cta.href}" target="_blank" rel="noopener">${it.cta.text||'了解更多'}</a>`
+        : '';
+      const btnText = it.summaryButtonText || '查看內容';
+
+      return `
+<article class="rounded-lg border border-amber-200 bg-white p-4 md:p-5 shadow" data-ann-id="${it.id||''}">
+  <div class="flex items-center gap-2 mb-2">
+    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-600 text-white text-xs">${badge}</span>
+    <h3 class="font-bold text-gray-900">${it.title||''}</h3>
+    ${it.pinned ? '<span class="ml-2 text-xs px-2 py-0.5 rounded bg-amber-600 text-white">PIN</span>' : ''}
+  </div>
+  ${it.period ? `<p class="text-sm text-gray-700">${it.period}</p>` : ''}
+  ${it.summary ? `<p class="mt-2 text-sm text-gray-700">${it.summary}</p>` : ''}
+  ${(bullets || it.cta) ? `
+    <details class="mt-3">
+      <summary class="cursor-pointer list-none inline-flex items-center gap-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+        ${btnText}
+      </summary>
       <div class="mt-3 rounded border border-amber-200 bg-amber-50 p-3">
         ${bullets}
         ${cta ? `<div class="mt-2">${cta}</div>` : ''}
